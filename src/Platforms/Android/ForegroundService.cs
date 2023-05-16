@@ -21,10 +21,11 @@ namespace Glyphy.Platforms.Android
         public override StartCommandResult OnStartCommand(Intent? intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
             // Create a notification for the foreground service
-            var notification = new Notification.Builder(this)
+            var notification = new Notification.Builder(this, "glyphy")
                 .SetContentTitle("Glyphy")
                 .SetContentText("Glyphy is running.")
                 .SetSmallIcon(Resource.Drawable.ic_mtrl_checked_circle)
+                .SetVisibility(NotificationVisibility.Secret)
                 .Build();
 
             // Start the service in the foreground
