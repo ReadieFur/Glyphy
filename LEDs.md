@@ -12,7 +12,7 @@
 | USB line | `vline_leds_br` |
 
 ## Addressable:
-Key: `/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led`
+Key: `/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led/single_led_br`
 | Human friendly name | ID |
 | --- | --- |
 | Diagonal | `1` |
