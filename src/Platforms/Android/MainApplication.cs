@@ -1,7 +1,9 @@
 ﻿using Android.App;
 using Android.Runtime;
+using Glyphy.Platforms.Android;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
+using Microsoft.Maui.LifecycleEvents;
 using System;
 
 namespace Glyphy;
@@ -9,10 +11,32 @@ namespace Glyphy;
 [Application]
 public class MainApplication : MauiApplication
 {
-	public MainApplication(IntPtr handle, JniHandleOwnership ownership)
+    public static event AndroidLifecycle.OnResume? OnResume;
+
+    public MainApplication(IntPtr handle, JniHandleOwnership ownership)
 		: base(handle, ownership)
 	{
 	}
 
-	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    public override void OnCreate()
+    {
+        base.OnCreate();
+
+        //Request root access.
+        Helpers.CreateRootSubProcess(out _);
+    }
+
+    protected override MauiApp CreateMauiApp()
+	{
+		MauiAppBuilder builder = MauiProgram.CreateBuilder();
+        builder
+            .ConfigureLifecycleEvents(events =>
+            {
+                events.AddAndroid(android => android
+                    .OnResume(e => OnResume?.Invoke(e))
+                );
+            });
+
+        return builder.Build();
+    }
 }
