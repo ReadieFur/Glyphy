@@ -24,10 +24,10 @@ namespace Glyphy
 
         public readonly uint MAX_BRIGHTNESS;
 
-        internal LEDUtils()
+        internal LEDUtils(JProcess rootProcess)
         {
             //TODO: Move the root process creation to an external method (i.e. not the constructor).
-            Helpers.CreateRootSubProcess(out rootProcess);
+            this.rootProcess = rootProcess;
             inputStream = new DataOutputStream(rootProcess?.OutputStream);
             outputStream = new DataInputStream(rootProcess?.InputStream);
 
