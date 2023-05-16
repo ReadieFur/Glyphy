@@ -1,4 +1,6 @@
-﻿namespace Glyphy;
+﻿using Microsoft.Maui.Controls;
+
+namespace Glyphy;
 
 public partial class App : Application
 {
