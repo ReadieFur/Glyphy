@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Glyphy.Resources.Controls;assembly=Glyphy"
              x:Class="Glyphy.MainPage"
              Loaded="ContentPage_Loaded">
     <ScrollView>
@@ -8,6 +9,18 @@
             Spacing="25"
             Padding="30,0"
             VerticalOptions="Center">
+            <controls:ViewBox>
+                <Grid Width="207.36" Height="433.2">
+                    <!--TODO: Use the material theme colour for the backround or try to get the device colour by the devices ID?-->
+                    <Path Fill="{AppThemeBinding Light=Black, Dark=White}" Data="M28.56,0H178.8a28.56,28.56,0,0,1,28.56,28.56V404.64A28.56,28.56,0,0,1,178.8,433.2H28.56A28.56,28.56,0,0,1,0,404.64V28.56A28.56,28.56,0,0,1,28.56,0Z"/>
+                    <Path Stroke="White" StrokeThickness="6" Data="M57.6,35.52S57.4,14.4,36.48,14.4,14.64,34.08,14.64,34.08v43.2S16.16,97.44,36,97.44s21.6-18.35,21.6-19.2V63.36"/>
+                    <Path Stroke="White" StrokeThickness="6" Data="M140.16,72.48l37.92-45.36" StrokeLineCap="Round"/>
+                    <Path Fill="Red" Data="M182.54,70.12a2,2,0,1,1-2,2A2,2,0,0,1,182.54,70.12Z"/>
+                    <Path Stroke="White" StrokeThickness="6" Data="M189.12,143.52s-30.24-40.32-84.48-40.32-90.72,38-90.72,47V279.36c0,2.27,28,46.8,90,46.8s89.28-44.42,89.28-47.52V218.16" StrokeLineCap="Round"/>
+                    <Path Stroke="White" StrokeThickness="6" Data="M103.2,351.84v51.84" StrokeLineCap="Round"/>
+                    <Path Fill="White" Data="M103.32,415.2c2.05,0,3.72,1.67,3.72,3.72s-1.67,3.72-3.72,3.72-3.72-1.67-3.72-3.72,1.67-3.72,3.72-3.72Z"/>
+                </Grid>
+            </controls:ViewBox>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

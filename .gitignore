@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+*.db
+src/Resources/Images/glyph.svg.bak6464e1b5
+misc/Nothing_phone(1)_White_(back).svg

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 207.36 433.2">
+    <defs>
+        <style>
+            .cls-1 {
+                fill: #fff;
+            }
+
+            .cls-1,
+            .cls-2,
+            .cls-3,
+            .cls-4,
+            .cls-5 {
+                fill-rule: evenodd;
+            }
+
+            .cls-2,
+            .cls-4 {
+                fill: none;
+                stroke: #fff;
+                stroke-miterlimit: 10;
+                stroke-width: 6px;
+            }
+
+            .cls-3 {
+                fill: #e30613;
+            }
+
+            .cls-4 {
+                stroke-linecap: round;
+            }
+        </style>
+    </defs>
+    <path id="Base" class="cls-5"
+        d="M28.56,0H178.8c15.77,0,28.56,12.79,28.56,28.56V404.64c0,15.77-12.79,28.56-28.56,28.56H28.56c-15.77,0-28.56-12.79-28.56-28.56V28.56C0,12.79,12.79,0,28.56,0Z" />
+    <path id="Camera" class="cls-2"
+        d="M57.6,35.52s-.2-21.12-21.12-21.12S14.64,34.08,14.64,34.08v43.2s1.52,20.16,21.36,20.16,21.6-18.35,21.6-19.2v-14.88" />
+    <path id="Diagonal" class="cls-4" d="M140.16,72.48l37.92-45.36" />
+    <path id="RecordingLED" class="cls-3"
+        d="M182.54,70.12c1.12,0,2.02,.9,2.02,2.02s-.9,2.02-2.02,2.02-2.02-.9-2.02-2.02,.9-2.02,2.02-2.02Z" />
+    <path id="Center" class="cls-4"
+        d="M189.12,143.52s-30.24-40.32-84.48-40.32S13.92,141.22,13.92,150.24v129.12c0,2.27,27.99,46.8,90,46.8s89.28-44.42,89.28-47.52v-60.48" />
+    <path id="Line" class="cls-4" d="M103.2,351.84v51.84" />
+    <path id="Dot" class="cls-1"
+        d="M103.32,415.2c2.05,0,3.72,1.67,3.72,3.72s-1.67,3.72-3.72,3.72-3.72-1.67-3.72-3.72,1.67-3.72,3.72-3.72Z" />
+</svg>
