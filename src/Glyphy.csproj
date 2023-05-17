@@ -59,6 +59,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\ndot.otf" />
 	  <None Remove="Resources\Images\glyph.svg.bak6464e1b5" />
 	  <None Remove="Resources\Images\Thumbs.db" />
 	</ItemGroup>
