@@ -18,14 +18,6 @@ public class MainApplication : MauiApplication
 	{
 	}
 
-    public override void OnCreate()
-    {
-        base.OnCreate();
-
-        //Request root access.
-        Helpers.CreateRootSubProcess(out _);
-    }
-
     protected override MauiApp CreateMauiApp()
 	{
 		MauiAppBuilder builder = MauiProgram.CreateBuilder();

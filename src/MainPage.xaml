@@ -2,41 +2,74 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:Glyphy.Resources.Controls;assembly=Glyphy"
-             x:Class="Glyphy.MainPage"
-             Loaded="ContentPage_Loaded">
+             x:Class="Glyphy.MainPage">
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"
             Padding="30,0"
-            VerticalOptions="Center">
-            <controls:ViewBox>
-                <Grid Width="207.36" Height="433.2">
-                    <!--TODO: Use the material theme colour for the backround or try to get the device colour by the devices ID?-->
-                    <Path x:Name="GlyphBase" Fill="{AppThemeBinding Light=Black, Dark=White}" Data="M28.56,0H178.8a28.56,28.56,0,0,1,28.56,28.56V404.64A28.56,28.56,0,0,1,178.8,433.2H28.56A28.56,28.56,0,0,1,0,404.64V28.56A28.56,28.56,0,0,1,28.56,0Z"/>
-                    <Path x:Name="GlyphCamera" Stroke="White" StrokeThickness="6" Data="M57.6,35.52S57.4,14.4,36.48,14.4,14.64,34.08,14.64,34.08v43.2S16.16,97.44,36,97.44s21.6-18.35,21.6-19.2V63.36"/>
-                    <Path x:Name="GlyphDiagonal" Stroke="White" StrokeThickness="6" Data="M140.16,72.48l37.92-45.36" StrokeLineCap="Round"/>
-                    <Path x:Name="GlyphRecordingLED" Fill="Red" Data="M182.54,70.12a2,2,0,1,1-2,2A2,2,0,0,1,182.54,70.12Z"/>
-                    <Path x:Name="GlyphCenterTopLeft" Stroke="White" StrokeThickness="6" Data="m 104.64,103.2 c -54.24,0 -90.72,38.02 -90.72,47.04 m 0,0 v 64.56" StrokeLineCap="Round"/>
-                    <Path x:Name="GlyphCenterTopRight" Stroke="White" StrokeThickness="6" Data="m 189.12,143.52 c 0,0 -30.24,-40.32 -84.48,-40.32" StrokeLineCap="Round"/>
-                    <Path x:Name="GlyphCenterBottomLeft" Stroke="White" StrokeThickness="6" Data="m 13.92,214.8 v 64.56 c 0,2.27 27.99,46.8 90,46.8" StrokeLineCap="Round"/>
-                    <Path x:Name="GlyphCenterBottomRight" Stroke="White" StrokeThickness="6" Data="m 103.92,326.16 c 62.01,0 89.28,-44.42 89.28,-47.52 v -60.48" StrokeLineCap="Round"/>
-                    <Path StrokeThickness="6" Data="M103.2,351.84v51.84" StrokeLineCap="Round">
-                        <Path.Stroke>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop x:Name="GlyphLine1" Color="White" Offset="0"/>
-                                <GradientStop x:Name="GlyphLine2" Color="White" Offset="0.1428571429"/>
-                                <GradientStop x:Name="GlyphLine3" Color="White" Offset="0.2857142858"/>
-                                <GradientStop x:Name="GlyphLine4" Color="White" Offset="0.4285714287"/>
-                                <GradientStop x:Name="GlyphLine5" Color="White" Offset="0.5714285716"/>
-                                <GradientStop x:Name="GlyphLine6" Color="White" Offset="0.7142857145"/>
-                                <GradientStop x:Name="GlyphLine7" Color="White" Offset="0.8571428574"/>
-                                <GradientStop x:Name="GlyphLine8" Color="White" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Path.Stroke>
-                    </Path>
-                    <Path x:Name="GlyphDot" Fill="White" Data="M103.32,415.2c2.05,0,3.72,1.67,3.72,3.72s-1.67,3.72-3.72,3.72-3.72-1.67-3.72-3.72,1.67-3.72,3.72-3.72Z"/>
+            VerticalOptions="Start">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <controls:ViewBox Grid.Column="0">
+                    <Grid Width="207.36" Height="433.2">
+                        <!--TODO: Use the material theme colour for the backround or try to get the device colour by the devices ID?-->
+                        <Path x:Name="GlyphBase" Fill="{AppThemeBinding Light=Black, Dark=White}" Data="M28.56,0H178.8a28.56,28.56,0,0,1,28.56,28.56V404.64A28.56,28.56,0,0,1,178.8,433.2H28.56A28.56,28.56,0,0,1,0,404.64V28.56A28.56,28.56,0,0,1,28.56,0Z"/>
+                        <Path x:Name="GlyphCamera" Stroke="White" StrokeThickness="6" Data="M57.6,35.52S57.4,14.4,36.48,14.4,14.64,34.08,14.64,34.08v43.2S16.16,97.44,36,97.44s21.6-18.35,21.6-19.2V63.36"/>
+                        <Path x:Name="GlyphDiagonal" Stroke="White" StrokeThickness="6" Data="M140.16,72.48l37.92-45.36" StrokeLineCap="Round"/>
+                        <Path x:Name="GlyphRecordingLED" Fill="Red" Data="M182.54,70.12a2,2,0,1,1-2,2A2,2,0,0,1,182.54,70.12Z"/>
+                        <Path x:Name="GlyphCenterTopLeft" Stroke="White" StrokeThickness="6" Data="m 104.64,103.2 c -54.24,0 -90.72,38.02 -90.72,47.04 m 0,0 v 64.56" StrokeLineCap="Round"/>
+                        <Path x:Name="GlyphCenterTopRight" Stroke="White" StrokeThickness="6" Data="m 189.12,143.52 c 0,0 -30.24,-40.32 -84.48,-40.32" StrokeLineCap="Round"/>
+                        <Path x:Name="GlyphCenterBottomLeft" Stroke="White" StrokeThickness="6" Data="m 13.92,214.8 v 64.56 c 0,2.27 27.99,46.8 90,46.8" StrokeLineCap="Round"/>
+                        <Path x:Name="GlyphCenterBottomRight" Stroke="White" StrokeThickness="6" Data="m 103.92,326.16 c 62.01,0 89.28,-44.42 89.28,-47.52 v -60.48" StrokeLineCap="Round"/>
+                        <Path StrokeThickness="6" Data="M103.2,351.84v51.84" StrokeLineCap="Round">
+                            <Path.Stroke>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop x:Name="GlyphLine1" Color="White" Offset="0"/>
+                                    <GradientStop x:Name="GlyphLine2" Color="White" Offset="0.1428571429"/>
+                                    <GradientStop x:Name="GlyphLine3" Color="White" Offset="0.2857142858"/>
+                                    <GradientStop x:Name="GlyphLine4" Color="White" Offset="0.4285714287"/>
+                                    <GradientStop x:Name="GlyphLine5" Color="White" Offset="0.5714285716"/>
+                                    <GradientStop x:Name="GlyphLine6" Color="White" Offset="0.7142857145"/>
+                                    <GradientStop x:Name="GlyphLine7" Color="White" Offset="0.8571428574"/>
+                                    <GradientStop x:Name="GlyphLine8" Color="White" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Path.Stroke>
+                        </Path>
+                        <Path x:Name="GlyphDot" Fill="White" Data="M103.32,415.2c2.05,0,3.72,1.67,3.72,3.72s-1.67,3.72-3.72,3.72-3.72-1.67-3.72-3.72,1.67-3.72,3.72-3.72Z"/>
+                    </Grid>
+                </controls:ViewBox>
+                <Grid Grid.Column="1" Padding="30,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="Glyphy" FontFamily="dotmatrix" FontSize="50"/>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <VerticalStackLayout Grid.Row="0">
+                            <!--TODO: Service-->
+                            <Label Text="Enabled" FontSize="Title"/>
+                            <Switch IsToggled="false" HorizontalOptions="Start"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1">
+                            <!--TODO: Bind to build number-->
+                            <Label Text="Version" FontSize="Title"/>
+                            <Label x:Name="VersionNumber" Text="N/A" FontSize="Body"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="2">
+                            <Label Text="Author" FontSize="Title"/>
+                            <Label Text="ReadieFur" FontSize="Body"/>
+                        </VerticalStackLayout>
+                    </Grid>
                 </Grid>
-            </controls:ViewBox>
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
