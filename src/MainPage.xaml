@@ -20,17 +20,17 @@
                     <Path x:Name="GlyphCenterTopRight" Stroke="White" StrokeThickness="6" Data="m 189.12,143.52 c 0,0 -30.24,-40.32 -84.48,-40.32" StrokeLineCap="Round"/>
                     <Path x:Name="GlyphCenterBottomLeft" Stroke="White" StrokeThickness="6" Data="m 13.92,214.8 v 64.56 c 0,2.27 27.99,46.8 90,46.8" StrokeLineCap="Round"/>
                     <Path x:Name="GlyphCenterBottomRight" Stroke="White" StrokeThickness="6" Data="m 103.92,326.16 c 62.01,0 89.28,-44.42 89.28,-47.52 v -60.48" StrokeLineCap="Round"/>
-                    <Path x:Name="GlyphLine" StrokeThickness="6" Data="M103.2,351.84v51.84" StrokeLineCap="Round">
+                    <Path StrokeThickness="6" Data="M103.2,351.84v51.84" StrokeLineCap="Round">
                         <Path.Stroke>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="White" Offset="0"/>
-                                <GradientStop Color="White" Offset="0.1428571429"/>
-                                <GradientStop Color="White" Offset="0.2857142858"/>
-                                <GradientStop Color="White" Offset="0.4285714287"/>
-                                <GradientStop Color="White" Offset="0.5714285716"/>
-                                <GradientStop Color="White" Offset="0.7142857145"/>
-                                <GradientStop Color="White" Offset="0.8571428574"/>
-                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop x:Name="GlyphLine1" Color="White" Offset="0"/>
+                                <GradientStop x:Name="GlyphLine2" Color="White" Offset="0.1428571429"/>
+                                <GradientStop x:Name="GlyphLine3" Color="White" Offset="0.2857142858"/>
+                                <GradientStop x:Name="GlyphLine4" Color="White" Offset="0.4285714287"/>
+                                <GradientStop x:Name="GlyphLine5" Color="White" Offset="0.5714285716"/>
+                                <GradientStop x:Name="GlyphLine6" Color="White" Offset="0.7142857145"/>
+                                <GradientStop x:Name="GlyphLine7" Color="White" Offset="0.8571428574"/>
+                                <GradientStop x:Name="GlyphLine8" Color="White" Offset="1"/>
                             </LinearGradientBrush>
                         </Path.Stroke>
                     </Path>
