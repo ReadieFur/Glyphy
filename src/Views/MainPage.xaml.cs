@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.Maui.ApplicationModel;
+﻿using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 
-namespace Glyphy;
+namespace Glyphy.Views;
 
 public partial class MainPage : ContentPage
 {

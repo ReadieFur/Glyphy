@@ -6,7 +6,7 @@ using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Layouts;
 
 //https://github.com/dotnet/maui/discussions/6695
-namespace Glyphy.Resources.Controls
+namespace Glyphy.Controls
 {
     #region StretchDirection
 
@@ -220,8 +220,8 @@ namespace Glyphy.Resources.Controls
                      && (isConstrainedWidth || isConstrainedHeight))
                 {
                     // Compute scaling factors for both axes
-                    scaleX = (IsZero(contentSize.Width)) ? 0.0 : availableSize.Width / contentSize.Width;
-                    scaleY = (IsZero(contentSize.Height)) ? 0.0 : availableSize.Height / contentSize.Height;
+                    scaleX = IsZero(contentSize.Width) ? 0.0 : availableSize.Width / contentSize.Width;
+                    scaleY = IsZero(contentSize.Height) ? 0.0 : availableSize.Height / contentSize.Height;
 
                     if (!isConstrainedWidth) scaleX = scaleY;
                     else if (!isConstrainedHeight) scaleY = scaleX;
