@@ -1,4 +1,6 @@
-﻿namespace Glyphy.LED
+﻿using System.Threading.Tasks;
+
+namespace Glyphy.LED
 {
     /// <summary>
     /// An abstract class that contains API methods reachable on all platforms.

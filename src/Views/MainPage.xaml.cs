@@ -1,4 +1,10 @@
-﻿namespace Glyphy.Views;
+﻿using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Glyphy.Views;
 
 public partial class MainPage : ContentPage
 {

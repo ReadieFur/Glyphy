@@ -1,4 +1,6 @@
 ﻿using Glyphy.LED;
+using Microsoft.Maui.Controls;
+using System;
 
 namespace Glyphy.Views
 {

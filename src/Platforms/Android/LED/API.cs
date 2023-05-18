@@ -5,6 +5,9 @@ using Java.IO;
 using JIOException = Java.IO.IOException;
 using JProcess = Java.Lang.Process;
 using Glyphy.Platforms.Android;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Glyphy.LED
 {
@@ -35,8 +38,6 @@ namespace Glyphy.LED
             outputStream = new DataInputStream(rootProcess.InputStream);
 
             RefreshMaxBrightness().Wait();
-
-            Running = true;
         }
 
         //I'm not going to impliment a check to see if we have disposed. Just don't call this manually.
