@@ -3,12 +3,13 @@
     //[Flags] //Not sure if I can make use of this with my current configuration (the implementation of int).
     public enum EAddressable //: uint
     {
+        CAMERA,
         DIAGONAL,
-        CENTER_BOTTOM_LEFT,
-        CENTER_BOTTOM_RIGHT,
+        RECORDING_LED,
         CENTER_TOP_LEFT,
         CENTER_TOP_RIGHT,
-        CAMERA,
+        CENTER_BOTTOM_LEFT,
+        CENTER_BOTTOM_RIGHT,
         LINE_1,
         LINE_2,
         LINE_3,
@@ -17,7 +18,6 @@
         LINE_6,
         LINE_7,
         LINE_8,
-        DOT,
-        RECORDING_LED
+        DOT
     }
 }
