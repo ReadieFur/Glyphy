@@ -98,7 +98,7 @@
                     <!--<x:String>All</x:String>-->
                 </Picker.Items>
             </Picker>
-            <Label Text="Group" FontSize="Title"/>
+            <Label Text="Brightness" FontSize="Title"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
