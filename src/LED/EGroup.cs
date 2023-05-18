@@ -1,4 +1,4 @@
-﻿namespace Glyphy.Platforms.Android.LED
+﻿namespace Glyphy.LED
 {
     public enum EGroup
     {
@@ -13,7 +13,7 @@
         /// <summary>
         /// round_leds_br
         /// </summary>
-        MIDDLE,
+        CENTER,
         /// <summary>
         /// vline_leds_br
         /// </summary>

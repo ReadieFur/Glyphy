@@ -1,4 +1,4 @@
-﻿namespace Glyphy.Platforms.Android.LED
+﻿namespace Glyphy.LED
 {
     //[Flags] //Not sure if I can make use of this with my current configuration (the implementation of int).
     public enum EAddressable //: uint

@@ -1,77 +1,91 @@
-﻿//#define ALLOW_GROUP_CACHE_BYPASS
+﻿//#define USE_ASYNC_STREAM
 
-using System;
-using System.Collections.Generic;
+using SIOException = System.IO.IOException;
 using Java.IO;
+using JIOException = Java.IO.IOException;
 using JProcess = Java.Lang.Process;
+using Glyphy.Platforms.Android;
 
-namespace Glyphy.Platforms.Android.LED
+namespace Glyphy.LED
 {
-    //TODO: Use a more elegant solution.
     //Some "odd" choices have been made here but they were in the intrest of making the API as fast as possible as it will be called very frequently.
-    public class API
+    public partial class API : ALEDAPI, IDisposable
     {
-        private static API? _instance = null;
-
-        public bool Running { get; private set; } = false;
-
-        //Initalize API when called.
-        /// <summary>
-        /// Will throw if permissions are not granted upon initialization.
-        /// </summary>
-        public static API Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new API();
-                return _instance;
-            }
-        }
-
         private const string BASE_PATH = "/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led";
 
-
-        public readonly uint MaxBrightness;
-
-        private JProcess? rootProcess = null;
-        private DataOutputStream? inputStream = null;
-        private DataInputStream? outputStream = null;
-        //Yes I could've used a dictionary here but this method is slightly faster.
+        private JProcess rootProcess;
+        private DataOutputStream inputStream;
+        private DataInputStream outputStream;
+        private uint maxBrightness = 0;
+        //Yes I could've used a dictionary here but this method is slightly faster (I think).
         private uint[] cachedBrightnessValues = new uint[15];
 
-        //internal API(JProcess rootProcess)
-        internal API()
+        public override uint MaxBrightness => maxBrightness;
+
+        public API()
         {
-            //TODO: Move the root process creation to an external method (i.e. not the constructor).
-            //this.rootProcess = rootProcess;
-            if (!Helpers.CreateRootSubProcess(out rootProcess))
+            if (!Helpers.CreateRootSubProcess(out JProcess? _rootProcess)
+                || _rootProcess is null
+                || _rootProcess.OutputStream is null
+                || _rootProcess.InputStream is null)
                 throw new UnauthorizedAccessException("Unable to create root process.");
+            rootProcess = _rootProcess;
 
-            inputStream = new DataOutputStream(rootProcess?.OutputStream);
-            outputStream = new DataInputStream(rootProcess?.InputStream);
+            inputStream = new DataOutputStream(rootProcess.OutputStream);
+            outputStream = new DataInputStream(rootProcess.InputStream);
 
-            //TODO: Possibly make this re-callable.
-            string? result = Exec("cat " + BASE_PATH + "/brightness", captureOutput: true);
-            if (string.IsNullOrEmpty(result))
-                throw new NullReferenceException("Unable to get max brightness.");
-            MaxBrightness = uint.Parse(result);
+            RefreshMaxBrightness().Wait();
 
             Running = true;
         }
 
-        //TODO: Make this async.
-        private string? Exec(string command, bool captureOutput = false)
+        //I'm not going to impliment a check to see if we have disposed. Just don't call this manually.
+        public void Dispose()
         {
-            if (rootProcess is null || inputStream is null || outputStream is null)
-                throw new NullReferenceException("Unable to execute command.");
+            inputStream.Dispose();
+            outputStream.Dispose();
+            rootProcess.Destroy();
+        }
 
+        //MMM lovley #if blocks.
+        private
+#if USE_ASYNC_STREAM
+            async
+#endif
+        Task<string?> Exec(string command, bool captureOutput = false)
+        {
+            //The async methods seem to hang indefinitely so I will be using the synchronous method.
+            //I find this odd because the synchronous methods are marked as deprecated, yet the comment on all of the the async method say "to be added".
+
+            if (captureOutput)
+            {
+                try
+                {
+                    while (outputStream.Available() > 0)
+#if USE_ASYNC_STREAM
+                        await outputStream.SkipBytesAsync(outputStream.Available());
+#else
+                        outputStream.SkipBytes(outputStream.Available());
+#endif
+                }
+                catch (JIOException) { /*Ignore*/ }
+            }
+
+#if USE_ASYNC_STREAM
+            await inputStream.WriteBytesAsync(command + "\n");
+            await inputStream.FlushAsync();
+#else
             inputStream.WriteBytes(command + "\n");
             inputStream.Flush();
+#endif
 
+#if USE_ASYNC_STREAM
+            return captureOutput ? await outputStream.ReadLineAsync() : null;
+#else
 #pragma warning disable CS0618 // Type or member is obsolete
-            return captureOutput ? outputStream.ReadLine() : null;
+            return Task.FromResult(captureOutput ? outputStream.ReadLine() : null);
 #pragma warning restore CS0618
+#endif
         }
 
         private string GetGroupSystemName(EGroup ledGroup)
@@ -80,7 +94,7 @@ namespace Glyphy.Platforms.Android.LED
             {
                 EGroup.CAMERA => "rear_cam_led_br",
                 EGroup.DIAGONAL => "front_cam_led_br",
-                EGroup.MIDDLE => "round_leds_br",
+                EGroup.CENTER => "round_leds_br",
                 EGroup.LINE => "vline_leds_br",
                 EGroup.DOT => "dot_led_br",
                 _ => throw new KeyNotFoundException("Invalid device ID.")
@@ -135,74 +149,69 @@ namespace Glyphy.Platforms.Android.LED
             };
         }
 
-        public uint ClampBrightness(int brightness) =>
-            (uint)Math.Clamp(brightness, 0, MaxBrightness);
-
-        public uint GetBrightness(EGroup ledGroup)
+        //Private for now.
+        private async Task RefreshMaxBrightness()
         {
-            string? result = Exec("cat " + BASE_PATH + "/" + GetGroupSystemName(ledGroup), captureOutput: true);
+            string? result = await Exec("cat " + BASE_PATH + "/brightness", captureOutput: true);
+            if (string.IsNullOrEmpty(result))
+                throw new NullReferenceException("Unable to get max brightness.");
+            maxBrightness = uint.Parse(result);
+        }
+
+        public async override Task<uint> GetBrightness(EGroup ledGroup)
+        {
+            string? result = await Exec("cat " + BASE_PATH + "/" + GetGroupSystemName(ledGroup), true);
             if (result is null)
-                throw new IOException("Failed to get brightness.");
+                throw new SIOException("Failed to get brightness.");
             else if (!uint.TryParse(result, out uint parsedResult))
                 throw new FormatException("Brightness value is invalid.");
             else
                 return parsedResult;
         }
 
-        //TODO: Figure out how to read individual LEDs.
-        //Temporary solution: Cache set values.
-        public uint GetBrightness(EAddressable ledAddressable) =>
-            cachedBrightnessValues[GetCachedBrightnessIndex(ledAddressable)];
+        public override Task<uint> GetBrightness(EAddressable adressableLED) =>
+            Task.FromResult(cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]);
 
-        public void SetBrightness(EGroup ledGroup, uint brightness
-#if ALLOW_GROUP_CACHE_BYPASS
-            , bool updateCachedValues = true
-#endif
-            )
+        public async override Task SetBrightness(EGroup ledGroup, uint brightness)
         {
-#if ALLOW_GROUP_CACHE_BYPASS
-            if (updateCachedValues)
-#endif
+            switch (ledGroup)
             {
-                switch (ledGroup)
-                {
-                    case EGroup.CAMERA:
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = brightness;
-                        break;
-                    case EGroup.DIAGONAL:
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = brightness;
-                        break;
-                    case EGroup.MIDDLE:
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = brightness;
-                        break;
-                    case EGroup.LINE:
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = brightness;
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = brightness;
-                        break;
-                    case EGroup.DOT:
-                        cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = brightness;
-                        break;
-                    default:
-                        throw new KeyNotFoundException("Invalid device ID.");
-                }
+                case EGroup.CAMERA:
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = brightness;
+                    break;
+                case EGroup.DIAGONAL:
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = brightness;
+                    break;
+                case EGroup.CENTER:
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = brightness;
+                    break;
+                case EGroup.LINE:
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = brightness;
+                    break;
+                case EGroup.DOT:
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = brightness;
+                    break;
+                default:
+                    throw new KeyNotFoundException("Invalid device ID.");
             }
 
-            Exec($"echo {brightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
+            await Exec($"echo {brightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
         }
 
-        public void SetBrightness(EAddressable addressableLED, uint brightness)
+        public async override Task SetBrightness(EAddressable addressableLED, uint brightness)
         {
             cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = brightness;
-            Exec($"echo {GetAddressableSystemID(addressableLED)} {brightness} > {BASE_PATH}/single_led_br");
+            await Exec($"echo {GetAddressableSystemID(addressableLED)} {brightness} > {BASE_PATH}/single_led_br");
         }
     }
 }

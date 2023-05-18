@@ -1,7 +1,9 @@
-﻿using Microsoft.UI.Xaml;
-
-// To learn more about WinUI, the WinUI project structure,
+﻿// To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
+
+using Microsoft.UI.Windowing;
+using Microsoft.UI;
+using Windows.Graphics;
 
 namespace Glyphy.WinUI;
 
@@ -17,8 +19,33 @@ public partial class App : MauiWinUIApplication
 	public App()
 	{
 		this.InitializeComponent();
-	}
 
-	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+        Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
+        {
+            var mauiWindow = handler.VirtualView;
+            var nativeWindow = handler.PlatformView;
+            nativeWindow.Activate();
+
+            // allow Windows to draw a native titlebar which respects IsMaximizable/IsMinimizable
+            nativeWindow.ExtendsContentIntoTitleBar = false;
+
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            // set a specific window size
+            appWindow.Resize(new SizeInt32(540, 1200));
+
+            if (appWindow.Presenter is OverlappedPresenter p)
+            {
+                p.IsResizable = false;
+
+                // these only have effect if XAML isn't responsible for drawing the titlebar.
+                p.IsMaximizable = false;
+                p.IsMinimizable = false;
+            }
+        });
+    }
+
+    protected override MauiApp CreateMauiApp() => MauiProgram.CreateBuilder().Build();
 }
-
