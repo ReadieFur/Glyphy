@@ -44,29 +44,11 @@ public partial class MainPage : ContentPage
 
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
-        //Initalize the API.
-        if (!LED.API.Running)
-        {
-            try { _ = LED.API.Instance; }
-            catch (Exception ex)
-            {
-                if (ex is PermissionException
-                    || ex is UnauthorizedAccessException
-                    || ex is NullReferenceException)
-                {
-                    //Temporary "#if ANDROID"
-#if ANDROID
-                    //Not sure about catching this last one for all calls. Alternativly I could check if the API is running and initalize based on that but that adds more overhead.
-                    Android.Widget.Toast.MakeText(Android.App.Application.Context, "Superuser permissions required.", Android.Widget.ToastLength.Long)?.Show();
-#endif
-                }
-                else throw;
-            }
-        }
-
         ToggleControls(LED.API.Running);
-    
-        //TODO: Subscribe to the android lifetime event to revalidate permissions when the app is resumed.
+
+#if ANDROID
+        Android_ContentPage_Loaded(sender, e);
+#endif
     }
 
     private async void LEDPicker_SelectedIndexChanged(object sender, EventArgs e)
