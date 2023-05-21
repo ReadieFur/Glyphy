@@ -96,7 +96,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Platforms\Android\Views\" />
 	  <Folder Include="Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
 

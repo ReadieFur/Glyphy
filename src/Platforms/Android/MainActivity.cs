@@ -11,30 +11,22 @@ namespace Glyphy;
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
+    //Temporary solution until I can access the Android Window object from my views.
+    internal static MainActivity Instance { get; private set; } = null!;
+
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+
+        Instance = this;
+    }
+
     public override void OnAttachedToWindow()
     {
         base.OnAttachedToWindow();
-        
-        SetSystemTheme(Microsoft.Maui.Controls.Application.Current!.RequestedTheme);
-        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, e) => SetSystemTheme(e.RequestedTheme);
 
         RefreshAPI();
         MainApplication.OnResume += _ => RefreshAPI();
-    }
-
-    private void SetSystemTheme(AppTheme requestedTheme)
-    {
-        if (Window is null)
-            return;
-
-        bool isDark = requestedTheme == AppTheme.Dark;
-
-        Window.SetStatusBarColor(isDark ? Android.Graphics.Color.Black : Android.Graphics.Color.White);
-#pragma warning disable CA1422 // Validate platform compatibility
-        Window.DecorView.SystemUiVisibility = isDark ? (StatusBarVisibility)SystemUiFlags.Visible : (StatusBarVisibility)SystemUiFlags.LightStatusBar;
-#pragma warning restore CA1422
-
-        Window.SetNavigationBarColor(isDark ? Android.Graphics.Color.Black : Android.Graphics.Color.White);
     }
 
     private void RefreshAPI()
@@ -49,10 +41,23 @@ public class MainActivity : MauiAppCompatActivity
                     || ex is UnauthorizedAccessException)
                 {
                     //Not sure about catching this last one for all calls.
-                    Android.Widget.Toast.MakeText(Android.App.Application.Context, "Superuser permissions required.", Android.Widget.ToastLength.Long)?.Show();
+                    Android.Widget.Toast.MakeText(Application.Context, "Superuser permissions required.", Android.Widget.ToastLength.Long)?.Show();
                 }
                 else throw;
             }
         }
+    }
+
+    public void SetSystemTheme(Android.Graphics.Color statusBarColour, Android.Graphics.Color navigationBarColour, bool useDarkIcons)
+    {
+        if (Window is null)
+            return;
+
+        Window.SetStatusBarColor(statusBarColour);
+#pragma warning disable CA1422 // Validate platform compatibility
+        Window.DecorView.SystemUiVisibility = useDarkIcons ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
+#pragma warning restore CA1422
+
+        Window.SetNavigationBarColor(navigationBarColour);
     }
 }

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:localcontrols="clr-namespace:Glyphy.Controls;assembly=Glyphy"
              x:Class="Glyphy.Views.GlyphConfigurator"
-             Title="GlyphConfigurator">
+             Title="GlyphConfigurator"
+             Loaded="ContentPage_Loaded">
     <NavigationPage.HasNavigationBar>
         <x:Boolean>false</x:Boolean>
     </NavigationPage.HasNavigationBar>
@@ -30,7 +31,7 @@
                             FontSize="Title" FontFamily="FASolid6" Text="&#xf0c7;"/>
                 </Grid>
                 <localcontrols:Glyph MaximumHeightRequest="300" HorizontalOptions="Center"/>
-                <VerticalStackLayout>
+                <VerticalStackLayout x:Name="ControlsGroup">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
@@ -86,43 +87,14 @@
                         </Grid.ColumnSpacing>
 
                         <Label Grid.Row="0" Grid.Column="0" Text="LED" VerticalOptions="Center"/>
-                        <Picker Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="LEDPicker" HeightRequest="45" SelectedIndex="0">
-                            <Picker.Items>
-                                <x:String>Camera</x:String>
-                                <x:String>Diagonal</x:String>
-                                <x:String>Recording LED</x:String>
-                                <!--<x:String>Center</x:String>-->
-                                <x:String>Center (Top Left)</x:String>
-                                <x:String>Center (Top Right)</x:String>
-                                <x:String>Center (Bottom Left)</x:String>
-                                <x:String>Center (Bottom Right)</x:String>
-                                <x:String>Line</x:String>
-                                <x:String>Line (1)</x:String>
-                                <x:String>Line (2)</x:String>
-                                <x:String>Line (3)</x:String>
-                                <x:String>Line (4)</x:String>
-                                <x:String>Line (5)</x:String>
-                                <x:String>Line (6)</x:String>
-                                <x:String>Line (7)</x:String>
-                                <x:String>Line (8)</x:String>
-                                <x:String>Dot</x:String>
-                                <!--<x:String>All</x:String>-->
-                            </Picker.Items>
-                        </Picker>
+                        <Picker Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="LEDPicker" HeightRequest="45"/>
 
                         <Label Grid.Row="1" Grid.Column="0" Text="Brightness" VerticalOptions="Center"/>
                         <Slider x:Name="BrightnessSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Value="0"/>
                         <Entry x:Name="BrightnessEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Text="Interpolation" VerticalOptions="Center"/>
-                        <Picker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="InterpolationPicker" HeightRequest="45" SelectedIndex="0">
-                            <Picker.Items>
-                                <x:String>None</x:String>
-                                <x:String>Linear</x:String>
-                                <x:String>Smooth Step</x:String>
-                                <x:String>Smoother Step</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="InterpolationPicker" HeightRequest="45"/>
 
                         <Label Grid.Row="3" Grid.Column="0" Text="Transition Time" VerticalOptions="Center"/>
                         <Slider x:Name="TransitionTimeSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
