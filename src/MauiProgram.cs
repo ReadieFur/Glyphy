@@ -14,6 +14,7 @@ public static class MauiProgram
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("ndot.otf", "dotmatrix");
+				fonts.AddFont("font_awesome_6_free_solid.otf", "FASolid6");
             });
 
 #if DEBUG

@@ -4,6 +4,9 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using Windows.Graphics;
+using Microsoft.Maui;
+using Microsoft.Maui.Hosting;
+using System;
 
 namespace Glyphy.WinUI;
 

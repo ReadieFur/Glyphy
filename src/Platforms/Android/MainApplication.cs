@@ -29,6 +29,11 @@ public class MainApplication : MauiApplication
                 );
             });
 
+        //It turns out the line I want to remove is the autocorrect line, not the underline line so I have removed the following for now.
+        //https://github.com/dotnet/maui/issues/7906#issuecomment-1264717945
+        /*Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+            h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent));*/
+
         return builder.Build();
     }
 }

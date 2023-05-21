@@ -15,14 +15,14 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnAttachedToWindow();
         
-        SetStatusBarTheme(Microsoft.Maui.Controls.Application.Current!.RequestedTheme);
-        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, e) => SetStatusBarTheme(e.RequestedTheme);
+        SetSystemTheme(Microsoft.Maui.Controls.Application.Current!.RequestedTheme);
+        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, e) => SetSystemTheme(e.RequestedTheme);
 
         RefreshAPI();
         MainApplication.OnResume += _ => RefreshAPI();
     }
 
-    private void SetStatusBarTheme(AppTheme requestedTheme)
+    private void SetSystemTheme(AppTheme requestedTheme)
     {
         if (Window is null)
             return;
@@ -33,6 +33,8 @@ public class MainActivity : MauiAppCompatActivity
 #pragma warning disable CA1422 // Validate platform compatibility
         Window.DecorView.SystemUiVisibility = isDark ? (StatusBarVisibility)SystemUiFlags.Visible : (StatusBarVisibility)SystemUiFlags.LightStatusBar;
 #pragma warning restore CA1422
+
+        Window.SetNavigationBarColor(isDark ? Android.Graphics.Color.Black : Android.Graphics.Color.White);
     }
 
     private void RefreshAPI()

@@ -77,6 +77,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\font_awesome_6_free_solid.otf" />
 	  <None Remove="Resources\Images\Thumbs.db" />
 	  <None Remove="Resources\mipmap-xxxhdpi\Thumbs.db" />
 	</ItemGroup>
@@ -86,15 +87,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="AppShell.xaml">
+	  <MauiXaml Update="Controls\Glyph.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Controls\GlyphControlEntry.xaml">
+	  <MauiXaml Update="Views\GlyphConfigurator.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Platforms\Android\Views\" />
 	  <Folder Include="Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
 
