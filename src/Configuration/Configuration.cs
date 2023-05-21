@@ -14,7 +14,7 @@ namespace Glyphy.Configuration
         private static string GetFilePath(Guid id) =>
             Path.Combine(BasePath, id.ToString(), ".json");
 
-        public static async Task<bool> SaveAnimation(IAnimation animation)
+        public static async Task<bool> SaveAnimation(SAnimation animation)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Glyphy.Configuration
             return true;
         }
 
-        public static async Task<IAnimation?> LoadAnimation(Guid id)
+        public static async Task<SAnimation?> LoadAnimation(Guid id)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Glyphy.Configuration
                     return null;
 
                 //TODO: Possibly sort data here.
-                return JsonSerializer.Deserialize<IAnimation>(await File.ReadAllTextAsync(path));
+                return JsonSerializer.Deserialize<SAnimation>(await File.ReadAllTextAsync(path));
             }
             catch
             {

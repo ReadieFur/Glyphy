@@ -2,9 +2,9 @@
 {
     public enum EInterpolationType
     {
-        None,
-        Linear,
-        Smoothstep,
-        Smootherstep
+        NONE,
+        LINEAR,
+        SMOOTH_STEP,
+        SMOOTHER_STEP
     }
 }

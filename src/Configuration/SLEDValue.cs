@@ -2,7 +2,7 @@
 
 namespace Glyphy.Configuration
 {
-    public interface ILEDValue
+    public struct SLEDValue
     {
         public EInterpolationType InterpolationType { get; set; }
         public EAddressable Led { get; set; }
