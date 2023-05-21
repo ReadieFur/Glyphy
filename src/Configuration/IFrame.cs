@@ -4,7 +4,7 @@ namespace Glyphy.Configuration
 {
     public interface IFrame
     {
-        public uint frame { get; set; }
+        public uint Frame { get; set; }
         public uint TransitionTime { get; set; }
         public uint Duration { get; set; }
         public IEnumerable<ILEDValue> Values { get; set; }

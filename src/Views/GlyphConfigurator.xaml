@@ -73,16 +73,20 @@
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.ColumnSpacing>
                             <x:Double>10</x:Double>
                         </Grid.ColumnSpacing>
+
                         <Label Grid.Row="0" Grid.Column="0" Text="LED" VerticalOptions="Center"/>
-                        <Picker Grid.Row="0" Grid.Column="1" x:Name="LEDPicker" HeightRequest="45" SelectedIndex="0">
+                        <Picker Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="LEDPicker" HeightRequest="45" SelectedIndex="0">
                             <Picker.Items>
                                 <x:String>Camera</x:String>
                                 <x:String>Diagonal</x:String>
@@ -105,17 +109,13 @@
                                 <!--<x:String>All</x:String>-->
                             </Picker.Items>
                         </Picker>
+
                         <Label Grid.Row="1" Grid.Column="0" Text="Brightness" VerticalOptions="Center"/>
-                        <Grid Grid.Row="1" Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Slider x:Name="BrightnessSlider" Grid.Column="0" Minimum="0" Maximum="4095" Value="0"/>
-                            <Entry x:Name="BrightnessEntry" Grid.Column="1" MinimumWidthRequest="50" Keyboard="Numeric"/>
-                        </Grid>
+                        <Slider x:Name="BrightnessSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Value="0"/>
+                        <Entry x:Name="BrightnessEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+
                         <Label Grid.Row="2" Grid.Column="0" Text="Interpolation" VerticalOptions="Center"/>
-                        <Picker Grid.Row="2" Grid.Column="1" x:Name="InterpolationPicker" HeightRequest="45" SelectedIndex="0">
+                        <Picker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="InterpolationPicker" HeightRequest="45" SelectedIndex="0">
                             <Picker.Items>
                                 <x:String>None</x:String>
                                 <x:String>Linear</x:String>
@@ -123,6 +123,14 @@
                                 <x:String>Smoother Step</x:String>
                             </Picker.Items>
                         </Picker>
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="Transition Time" VerticalOptions="Center"/>
+                        <Slider x:Name="TransitionTimeSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
+                        <Entry x:Name="TransitionTimeEntry" Grid.Row="3" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="4" Grid.Column="0" Text="Duration" VerticalOptions="Center"/>
+                        <Slider x:Name="DurationSlider" Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
+                        <Entry x:Name="DurationEntry" Grid.Row="4" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
                     </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>
