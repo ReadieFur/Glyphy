@@ -54,32 +54,21 @@ namespace Glyphy.Misc
             if (!_lock.Wait(0))
                 return;
 
+            TypeConverter converter = TypeDescriptor.GetConverter(newValue.GetType());
+            double? doubleValueNew = null;
+            double? doubleValueOld = null;
+
             try
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(newValue.GetType());
-
-                double? doubleValueNew = null;
-                double? doubleValueOld = null;
                 if (newValue.GetType() == typeof(string)
                     && tType == typeof(double))
                 {
                     //Temporary fix for the type converter not being able to convert from string to double even though it is possible.
                     //The proper fix would be to create a custom type converter for this scenario.
-                    doubleValueNew = double.Parse((string)newValue);
-                    doubleValueOld = double.Parse((string)oldValue);
+
+                    doubleValueNew = string.IsNullOrEmpty((string)newValue) ? 0 : double.Parse((string)newValue);
+                    doubleValueOld = string.IsNullOrEmpty((string)oldValue) ? 0 : double.Parse((string)oldValue);
                 }
-
-                #region TValue
-                TValue? tValueNew = (TValue?)(doubleValueNew != null ? doubleValueNew : converter.ConvertTo(newValue, typeof(TValue)));
-                if (tValueNew is null)
-                    return;
-
-                TValue? tValueOld = (TValue?)(doubleValueNew != null ? doubleValueOld : converter.ConvertTo(oldValue, typeof(TValue)));
-                if (tValueOld is null)
-                    return;
-
-                ValueChanged?.Invoke(sender, (tValueNew, tValueOld));
-                #endregion
 
                 #region Double
                 if (tType == typeof(double))
@@ -110,9 +99,24 @@ namespace Glyphy.Misc
             {
                 _lock.Release();
             }
+
+            #region TValue
+            if (fireEvent)
+            {
+                TValue? tValueNew = (TValue?)(doubleValueNew != null ? doubleValueNew : converter.ConvertTo(newValue, typeof(TValue)));
+                if (tValueNew is null)
+                    return;
+
+                TValue? tValueOld = (TValue?)(doubleValueNew != null ? doubleValueOld : converter.ConvertTo(oldValue, typeof(TValue)));
+                if (tValueOld is null)
+                    return;
+
+                ValueChanged?.Invoke(sender, (tValueNew, tValueOld));
+            }
+            #endregion
         }
 
-        public void Update(TValue value) =>
-            InternalUpdate(value, default(TValue), null, false);
+        public void Update(TValue value, bool fireEvent = false) =>
+            InternalUpdate(value, default(TValue), this, fireEvent);
     }
 }

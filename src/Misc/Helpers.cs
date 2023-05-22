@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyphy.Configuration
+namespace Glyphy.Misc
 {
     public static class Helpers
     {
@@ -17,5 +17,9 @@ namespace Glyphy.Configuration
             t = Math.Clamp((t - min) / (max - min), 0.0f, 1.0f);
             return t * t * t * (3.0f * t * (2.0f * t - 5.0f) + 10.0f);
         }
+
+        //https://stackoverflow.com/questions/929103/convert-a-number-range-to-another-range-maintaining-ratio
+        public static double ConvertNumberRange(double oldValue, double oldMin, double oldMax, double newMin, double newMax) =>
+            ((oldValue - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
     }
 }

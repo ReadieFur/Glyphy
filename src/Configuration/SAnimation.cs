@@ -9,6 +9,26 @@ namespace Glyphy.Configuration
         public Guid Id { get; set; }
         public string Name { get; set; }
         public uint FrameRate { get; set; }
-        public IEnumerable<SFrame> Frames { get; set; }
+        public List<SFrame> Frames { get; set; }
+
+        public static SAnimation CreateNewAnimation()
+        {
+            return new SAnimation()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Untitled",
+                FrameRate = 60,
+                Frames = new List<SFrame>()
+                {
+                    new()
+                    {
+                        Frame = 0,
+                        TransitionTime = 0,
+                        Duration = 0,
+                        Values = new()
+                    }
+                }
+            };
+        }
     }
 }

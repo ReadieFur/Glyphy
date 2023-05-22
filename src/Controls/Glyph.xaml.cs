@@ -1,9 +1,9 @@
 //#define ENABLE_ON_TAP
 
+using Glyphy.LED;
+using Glyphy.Misc;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics;
-using System;
 
 namespace Glyphy.Controls;
 
@@ -94,5 +94,66 @@ public partial class Glyph : ContentView
 		else if (FallsIntoBounts(e, GlyphDot))
 			DotTapped?.Invoke(this, EventArgs.Empty);
 #endif
+    }
+
+    public void UpdatePreview(EAddressable led, double brightness)
+    {
+        Color colour;
+        if (led == EAddressable.RECORDING_LED)
+            colour = Color.FromHsla(0, 1, Helpers.ConvertNumberRange(brightness, 0, 100, 0.25, 0.6));
+        else
+            colour = Color.FromHsla(0, 0, Helpers.ConvertNumberRange(brightness, 0, 100, 0.25, 1));
+
+        switch (led)
+        {
+            case EAddressable.CAMERA:
+                CameraColour = colour;
+                break;
+            case EAddressable.DIAGONAL:
+                DiagonalColour = colour;
+                break;
+            case EAddressable.RECORDING_LED:
+                RecordingLEDColour = colour;
+                break;
+            case EAddressable.CENTER_TOP_LEFT:
+                CenterTopLeftColour = colour;
+                break;
+            case EAddressable.CENTER_TOP_RIGHT:
+                CenterTopRightColour = colour;
+                break;
+            case EAddressable.CENTER_BOTTOM_LEFT:
+                CenterBottomLeftColour = colour;
+                break;
+            case EAddressable.CENTER_BOTTOM_RIGHT:
+                CenterBottomRightColour = colour;
+                break;
+            case EAddressable.LINE_1:
+                Line1Colour = colour;
+                break;
+            case EAddressable.LINE_2:
+                Line2Colour = colour;
+                break;
+            case EAddressable.LINE_3:
+                Line3Colour = colour;
+                break;
+            case EAddressable.LINE_4:
+                Line4Colour = colour;
+                break;
+            case EAddressable.LINE_5:
+                Line5Colour = colour;
+                break;
+            case EAddressable.LINE_6:
+                Line6Colour = colour;
+                break;
+            case EAddressable.LINE_7:
+                Line7Colour = colour;
+                break;
+            case EAddressable.LINE_8:
+                Line8Colour = colour;
+                break;
+            case EAddressable.DOT:
+                DotColour = colour;
+                break;
+        }
     }
 }

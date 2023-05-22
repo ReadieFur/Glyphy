@@ -6,6 +6,6 @@ namespace Glyphy.Configuration
     {
         public EInterpolationType InterpolationType { get; set; }
         public EAddressable Led { get; set; }
-        public uint Brightness { get; set; }
+        public double Brightness { get; set; }
     }
 }

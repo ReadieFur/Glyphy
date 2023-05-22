@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Glyphy.Configuration
 {
-    public static class Configuration
+    public static class Storage
     {
         private static string BasePath => FileSystem.Current.AppDataDirectory;
 

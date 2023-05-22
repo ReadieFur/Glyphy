@@ -25,12 +25,12 @@
                     </Grid.ColumnSpacing>
                     <!--The IsTextPredictionEnabled property should disable autocorrect and so the active word underline too but it dosen't seem to.-->
                     <Entry x:Name="AnimationNameEntry" Grid.Column="0" HeightRequest="60"
-                           Placeholder="Name" Text="Untitled" FontFamily="dotmatrix" FontSize="30" Keyboard="Text"  IsTextPredictionEnabled="False"/>
+                           Placeholder="Name" Text="Untitled" FontFamily="dotmatrix" FontSize="30" Keyboard="Text"  IsTextPredictionEnabled="False" MaxLength="20"/>
                     <Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
                             BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
-                            FontSize="Title" FontFamily="FASolid6" Text="&#xf0c7;"/>
+                            FontSize="Title" FontFamily="FASolid6" Text="&#xf0c7;" Clicked="SaveButton_Clicked"/>
                 </Grid>
-                <localcontrols:Glyph MaximumHeightRequest="300" HorizontalOptions="Center"/>
+                <localcontrols:Glyph x:Name="GlyphPreview" MaximumHeightRequest="300" HorizontalOptions="Center"/>
                 <VerticalStackLayout x:Name="ControlsGroup">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -115,9 +115,9 @@
             <HorizontalStackLayout.Spacing>
                 <x:Double>5</x:Double>
             </HorizontalStackLayout.Spacing>
-            <Button Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center"
+            <Button x:Name="BackButton" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center"
                         BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
-                        FontSize="Title" FontFamily="FASolid6" Text="&#xf060;"/>
+                        FontSize="Title" FontFamily="FASolid6" Text="&#xf060;" Clicked="BackButton_Clicked"/>
             <Label Text="Editor" FontSize="Title" VerticalOptions="Center" Margin="0,0,0,2.5"/>
         </HorizontalStackLayout>
     </Grid>
