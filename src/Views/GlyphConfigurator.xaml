@@ -89,12 +89,13 @@
                         <Label Grid.Row="0" Grid.Column="0" Text="LED" VerticalOptions="Center"/>
                         <Picker Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="LEDPicker" HeightRequest="45"/>
 
+                        <!--It would be nice if the entry values would be exposed so I can data-bind them instead of the mess in the code-behind.-->
                         <Label Grid.Row="1" Grid.Column="0" Text="Brightness" VerticalOptions="Center"/>
                         <Slider x:Name="BrightnessSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Value="0"/>
                         <Entry x:Name="BrightnessEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Text="Interpolation" VerticalOptions="Center"/>
-                        <Picker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="InterpolationPicker" HeightRequest="45"/>
+                        <Picker x:Name="InterpolationPicker" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HeightRequest="45"/>
 
                         <Label Grid.Row="3" Grid.Column="0" Text="Transition Time" VerticalOptions="Center"/>
                         <Slider x:Name="TransitionTimeSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>

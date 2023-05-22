@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.ApplicationModel;
+﻿using Glyphy.Misc;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using System;
 
@@ -39,7 +40,7 @@ public partial class MainPage : ContentPage, IDisposable
 #endif
 
         //TESTING ONLY
-        //Navigation.PushAsync(new GlyphConfigurator());
+        Navigation.PushAsync(new GlyphConfigurator());
     }
 
     private async void Button_Clicked(object sender, EventArgs e)

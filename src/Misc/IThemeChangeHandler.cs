@@ -1,4 +1,4 @@
-﻿namespace Glyphy
+﻿namespace Glyphy.Misc
 {
     /// <summary>
     /// Requires that the <see cref="Microsoft.Maui.Controls.Page"/> is on the navigation stack.

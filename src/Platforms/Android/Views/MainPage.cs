@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Glyphy.Misc;
+using Microsoft.Maui.Controls;
 
 namespace Glyphy.Views
 {
