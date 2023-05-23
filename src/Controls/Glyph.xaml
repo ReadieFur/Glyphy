@@ -21,14 +21,14 @@
                 <Path x:Name="GlyphCenterBottomLeft" Stroke="White" StrokeThickness="6" Data="m 13.92,214.8 v 64.56 c 0,2.27 27.99,46.8 90,46.8" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphCenterBottomRight" Stroke="White" StrokeThickness="6" Data="m 103.92,326.16 c 62.01,0 89.28,-44.42 89.28,-47.52 v -60.48" StrokeLineCap="Round"/>
                 <!--I originally was going to use a single path here with a gradient, however I couldn't seem to get the gradient to work.-->
-                <Path x:Name="GlyphLine_8" Fill="White" Data="m 103.2,351.84 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_7" Fill="White" Data="m 103.2,358.32 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_6" Fill="White" Data="m 103.2,364.8 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_5" Fill="White" Data="m 103.2,371.28 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_4" Fill="White" Data="m 103.2,377.76 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_3" Fill="White" Data="m 103.2,384.24 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_2" Fill="White" Data="m 103.2,390.72 v 6.48" StrokeLineCap="Round"/>
-                <Path x:Name="GlyphLine_1" Fill="White" Data="m 103.2,397.2 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_8" Fill="White" StrokeThickness="6" Data="m 103.2,351.84 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_7" Fill="White" StrokeThickness="6" Data="m 103.2,358.32 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_6" Fill="White" StrokeThickness="6" Data="m 103.2,364.8 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_5" Fill="White" StrokeThickness="6" Data="m 103.2,371.28 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_4" Fill="White" StrokeThickness="6" Data="m 103.2,377.76 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_3" Fill="White" StrokeThickness="6" Data="m 103.2,384.24 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_2" Fill="White" StrokeThickness="6" Data="m 103.2,390.72 v 6.48" StrokeLineCap="Round"/>
+                <Path x:Name="GlyphLine_1" Fill="White" StrokeThickness="6" Data="m 103.2,397.2 v 6.48" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphDot" Fill="White" Data="M103.32,415.2c2.05,0,3.72,1.67,3.72,3.72s-1.67,3.72-3.72,3.72-3.72-1.67-3.72-3.72,1.67-3.72,3.72-3.72Z"/>
             </Grid>
         </Frame>
