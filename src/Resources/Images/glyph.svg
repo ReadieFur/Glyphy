@@ -20,9 +20,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      showgrid="false"
-     inkscape:zoom="2.3707294"
-     inkscape:cx="36.486661"
-     inkscape:cy="217.02182"
+     inkscape:zoom="13.410871"
+     inkscape:cx="95.705939"
+     inkscape:cy="383.68127"
      inkscape:window-width="2560"
      inkscape:window-height="1364"
      inkscape:window-x="1272"
@@ -114,9 +114,68 @@
      style="display:inline;opacity:1"
      inkscape:label="CenterTopLeft" />
   <path
-     id="Line"
+     id="LineOriginal"
      class="cls-4"
-     d="M103.2,351.84v51.84" />
+     d="m 103.2,351.84 v 6.48 6.48 6.48 6.48 6.48 6.48 6.48 6.48"
+     inkscape:label="LineOriginal"
+     style="display:none"
+     sodipodi:nodetypes="ccccccccc" />
+  <path
+     id="Line_8"
+     class="cls-4"
+     d="m 103.2,351.84 v 6.48"
+     inkscape:label="Line_8"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_7"
+     class="cls-4"
+     d="m 103.2,358.32 v 6.48"
+     inkscape:label="Line_7"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_6"
+     class="cls-4"
+     d="m 103.2,364.8 v 6.48"
+     inkscape:label="Line_6"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_5"
+     class="cls-4"
+     d="m 103.2,371.28 v 6.48"
+     inkscape:label="Line_5"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_4"
+     class="cls-4"
+     d="m 103.2,377.76 v 6.48"
+     inkscape:label="Line_4"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_3"
+     class="cls-4"
+     d="m 103.2,384.24 v 6.48"
+     inkscape:label="Line_3"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_2"
+     class="cls-4"
+     d="m 103.2,390.72 v 6.48"
+     inkscape:label="Line_2"
+     style="display:inline"
+     sodipodi:nodetypes="cc" />
+  <path
+     id="Line_1"
+     class="cls-4"
+     d="m 103.2,397.2 v 6.48"
+     inkscape:label="Line_1"
+     style="display:inline;stroke:#ffffff;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
   <path
      id="Dot"
      class="cls-1"

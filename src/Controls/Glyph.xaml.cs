@@ -21,8 +21,8 @@ public partial class Glyph : ContentView
 	public event EventHandler? DotTapped;
 #endif
 
-	//I have no reason in bothering making these bindable.
-	public Brush BaseColour { get => GlyphBase.Fill; set => GlyphBase.Fill = value; }
+    //I have no reason in bothering making these bindable.
+    /*public Brush BaseColour { get => GlyphBase.Fill; set => GlyphBase.Fill = value; }
 	public Brush CameraColour { get => GlyphCamera.Stroke; set => GlyphCamera.Stroke = value; }
 	public Brush DiagonalColour { get => GlyphDiagonal.Stroke; set => GlyphDiagonal.Stroke = value; }
 	public Brush RecordingLEDColour { get => GlyphRecordingLED.Fill; set => GlyphRecordingLED.Fill = value; }
@@ -38,12 +38,13 @@ public partial class Glyph : ContentView
     public Color Line6Colour { get => GlyphLine6.Color; set => GlyphLine6.Color = value; }
     public Color Line7Colour { get => GlyphLine7.Color; set => GlyphLine7.Color = value; }
     public Color Line8Colour { get => GlyphLine8.Color; set => GlyphLine8.Color = value; }
-    public Brush DotColour { get => GlyphDot.Fill; set => GlyphDot.Fill = value; }
+    public Brush DotColour { get => GlyphDot.Fill; set => GlyphDot.Fill = value; }*/
 
-	public Glyph()
+
+    public Glyph()
 	{
 		InitializeComponent();
-	}
+    }
 
 #if ENABLE_ON_TAP
 	private bool FallsIntoBounts(TappedEventArgs tap, Path path)
@@ -107,52 +108,52 @@ public partial class Glyph : ContentView
         switch (led)
         {
             case EAddressable.CAMERA:
-                CameraColour = colour;
+                GlyphCamera.Stroke = colour;
                 break;
             case EAddressable.DIAGONAL:
-                DiagonalColour = colour;
+                GlyphDiagonal.Stroke = colour;
                 break;
             case EAddressable.RECORDING_LED:
-                RecordingLEDColour = colour;
+                GlyphRecordingLED.Fill = colour;
                 break;
             case EAddressable.CENTER_TOP_LEFT:
-                CenterTopLeftColour = colour;
+                GlyphCenterTopLeft.Stroke = colour;
                 break;
             case EAddressable.CENTER_TOP_RIGHT:
-                CenterTopRightColour = colour;
+                GlyphCenterTopRight.Stroke = colour;
                 break;
             case EAddressable.CENTER_BOTTOM_LEFT:
-                CenterBottomLeftColour = colour;
+                GlyphCenterBottomLeft.Stroke = colour;
                 break;
             case EAddressable.CENTER_BOTTOM_RIGHT:
-                CenterBottomRightColour = colour;
+                GlyphCenterBottomRight.Stroke = colour;
                 break;
             case EAddressable.LINE_1:
-                Line1Colour = colour;
+                GlyphLine_1.Stroke = colour;
                 break;
             case EAddressable.LINE_2:
-                Line2Colour = colour;
+                GlyphLine_2.Stroke = colour;
                 break;
             case EAddressable.LINE_3:
-                Line3Colour = colour;
+                GlyphLine_3.Stroke = colour;
                 break;
             case EAddressable.LINE_4:
-                Line4Colour = colour;
+                GlyphLine_4.Stroke = colour;
                 break;
             case EAddressable.LINE_5:
-                Line5Colour = colour;
+                GlyphLine_5.Stroke = colour;
                 break;
             case EAddressable.LINE_6:
-                Line6Colour = colour;
+                GlyphLine_6.Stroke = colour;
                 break;
             case EAddressable.LINE_7:
-                Line7Colour = colour;
+                GlyphLine_7.Stroke = colour;
                 break;
             case EAddressable.LINE_8:
-                Line8Colour = colour;
+                GlyphLine_8.Stroke = colour;
                 break;
             case EAddressable.DOT:
-                DotColour = colour;
+                GlyphDot.Fill = colour;
                 break;
         }
     }
