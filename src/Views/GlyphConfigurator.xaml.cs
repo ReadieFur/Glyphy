@@ -157,18 +157,16 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         hasUnsavedChanges = true;
     }
 
-    private void Brightness_ValueChanged(object? sender, (double, double) e)
+    private double? Brightness_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
 
-        #region Format inputs
-        brightnessInputControlSyncer.Update(Math.Round(e.Item1, 1));
-        #endregion
+        double roundedValue = Math.Round(newValue, 1);
 
         #region Update configuration
         EAddressable? selectedLED = GetSelectedAddressableLED();
         if (selectedLED is null)
-            return;
+            return roundedValue;
 
         SLEDValue entry;
         if (!animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
@@ -182,13 +180,13 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             entry = animation.Frames[currentFrameIndex].Values[selectedLED.Value];
         }
 
-        entry.Brightness = Helpers.ConvertNumberRange(e.Item1, 0, 100, 0, 1);
+        entry.Brightness = Helpers.ConvertNumberRange(newValue, 0, 100, 0, 1);
 
         animation.Frames[currentFrameIndex].Values[selectedLED.Value] = entry;
         #endregion
 
         #region Update live preview.
-        GlyphPreview.UpdatePreview(selectedLED.Value, e.Item1);
+        GlyphPreview.UpdatePreview(selectedLED.Value, newValue);
         #endregion
 
         #region Update physical LED
@@ -196,22 +194,24 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             API.Instance.SetBrightness(selectedLED.Value,
-                API.Instance.ClampBrightness((int)Math.Round(Helpers.ConvertNumberRange(e.Item1, 0, 100, 0, API.Instance.MaxBrightness))));
+                API.Instance.ClampBrightness((int)Math.Round(Helpers.ConvertNumberRange(newValue, 0, 100, 0, API.Instance.MaxBrightness))));
 #pragma warning restore CS4014
         }
         #endregion
+
+        return roundedValue;
     }
 
-    private void Transition_ValueChanged(object? sender, (double, double) e)
+    private double? Transition_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
-        transitionTimeInputControlSyncer.Update(Math.Round(e.Item1, 1));
+        return Math.Round(newValue, 1);
     }
 
-    private void Duration_ValueChanged(object? sender, (double, double) e)
+    private double? Duration_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
-        durationInputControlSyncer.Update(Math.Round(e.Item1, 1));
+        return Math.Round(newValue, 1);
     }
 
     private void SaveButton_Clicked(object sender, EventArgs e)

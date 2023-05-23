@@ -21,7 +21,7 @@ namespace Glyphy.LED
         private DataInputStream outputStream;
         private uint maxBrightness = 0;
         //Yes I could've used a dictionary here but this method is slightly faster (I think).
-        private uint[] cachedBrightnessValues = new uint[15];
+        private uint[] cachedBrightnessValues = new uint[Enum.GetNames<EAddressable>().Length];
 
         public override uint MaxBrightness => maxBrightness;
 

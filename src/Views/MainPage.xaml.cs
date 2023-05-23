@@ -1,4 +1,5 @@
-﻿using Glyphy.Misc;
+﻿using Glyphy.LED;
+using Glyphy.Misc;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using System;
@@ -35,6 +36,9 @@ public partial class MainPage : ContentPage, IDisposable
 
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
+        foreach (string key in Enum.GetNames<EAddressable>())
+            GlyphPreview.UpdatePreview(Enum.Parse<EAddressable>(key), 0);
+
 #if ANDROID
         Android_ContentPage_Loaded(sender, e);
 #endif
