@@ -12,7 +12,7 @@ namespace Glyphy.Configuration
         private static string BasePath => FileSystem.Current.AppDataDirectory;
 
         private static string GetFilePath(Guid id) =>
-            Path.Combine(BasePath, id.ToString(), ".json");
+            Path.Combine(BasePath, id.ToString() + ".json");
 
         public static async Task<bool> SaveAnimation(SAnimation animation)
         {
@@ -23,7 +23,7 @@ namespace Glyphy.Configuration
                     GetFilePath(animation.Id),
                     JsonSerializer.Serialize(animation));
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
@@ -57,6 +57,25 @@ namespace Glyphy.Configuration
                 if (Guid.TryParse(fileName, out Guid id))
                     yield return id;
             }
+        }
+
+        public static bool DeleteAnimation(Guid id)
+        {
+            try
+            {
+                string path = GetFilePath(id);
+
+                if (!File.Exists(path))
+                    return false;
+
+                File.Delete(path);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

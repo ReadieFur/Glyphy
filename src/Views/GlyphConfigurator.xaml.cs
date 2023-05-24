@@ -3,6 +3,7 @@ using Glyphy.LED;
 using Glyphy.Misc;
 using Microsoft.Maui.Controls;
 using System;
+using System.IO;
 
 namespace Glyphy.Views;
 
@@ -17,7 +18,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     private bool hasUnsavedChanges = false;
     //TODO: Have the back icon go red when the ability to discard changes is available.
     private bool canDiscardChanges = false;
-    private SAnimation animation;
+    public SAnimation animation { get; private set; }
     private int currentFrameIndex = 0;
     private EAddressable selectedLED = EAddressable.CAMERA;
     #endregion
@@ -37,10 +38,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         SAnimation? _animation = Storage.LoadAnimation(id).Result;
         if (_animation == null)
         {
-#if ANDROID
-            Android.Widget.Toast.MakeText(Android.App.Application.Context, "Failed to load animation.", Android.Widget.ToastLength.Long)?.Show();
-#endif
-
+            CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
             Navigation.PopModalAsync().Wait();
             return;
         }
@@ -140,6 +138,40 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         ControlsGroup.IsEnabled = enabled;
     }
+
+    private SLEDValue? GetCurrentLEDConfiguration()
+    {
+        EAddressable? selectedLED = GetSelectedAddressableLED();
+        if (selectedLED is null)
+            return null;
+
+        SLEDValue ledConfiguration;
+        if (animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
+        {
+            ledConfiguration = animation.Frames[currentFrameIndex].Values[selectedLED.Value];
+        }
+        else
+        {
+            ledConfiguration = new();
+            ledConfiguration.InterpolationType = EInterpolationType.NONE;
+            ledConfiguration.Led = selectedLED.Value;
+            ledConfiguration.Brightness = 0;
+        }
+
+        return ledConfiguration;
+    }
+
+    private void UpdateCurrentLEDConfiguration(SLEDValue configuration)
+    {
+        EAddressable? selectedLED = GetSelectedAddressableLED();
+        if (selectedLED is null)
+            return;
+
+        if (animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
+            animation.Frames[currentFrameIndex].Values[selectedLED.Value] = configuration;
+        else
+            animation.Frames[currentFrameIndex].Values.Add(selectedLED.Value, configuration);
+    }
     #endregion
 
     #region Event handlers
@@ -155,49 +187,37 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     private void LEDPicker_SelectedIndexChanged(object? sender, EventArgs e)
     {
         hasUnsavedChanges = true;
+
+        //Load configuration for newly selected LED.
+        if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
+            return;
+
+        brightnessInputControlSyncer.SetValue(Helpers.ConvertNumberRange(ledConfiguration.Brightness, 0, 1, 0, 100));
+        InterpolationPicker.SelectedIndex = (int)ledConfiguration.InterpolationType;
     }
 
     private double? Brightness_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
-
         double roundedValue = Math.Round(newValue, 1);
 
-        #region Update configuration
-        EAddressable? selectedLED = GetSelectedAddressableLED();
-        if (selectedLED is null)
+        //Update configuration.
+        if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return roundedValue;
+        ledConfiguration.Brightness = Helpers.ConvertNumberRange(newValue, 0, 100, 0, 1);
+        UpdateCurrentLEDConfiguration(ledConfiguration);
 
-        SLEDValue entry;
-        if (!animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
-        {
-            entry = new();
-            entry.InterpolationType = EInterpolationType.NONE;
-            entry.Led = selectedLED.Value;
-        }
-        else
-        {
-            entry = animation.Frames[currentFrameIndex].Values[selectedLED.Value];
-        }
+        //Update live preview.
+        GlyphPreview.UpdatePreview(ledConfiguration.Led, newValue);
 
-        entry.Brightness = Helpers.ConvertNumberRange(newValue, 0, 100, 0, 1);
-
-        animation.Frames[currentFrameIndex].Values[selectedLED.Value] = entry;
-        #endregion
-
-        #region Update live preview.
-        GlyphPreview.UpdatePreview(selectedLED.Value, newValue);
-        #endregion
-
-        #region Update physical LED
+        //Update physical LED.
         if (API.Running)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            API.Instance.SetBrightness(selectedLED.Value,
+            API.Instance.SetBrightness(ledConfiguration.Led,
                 API.Instance.ClampBrightness((int)Math.Round(Helpers.ConvertNumberRange(newValue, 0, 100, 0, API.Instance.MaxBrightness))));
 #pragma warning restore CS4014
         }
-        #endregion
 
         return roundedValue;
     }
@@ -205,19 +225,42 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     private double? Transition_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
+
+        //Update configuration.
+        SFrame frame = animation.Frames[currentFrameIndex];
+        frame.TransitionTime = Math.Clamp(newValue, 0, 1);
+        animation.Frames[currentFrameIndex] = frame;
+
         return Math.Round(newValue, 1);
     }
 
     private double? Duration_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
+
+        //Update configuration.
+        SFrame frame = animation.Frames[currentFrameIndex];
+        frame.Duration = Math.Clamp(newValue, 0, 1);
+        animation.Frames[currentFrameIndex] = frame;
+
         return Math.Round(newValue, 1);
     }
 
-    private void SaveButton_Clicked(object sender, EventArgs e)
+    private async void SaveButton_Clicked(object sender, EventArgs e)
     {
-        hasUnsavedChanges = false;
-        canDiscardChanges = false;
+        try
+        {
+            if (!await Storage.SaveAnimation(animation))
+                throw new IOException();
+            hasUnsavedChanges = false;
+            canDiscardChanges = false;
+
+            await CommunityToolkit.Maui.Alerts.Toast.Make("Animation saved.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+        }
+        catch
+        {
+            await CommunityToolkit.Maui.Alerts.Toast.Make("Failed to save animation.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+        }
     }
 
     private void BackButton_Clicked(object sender, EventArgs e)
@@ -225,19 +268,17 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         if (!OnBackButtonPressed())
             Navigation.PopAsync();
     }
-    #endregion
+#endregion
 
     #region Overrides
     protected override bool OnBackButtonPressed()
     {
-        if (canDiscardChanges)
+        if (!hasUnsavedChanges || canDiscardChanges)
             return false;
 
         canDiscardChanges = true;
 
-#if ANDROID
-        Android.Widget.Toast.MakeText(Android.App.Application.Context, "Unsaved changes.\nPress again to discard changes.", Android.Widget.ToastLength.Long)?.Show();
-#endif
+        CommunityToolkit.Maui.Alerts.Toast.Make("Unsaved changes.\nPress again to discard changes.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
 
         return true;
     }

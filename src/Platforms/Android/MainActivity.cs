@@ -41,7 +41,7 @@ public class MainActivity : MauiAppCompatActivity
                     || ex is UnauthorizedAccessException)
                 {
                     //Not sure about catching this last one for all calls.
-                    Android.Widget.Toast.MakeText(Application.Context, "Superuser permissions required.", Android.Widget.ToastLength.Long)?.Show();
+                    CommunityToolkit.Maui.Alerts.Toast.Make("Superuser permissions required.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
                 }
                 else throw;
             }

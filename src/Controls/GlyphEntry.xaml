@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Glyphy.Controls"
+             x:Class="Glyphy.Controls.GlyphEntry">
+    <!--
+    NAME
+    O Play | O Edit | O Delete
+    -->
+    <Frame BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" Padding="10, 10" BorderColor="Transparent">
+        <toolkit:Expander>
+            <toolkit:Expander.Header>
+                <!--<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="nameLabel" Text="{Binding Source={RelativeSource AncestorType={x:Type local:GlyphEntry}}, Path=Name}" FontSize="Title" Padding="10, 0"/>-->
+                <Label x:Name="NameLabel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Untitled" FontSize="Title" Padding="10, 0"/>
+            </toolkit:Expander.Header>
+            <Grid Padding="0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="Line">
+                        <Setter Property="VerticalOptions" Value="CenterAndExpand"/>
+                        <Setter Property="Y2" Value="20"/>
+                        <Setter Property="Stroke" Value="Gray"/>
+                    </Style>
+                </Grid.Resources>
+                <HorizontalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ActionButton_Tapped" NumberOfTapsRequired="1"/>
+                    </HorizontalStackLayout.GestureRecognizers>
+                    <Label x:Name="ActionIcon" FontFamily="FASolid6" Text="&#xf04b;" VerticalTextAlignment="Center"/>
+                    <Label x:Name="ActionLabel" Text="Play" VerticalTextAlignment="Center"/>
+                </HorizontalStackLayout>
+                <Line Grid.Column="1"/>
+                <HorizontalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="EditButton_Tapped" NumberOfTapsRequired="1"/>
+                    </HorizontalStackLayout.GestureRecognizers>
+                    <Label FontFamily="FASolid6" Text="&#xf304;" VerticalTextAlignment="Center"/>
+                    <Label Text="Edit" VerticalTextAlignment="Center"/>
+                </HorizontalStackLayout>
+                <Line Grid.Column="3"/>
+                <HorizontalStackLayout Grid.Column="4" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="DeleteButton_Tapped" NumberOfTapsRequired="1"/>
+                    </HorizontalStackLayout.GestureRecognizers>
+                    <Label FontFamily="FASolid6" Text="&#xf2ed;" VerticalTextAlignment="Center"/>
+                    <Label Text="Delete" VerticalTextAlignment="Center"/>
+                </HorizontalStackLayout>
+            </Grid>
+        </toolkit:Expander>
+    </Frame>
+</ContentView>

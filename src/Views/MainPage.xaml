@@ -48,12 +48,13 @@
                     </Grid>
                 </Grid>
                 <Label Grid.Row="0" Text="Configurations" FontFamily="dotmatrix" FontSize="30"/>
+                <VerticalStackLayout x:Name="configurationsList"/>
             </VerticalStackLayout>
         </ScrollView>
         <Button HorizontalOptions="End" VerticalOptions="End"
                 BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" TextColor="{AppThemeBinding Dark=White, Light=Black}"
                 WidthRequest="50" HeightRequest="50" CornerRadius="25" FontSize="Body"
                 FontFamily="FASolid6" Text="&#x2b;"
-                Clicked="Button_Clicked"/>
+                Clicked="NewConfigurationButton_Clicked"/>
     </Grid>
 </ContentPage>
