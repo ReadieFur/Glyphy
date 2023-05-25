@@ -8,6 +8,7 @@
     <NavigationPage.HasNavigationBar>
         <x:Boolean>false</x:Boolean>
     </NavigationPage.HasNavigationBar>
+    <!--TODO: In the future I would like to impliment some sort of timeline editor for the LEDs to allow for more customisation and finer control.-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -43,9 +44,9 @@
                         <Label Grid.Column="0" Text="Frame" FontFamily="dotmatrix" FontSize="Title"/>
                         <HorizontalStackLayout Grid.Column="1">
                             <!--Delete-->
-                            <Button x:Name="DeleteFrameButton" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
+                            <!--<Button x:Name="DeleteFrameButton" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
                                 BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
-                                FontSize="Title" FontFamily="FASolid6" Text="&#xf1f8;"/>
+                                FontSize="Title" FontFamily="FASolid6" Text="&#xf1f8;"/>-->
                             <!--Shift Left-->
                             <!--<Button x:Name="ShiftFrameLeftButton" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
                                 BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
@@ -59,11 +60,12 @@
                                 BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
                                 FontSize="Title" FontFamily="FASolid6" Text="&#xf149;"/> -->
                             <!--Add-->
-                            <Button x:Name="AddFrameButton" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
+                            <!--<Button x:Name="AddFrameButton" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
                                 BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
-                                FontSize="Title" FontFamily="FASolid6" Text="&#x2b;"/>
+                                FontSize="Title" FontFamily="FASolid6" Text="&#x2b;"/>-->
                         </HorizontalStackLayout>
                     </Grid>
+                    <!--TODO: Add a way to copy properties between frames.-->
                     <ScrollView Orientation="Horizontal">
                         <HorizontalStackLayout x:Name="FrameList">
                             <Button BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="1"/>

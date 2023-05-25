@@ -22,6 +22,7 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 
     public event EventHandler? OnDeleted;
 
+    private Task? tappedActionTask = null;
     private GlyphConfigurator? glyphConfigurator = null;
     private DateTime lastDeleteClick = DateTime.MinValue;
 	private CommunityToolkit.Maui.Core.IToast? deletionToast = null;
@@ -78,22 +79,29 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 
     private void ActionButton_Tapped(object sender, TappedEventArgs e)
 	{
-        Task.Run(async () =>
+        //We don't need to lock here as this runs on the main thread and is only ever invoked from the UI.
+        if (tappedActionTask is not null)
+            return;
+
+        tappedActionTask = Task.Run(async () =>
         {
             SAnimation? previousAnimation = AnimationRunner.ActiveAnimation;
 
             //We will always stop a task here as we will either be starting a new animation or stopping the current one, both which require a stopping of the previous animation.
-            CancellationTokenSource cancellationTokenSource = new();
-            cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
-            Task stopResult = AnimationRunner.StopAnimation(cancellationTokenSource.Token);
-            await stopResult;
-
-            if (stopResult.IsCanceled || stopResult.IsFaulted)
+            Task stopResult;
+            try
+            {
+                CancellationTokenSource cancellationTokenSource = new();
+                cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
+                stopResult = AnimationRunner.StopAnimation(cancellationTokenSource.Token);
+                await stopResult;
+            }
+            catch
             {
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to stop current animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
                 return;
             }
-
+            
             //If the previous animation was the same as the current animation then we don't need to start a new animation.
             if (previousAnimation is SAnimation && previousAnimation.Value.Id == AnimationID)
                 return;
@@ -108,17 +116,21 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
                 return;
             }
 
-            cancellationTokenSource = new();
-            cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
-            Task startResult = AnimationRunner.StartAnimation(animation, cancellationTokenSource.Token);
-            await startResult;
-
-            if (startResult.IsCanceled || startResult.IsFaulted)
+            Task startResult;
+            try
+            {
+                CancellationTokenSource cancellationTokenSource = new();
+                cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
+                startResult = AnimationRunner.StartAnimation(animation, cancellationTokenSource.Token);
+                await startResult;
+            }
+            catch
             {
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to start animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
                 Dispatcher.Dispatch(() => ToggleControls(true, true, true));
             }
         });
+        tappedActionTask.ContinueWith((task) => tappedActionTask = null);
     }
 
     private void EditButton_Tapped(object sender, TappedEventArgs e)

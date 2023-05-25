@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Google.Crypto.Tink.Subtle;
 
 namespace Glyphy.Animation
 {
@@ -29,8 +28,8 @@ namespace Glyphy.Animation
         {
             while (!Monitor.TryEnter(_lock, TimeSpan.FromMilliseconds(100)))
             {
-                if (cancellationToken is not null && cancellationToken.Value.IsCancellationRequested)
-                    return Task.FromCanceled(cancellationToken.Value);
+                if (cancellationToken is not null)
+                    cancellationToken.Value.ThrowIfCancellationRequested();
             }
 
             try
@@ -59,8 +58,8 @@ namespace Glyphy.Animation
         {
             while (!Monitor.TryEnter(_lock, TimeSpan.FromMilliseconds(100)))
             {
-                if (cancellationToken is not null && cancellationToken.Value.IsCancellationRequested)
-                    return;
+                if (cancellationToken is not null)
+                    cancellationToken.Value.ThrowIfCancellationRequested();
             }
 
             try
@@ -182,5 +181,7 @@ namespace Glyphy.Animation
                 }
             });
         }
+
+        //TODO: Create a RunFrame method that can be called externally to run a single frame.
     }
 }

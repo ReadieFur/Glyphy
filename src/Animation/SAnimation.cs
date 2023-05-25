@@ -7,7 +7,7 @@ namespace Glyphy.Animation
     public struct SAnimation
     {
         [JsonIgnore] public const float MIN_FRAME_RATE = 1;
-        [JsonIgnore] public const float MAX_FRAME_RATE = 30;
+        [JsonIgnore] public const float MAX_FRAME_RATE = 60;
 
         //Because GUIDs are timestamp based, it is EXTREMELY unlikely that two GUIDs will be the same so we won't be checking against this.
         [JsonProperty("id")] public Guid Id { get; set; }
@@ -21,7 +21,7 @@ namespace Glyphy.Animation
             {
                 Id = Guid.NewGuid(),
                 Name = "Untitled",
-                FrameRate = 30,
+                FrameRate = 30, //From my testing 30 seemed reasonable, I could possibly even go down to 15. TODO: Test 15.
                 Frames = new List<SFrame>()
                 {
                     new()
