@@ -140,7 +140,7 @@ namespace Glyphy.Misc
                     entry.Text = stringValue;
                 #endregion
             }
-            catch (Exception ex)
+            catch
             {
                 //Invalid value.
             }
