@@ -1,6 +1,5 @@
-﻿#define USE_ASYNC_STREAM
+﻿//#define USE_ASYNC_STREAM
 
-using SIOException = System.IO.IOException;
 using Java.IO;
 using JIOException = Java.IO.IOException;
 using JProcess = Java.Lang.Process;
@@ -8,6 +7,7 @@ using Glyphy.Platforms.Android;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SIOException = System.IO.IOException;
 
 namespace Glyphy.LED
 {
@@ -50,9 +50,6 @@ namespace Glyphy.LED
         /// <summary>
         /// Should be run on a background thread.
         /// </summary>
-        /// <param name="command"></param>
-        /// <param name="captureOutput"></param>
-        /// <returns></returns>
         private
 #if USE_ASYNC_STREAM
             async
