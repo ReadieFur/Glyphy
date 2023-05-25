@@ -1,4 +1,4 @@
-﻿//#define USE_ASYNC_STREAM
+﻿#define USE_ASYNC_STREAM
 
 using SIOException = System.IO.IOException;
 using Java.IO;
@@ -22,8 +22,6 @@ namespace Glyphy.LED
         private uint maxBrightness = 0;
         //Yes I could've used a dictionary here but this method is slightly faster (I think).
         private uint[] cachedBrightnessValues = new uint[Enum.GetNames<EAddressable>().Length];
-
-        public override uint MaxBrightness => maxBrightness;
 
         public API()
         {
@@ -49,6 +47,12 @@ namespace Glyphy.LED
         }
 
         //MMM lovley #if blocks.
+        /// <summary>
+        /// Should be run on a background thread.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="captureOutput"></param>
+        /// <returns></returns>
         private
 #if USE_ASYNC_STREAM
             async
@@ -159,7 +163,7 @@ namespace Glyphy.LED
             maxBrightness = uint.Parse(result);
         }
 
-        public async override Task<uint> GetBrightness(EGroup ledGroup)
+        public async override Task<float> GetBrightness(EGroup ledGroup)
         {
             string? result = await Exec("cat " + BASE_PATH + "/" + GetGroupSystemName(ledGroup), true);
             if (result is null)
@@ -167,52 +171,71 @@ namespace Glyphy.LED
             else if (!uint.TryParse(result, out uint parsedResult))
                 throw new FormatException("Brightness value is invalid.");
             else
-                return parsedResult;
+                return ToNormalisedRange(parsedResult);
         }
 
-        public override Task<uint> GetBrightness(EAddressable adressableLED) =>
-            Task.FromResult(cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]);
+        public override Task<float> GetBrightness(EAddressable adressableLED) =>
+            Task.FromResult(ToNormalisedRange(cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]));
 
-        public async override Task SetBrightness(EGroup ledGroup, uint brightness)
+        public async override Task SetBrightness(EGroup ledGroup, float brightness)
         {
+            uint systemBrightness = ToSystemRange(brightness);
+
             switch (ledGroup)
             {
                 case EGroup.CAMERA:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = systemBrightness;
                     break;
                 case EGroup.DIAGONAL:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = systemBrightness;
                     break;
                 case EGroup.CENTER:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = systemBrightness;
                     break;
                 case EGroup.LINE:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = brightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = systemBrightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = systemBrightness;
                     break;
                 case EGroup.DOT:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = brightness;
+                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = systemBrightness;
                     break;
                 default:
                     throw new KeyNotFoundException("Invalid device ID.");
             }
 
-            await Exec($"echo {brightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
+            await Exec($"echo {systemBrightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
         }
 
-        public async override Task SetBrightness(EAddressable addressableLED, uint brightness)
+        public async override Task SetBrightness(EAddressable addressableLED, float brightness)
         {
-            cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = brightness;
-            await Exec($"echo {GetAddressableSystemID(addressableLED)} {brightness} > {BASE_PATH}/single_led_br");
+            uint systemBrightness = ToSystemRange(brightness);
+
+            cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = systemBrightness;
+
+            await Exec($"echo {GetAddressableSystemID(addressableLED)} {systemBrightness} > {BASE_PATH}/single_led_br");
+        }
+
+        private float ToNormalisedRange(uint value)
+        {
+            //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
+            //Optimised //(assumes the value is within a valid range, which it should be within this class):
+            return Math.Clamp(value * maxBrightness, 0f, 1f);
+        }
+
+        private uint ToSystemRange(float value)
+        {
+            //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
+            //Optimised:
+            return Math.Clamp((uint)value / maxBrightness, 0u, 1u);
         }
     }
 }

@@ -101,9 +101,9 @@ public partial class Glyph : ContentView
     {
         Color colour;
         if (led == EAddressable.RECORDING_LED)
-            colour = Color.FromHsla(0, 1, Helpers.ConvertNumberRange(brightness, 0, 100, 0.25, 0.6));
+            colour = Color.FromHsla(0, 1, Helpers.ConvertNumberRange(brightness, 0, 1, 0.25, 0.6));
         else
-            colour = Color.FromHsla(0, 0, Helpers.ConvertNumberRange(brightness, 0, 100, 0.25, 1));
+            colour = Color.FromHsla(0, 0, Helpers.ConvertNumberRange(brightness, 0, 1, 0.25, 1));
 
         switch (led)
         {

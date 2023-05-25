@@ -1,0 +1,39 @@
+﻿using Glyphy.LED;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+
+namespace Glyphy.Animation
+{
+    public struct SFrame
+    {
+        [JsonIgnore] public const float MIN_TRANSITION_TIME = 0;
+        [JsonIgnore] public const float MAX_TRANSITION_TIME = 1;
+        [JsonIgnore] public const float MIN_DURATION = 0;
+        [JsonIgnore] public const float MAX_DURATION = 1;
+
+        [JsonProperty("transition_time")] public float TransitionTime { get; set; }
+        [JsonProperty("duration")] public float Duration { get; set; }
+        [JsonProperty("values")] public Dictionary<EAddressable, SLEDValue> Values { get; set; }
+
+        /// <returns>true if the data was already valid, otherwise false if corrections had to be made.</returns>
+        public bool Normalize()
+        {
+            bool madeCorrections = false;
+
+            float newTransitionTime = Math.Clamp(TransitionTime, MIN_TRANSITION_TIME, MAX_TRANSITION_TIME);
+            madeCorrections |= newTransitionTime != TransitionTime;
+
+            foreach (KeyValuePair<EAddressable, SLEDValue> kvp in Values)
+            {
+                bool madeLEDCorrections = kvp.Value.Normalize();
+                madeCorrections |= madeLEDCorrections;
+
+                if (madeLEDCorrections)
+                    Values[kvp.Key] = kvp.Value;
+            }
+
+            return !madeCorrections;
+        }
+    }
+}

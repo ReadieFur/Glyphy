@@ -1,3 +1,4 @@
+using Glyphy.Animation;
 using Glyphy.Configuration;
 using Glyphy.LED;
 using Glyphy.Misc;
@@ -74,6 +75,12 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
         AnimationNameEntry.Text = animation.Name;
 
+        TransitionTimeSlider.Minimum = SFrame.MIN_TRANSITION_TIME;
+        TransitionTimeSlider.Maximum = SFrame.MAX_TRANSITION_TIME;
+
+        DurationSlider.Minimum = SFrame.MIN_DURATION;
+        DurationSlider.Maximum = SFrame.MAX_DURATION;
+
         #region Input syncers
         brightnessInputControlSyncer = new();
         brightnessInputControlSyncer.AddControl(BrightnessSlider);
@@ -83,7 +90,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         transitionTimeInputControlSyncer = new();
         transitionTimeInputControlSyncer.AddControl(TransitionTimeSlider);
         transitionTimeInputControlSyncer.AddControl(TransitionTimeEntry);
-        transitionTimeInputControlSyncer.ValueChanged += Transition_ValueChanged;
+        transitionTimeInputControlSyncer.ValueChanged += TransitionTime_ValueChanged;
 
         durationInputControlSyncer = new();
         durationInputControlSyncer.AddControl(DurationSlider);
@@ -191,7 +198,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return;
 
-        brightnessInputControlSyncer.SetValue(Helpers.ConvertNumberRange(ledConfiguration.Brightness, 0, 1, 0, 100));
+        brightnessInputControlSyncer.SetValue(ledConfiguration.Brightness * SLEDValue.MAX_BRIGHTNESS);
         InterpolationPicker.SelectedIndex = (int)ledConfiguration.InterpolationType;
     }
 
@@ -203,7 +210,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         //Update configuration.
         if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return roundedValue;
-        ledConfiguration.Brightness = Helpers.ConvertNumberRange(newValue, 0, 100, 0, 1);
+        //ledConfiguration.Brightness = (float)newValue / SLEDValue.MAX_BRIGHTNESS;
+        ledConfiguration.Brightness = (float)newValue * 0.01f; //Multiplication is faster than division.
         UpdateCurrentLEDConfiguration(ledConfiguration);
 
         //Update live preview.
@@ -211,26 +219,21 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
         //Update physical LED.
         if (API.Running)
-        {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            API.Instance.SetBrightness(ledConfiguration.Led,
-                API.Instance.ClampBrightness((int)Math.Round(Helpers.ConvertNumberRange(newValue, 0, 100, 0, API.Instance.MaxBrightness))));
-#pragma warning restore CS4014
-        }
+            _ = API.Instance.SetBrightness(ledConfiguration.Led, ledConfiguration.Brightness);
 
         return roundedValue;
     }
 
-    private double? Transition_ValueChanged(double newValue, object? sender)
+    private double? TransitionTime_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
 
         //Update configuration.
         SFrame frame = animation.Frames[currentFrameIndex];
-        frame.TransitionTime = Math.Clamp(newValue, 0, 1);
+        frame.TransitionTime = Math.Clamp((float)newValue, SFrame.MIN_TRANSITION_TIME, SFrame.MAX_TRANSITION_TIME);
         animation.Frames[currentFrameIndex] = frame;
 
-        return Math.Round(newValue, 1);
+        return Math.Round(frame.TransitionTime, 1);
     }
 
     private double? Duration_ValueChanged(double newValue, object? sender)
@@ -239,10 +242,10 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
         //Update configuration.
         SFrame frame = animation.Frames[currentFrameIndex];
-        frame.Duration = Math.Clamp(newValue, 0, 1);
+        frame.Duration = Math.Clamp((float)newValue, SFrame.MIN_DURATION, SFrame.MAX_DURATION);
         animation.Frames[currentFrameIndex] = frame;
 
-        return Math.Round(newValue, 1);
+        return Math.Round(frame.Duration, 1);
     }
 
     private async void SaveButton_Clicked(object sender, EventArgs e)

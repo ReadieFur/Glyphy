@@ -1,4 +1,5 @@
-﻿using Glyphy.Configuration;
+﻿using Glyphy.Animation;
+using Glyphy.Configuration;
 using Glyphy.Controls;
 using Glyphy.LED;
 using Glyphy.Misc;

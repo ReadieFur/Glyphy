@@ -8,6 +8,10 @@ namespace Glyphy.LED
     //We don't need to impliment the abstract method here as they are split off into platform specific partial classes.
     public partial class API : ALEDAPI
     {
+        //These two values are used for the API brightness values but will be converted to system values by the platform specific partial classes.
+        public const float MIN_BRIGHTNESS = 0.0f;
+        public const float MAX_BRIGHTNESS = 1.0f;
+
         private static readonly object _LOCK = new object();
 
         private static API? _instance = null;
@@ -33,8 +37,5 @@ namespace Glyphy.LED
                 return _instance;
             }
         }
-
-        public uint ClampBrightness(int brightness) =>
-            (uint)Math.Clamp(brightness, 0, MaxBrightness);
     }
 }

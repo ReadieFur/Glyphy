@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Glyphy.Configuration
+namespace Glyphy.Animation
 {
 #if DEBUG || PRETTY_JSON
     [JsonConverter(typeof(JsonStringEnumConverter))]

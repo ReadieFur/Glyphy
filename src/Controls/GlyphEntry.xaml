@@ -29,7 +29,7 @@
                         <Setter Property="Stroke" Value="Gray"/>
                     </Style>
                 </Grid.Resources>
-                <HorizontalStackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                <HorizontalStackLayout x:Name="ActionContainer" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="ActionButton_Tapped" NumberOfTapsRequired="1"/>
                     </HorizontalStackLayout.GestureRecognizers>
@@ -37,7 +37,7 @@
                     <Label x:Name="ActionLabel" Text="Play" VerticalTextAlignment="Center"/>
                 </HorizontalStackLayout>
                 <Line Grid.Column="1"/>
-                <HorizontalStackLayout Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                <HorizontalStackLayout x:Name="EditContainer" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="EditButton_Tapped" NumberOfTapsRequired="1"/>
                     </HorizontalStackLayout.GestureRecognizers>
@@ -45,7 +45,7 @@
                     <Label Text="Edit" VerticalTextAlignment="Center"/>
                 </HorizontalStackLayout>
                 <Line Grid.Column="3"/>
-                <HorizontalStackLayout Grid.Column="4" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                <HorizontalStackLayout x:Name="DeleteContainer" Grid.Column="4" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="DeleteButton_Tapped" NumberOfTapsRequired="1"/>
                     </HorizontalStackLayout.GestureRecognizers>
