@@ -1,6 +1,13 @@
-﻿namespace Glyphy.LED
+﻿//#define PRETTY_JSON
+
+using System.Text.Json.Serialization;
+
+namespace Glyphy.LED
 {
     //[Flags] //Not sure if I can make use of this with my current configuration (the implementation of int).
+#if DEBUG || PRETTY_JSON
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+#endif
     public enum EAddressable //: uint
     {
         CAMERA,

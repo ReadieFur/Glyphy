@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Glyphy.Configuration
@@ -6,10 +7,10 @@ namespace Glyphy.Configuration
     public struct SAnimation
     {
         //Because GUIDs are timestamp based, it is EXTREMELY unlikely that two GUIDs will be the same so we won't be checking against this.
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public uint FrameRate { get; set; }
-        public List<SFrame> Frames { get; set; }
+        [JsonProperty("id")] public Guid Id { get; set; }
+        [JsonProperty("name")] public string Name { get; set; }
+        [JsonProperty("frame_rate")] public uint FrameRate { get; set; }
+        [JsonProperty("frames")] public List<SFrame> Frames { get; set; }
 
         public static SAnimation CreateNewAnimation()
         {

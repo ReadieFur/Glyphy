@@ -27,6 +27,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public GlyphConfigurator()
     {
+        //Set to true for new animations.
+        hasUnsavedChanges = true;
         animation = SAnimation.CreateNewAnimation();
 
         SharedConstructor();
@@ -35,13 +37,10 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     public GlyphConfigurator(Guid id)
     {
         //TODO: Move this out of the constructor as it contains long running code (async methods).
-        SAnimation? _animation = Storage.LoadAnimation(id).Result;
-        if (_animation == null)
-        {
-            CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
-            Navigation.PopModalAsync().Wait();
-            return;
-        }
+        SAnimation? animation = Storage.LoadAnimation(id).Result;
+        if (animation is null)
+            throw new IOException("Failed to load animation.");
+        this.animation = animation.Value;
 
         SharedConstructor();
     }

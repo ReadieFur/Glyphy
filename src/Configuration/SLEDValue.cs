@@ -1,11 +1,12 @@
 ﻿using Glyphy.LED;
+using Newtonsoft.Json;
 
 namespace Glyphy.Configuration
 {
     public struct SLEDValue
     {
-        public EInterpolationType InterpolationType { get; set; }
-        public EAddressable Led { get; set; }
-        public double Brightness { get; set; }
+        [JsonProperty("interpolation_type")] public EInterpolationType InterpolationType { get; set; }
+        [JsonProperty("led")] public EAddressable Led { get; set; }
+        [JsonProperty("brightness")] public double Brightness { get; set; }
     }
 }

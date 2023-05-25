@@ -1,8 +1,8 @@
 ﻿using Microsoft.Maui.Storage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Glyphy.Configuration
@@ -21,9 +21,9 @@ namespace Glyphy.Configuration
                 //We don't need to check for duplicate files as they cannot exist in the first place, additionally we will be overwriting the file anyways.
                 await File.WriteAllTextAsync(
                     GetFilePath(animation.Id),
-                    JsonSerializer.Serialize(animation));
+                    JsonConvert.SerializeObject(animation));
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -40,8 +40,8 @@ namespace Glyphy.Configuration
                 if (!File.Exists(path))
                     return null;
 
-                //TODO: Possibly sort data here.
-                return JsonSerializer.Deserialize<SAnimation>(await File.ReadAllTextAsync(path));
+                //TODO: Possibly sort data here (make sure the frames are in order).
+                return JsonConvert.DeserializeObject<SAnimation>(await File.ReadAllTextAsync(path));
             }
             catch
             {

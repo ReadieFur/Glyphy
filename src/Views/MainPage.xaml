@@ -7,8 +7,8 @@
     <NavigationPage.HasNavigationBar>
         <x:Boolean>false</x:Boolean>
     </NavigationPage.HasNavigationBar>
-    <Grid Padding="30,0">
-        <ScrollView>
+    <Grid>
+        <ScrollView Padding="30,0">
             <VerticalStackLayout Spacing="25" VerticalOptions="Start">
                 <!--TODO: Have this shrink in size a small bit and then become sticky as the application header-->
                 <Label Grid.Row="0" Text="Glyphy" FontFamily="dotmatrix" FontSize="40"/>
@@ -47,14 +47,18 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Label Grid.Row="0" Text="Configurations" FontFamily="dotmatrix" FontSize="30"/>
-                <VerticalStackLayout x:Name="configurationsList"/>
+                <VerticalStackLayout>
+                    <Label Grid.Row="0" Text="Configurations" FontFamily="dotmatrix" FontSize="30"/>
+                    <VerticalStackLayout x:Name="configurationsList" Padding="0, 10, 0, 0" Spacing="10"/>
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
-        <Button HorizontalOptions="End" VerticalOptions="End"
+        <Grid Padding="30,0">
+            <Button HorizontalOptions="End" VerticalOptions="End"
                 BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" TextColor="{AppThemeBinding Dark=White, Light=Black}"
                 WidthRequest="50" HeightRequest="50" CornerRadius="25" FontSize="Body"
                 FontFamily="FASolid6" Text="&#x2b;"
                 Clicked="NewConfigurationButton_Clicked"/>
+        </Grid>
     </Grid>
 </ContentPage>
