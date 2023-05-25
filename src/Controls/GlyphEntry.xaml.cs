@@ -54,15 +54,14 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 
     private void AnimationRunner_OnStateChanged(SAnimation? newAnimation)
     {
-        Dispatcher.Dispatch(() => ToggleControls(true, true, true));
-
         if (newAnimation is SAnimation && newAnimation.Value.Id == AnimationID)
         {
-            //Set the activity button to a pause button.
+            //Set the activity button to a stop button.
             Dispatcher.Dispatch(() =>
             {
-                ActionIcon.Text = "\uf04c";
-                ActionLabel.Text = "Pause";
+                ToggleControls(true, false, false);
+                ActionIcon.Text = "\uf04d";
+                ActionLabel.Text = "Stop";
             });
         }
         else
@@ -70,6 +69,7 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
             //Set the activity button to a play button.
             Dispatcher.Dispatch(() =>
             {
+                ToggleControls(true, true, true);
                 ActionIcon.Text = "\uf04b";
                 ActionLabel.Text = "Play";
             });

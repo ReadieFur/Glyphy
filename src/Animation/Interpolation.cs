@@ -4,6 +4,8 @@ namespace Glyphy.Animation
 {
     internal class Interpolation
     {
+        //public delegate float InterpolationDelegate(float min, float max, float delta);
+
         public static float Linear(float min, float max, float delta)
         {
             return min + (max - min) * delta;

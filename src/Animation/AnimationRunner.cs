@@ -1,8 +1,10 @@
 ﻿using Glyphy.LED;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Google.Crypto.Tink.Subtle;
 
 namespace Glyphy.Animation
 {
@@ -99,10 +101,9 @@ namespace Glyphy.Animation
                     //Removing this can allow for errors but also allows for he user to enter custom configurations that are outside the bounds of the UI restrictions.
                     //ActiveAnimation!.Value.Normalize();
 
-                    //TODO: Optimise these operations.
                     foreach (SFrame frame in ActiveAnimation!.Value.Frames)
                     {
-                        TimeSpan frameTime = TimeSpan.FromMicroseconds(1000 / ActiveAnimation.Value.FrameRate);
+                        TimeSpan targetFrameTime = TimeSpan.FromMicroseconds(1000 / ActiveAnimation.Value.FrameRate);
 
                         //Get starting values.
                         Dictionary<EAddressable, float> startValues = new();
@@ -110,21 +111,30 @@ namespace Glyphy.Animation
                             startValues.Add(kvp.Key, await API.Instance.GetBrightness(kvp.Key));
 
                         //Transition to the frame.
-                        //TODO: Change this to a time based solution as it will be more accurate.
-                        float transitionFrames = ActiveAnimation.Value.FrameRate * frame.TransitionTime;
-                        for (float i = 0; i < transitionFrames; i++)
+                        TimeSpan transitionEndTime = TimeSpan.FromSeconds(frame.TransitionTime);
+                        Stopwatch transitionStopwatch = new();
+                        transitionStopwatch.Start();
+                        while (transitionStopwatch.Elapsed <  transitionEndTime)
                         {
-                            //Check each frame if the animation has been cancelled.
+                            //Check each frame if the animation has been cancelled (checking at this stage will increase CPU usage but also responsivness).
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                            foreach (KeyValuePair<EAddressable, SLEDValue> kvp in frame.Values)
+                            //Calculating this here as opposed to in the next loop is ever so slightly less accurate but as a result is more efficient. I will deem this fine as we don't need to be super accurate.
+                            float deltaT = (float)(transitionStopwatch.ElapsedMilliseconds / transitionEndTime.TotalMilliseconds);
+
+                            foreach (EAddressable ledKey in Enum.GetValues<EAddressable>())
                             {
-                                float start = startValues[kvp.Key];
-                                float end = frame.Values[kvp.Key].Brightness;
-                                float deltaT = i / transitionFrames;
-                                float transitionBrightness = kvp.Value.InterpolationType switch
+                                if (!frame.Values.TryGetValue(ledKey, out SLEDValue ledData))
                                 {
-                                    EInterpolationType.NONE => kvp.Value.Brightness,
+                                    _ = API.Instance.SetBrightness(ledKey, 0);
+                                    continue;
+                                }
+
+                                float start = startValues[ledKey];
+                                float end = ledData.Brightness;
+                                float transitionBrightness = ledData.InterpolationType switch
+                                {
+                                    EInterpolationType.NONE => ledData.Brightness,
                                     EInterpolationType.LINEAR => Interpolation.Linear(start, end, deltaT),
                                     EInterpolationType.SMOOTH_STEP => Interpolation.Smoothstep(start, end, deltaT),
                                     EInterpolationType.SMOOTHER_STEP => Interpolation.SmootherStep(start, end, deltaT),
@@ -132,20 +142,33 @@ namespace Glyphy.Animation
                                 };
 
                                 //I don't want to wait on this becuase it could cause the animation to stutter, however the downside to not waiting is we may skip frames.
-                                _ = API.Instance.SetBrightness(kvp.Key, transitionBrightness);
+                                _ = API.Instance.SetBrightness(ledKey, transitionBrightness);
                             }
 
-                            await Task.Delay(frameTime);
+                            TimeSpan sleepTime = TimeSpan.FromMilliseconds(targetFrameTime.TotalMilliseconds - (transitionStopwatch.ElapsedMilliseconds % targetFrameTime.TotalMilliseconds));
+                            if (sleepTime > TimeSpan.Zero)
+                                await Task.Delay(sleepTime);
                         }
 
                         //I could just wait here but the reason for updating at the given interval is to set the led value incase it gets changed externally.
                         //TODO: Detect if the user is in a low-power mode and decrease the number of updates or disable the updates all together.
-                        for (double i = 0; i < ActiveAnimation.Value.FrameRate * frame.Duration; i++)
+                        TimeSpan durationEndTime = TimeSpan.FromSeconds(frame.Duration);
+                        Stopwatch durationStopwatch = new();
+                        durationStopwatch.Start();
+                        //I am using a do-while loop here so that if the duration is set to 0, the frame will still be displayed.
+                        do
                         {
-                            foreach (KeyValuePair<EAddressable, SLEDValue> kvp in frame.Values)
-                                _ = API.Instance.SetBrightness(kvp.Key, kvp.Value.Brightness);
-                            await Task.Delay(frameTime);
+                            //Check each frame if the animation has been cancelled.
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                            foreach (EAddressable ledKey in Enum.GetValues<EAddressable>())
+                                _ = API.Instance.SetBrightness(ledKey, frame.Values.TryGetValue(ledKey, out SLEDValue ledValue) ? ledValue.Brightness : 0);
+
+                            TimeSpan sleepTime = TimeSpan.FromMilliseconds(targetFrameTime.TotalMilliseconds - (durationStopwatch.ElapsedMilliseconds % targetFrameTime.TotalMilliseconds));
+                            if (sleepTime > TimeSpan.Zero)
+                                await Task.Delay(sleepTime);
                         }
+                        while (durationStopwatch.Elapsed < durationEndTime);
                     }
                 }
                 catch (Exception) {}

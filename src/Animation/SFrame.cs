@@ -8,7 +8,7 @@ namespace Glyphy.Animation
     public struct SFrame
     {
         [JsonIgnore] public const float MIN_TRANSITION_TIME = 0;
-        [JsonIgnore] public const float MAX_TRANSITION_TIME = 1;
+        [JsonIgnore] public const float MAX_TRANSITION_TIME = 5;
         [JsonIgnore] public const float MIN_DURATION = 0;
         [JsonIgnore] public const float MAX_DURATION = 1;
 
