@@ -4,6 +4,7 @@ using Glyphy.Misc;
 using Glyphy.Views;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Glyphy.Controls;
 
 //TODO: Change the code structure so that this class handles all of the actions for the animations related to the glyph entry and then have the MainPage only handle the addition and removal of the glyph entries.
 //TODO: When files are loaded, if they fail assume they have been deleted and remove this entry from the UI but don't attempt to delete the file.
-public partial class GlyphEntry : ContentView, IDisposable
+public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 {
     /*public static readonly BindableProperty NameProperty = BindableProperty.Create(nameof(Name), typeof(string), typeof(GlyphEntry), "Untitled");
 	public string Name { get => (string)GetValue(NameProperty); set => SetValue(NameProperty, value); }*/
@@ -41,7 +42,7 @@ public partial class GlyphEntry : ContentView, IDisposable
         if (Storage.LoadAnimation(AnimationID).Result is not SAnimation animation)
             throw new Exception("Failed to load animation.");
 
-        NameLabel.Text = animation.Name;
+        SetNameLabel(animation.Name);
 
         AnimationRunner.OnStateChanged += AnimationRunner_OnStateChanged;
     }
@@ -53,17 +54,25 @@ public partial class GlyphEntry : ContentView, IDisposable
 
     private void AnimationRunner_OnStateChanged(SAnimation? newAnimation)
     {
+        Dispatcher.Dispatch(() => ToggleControls(true, true, true));
+
         if (newAnimation is SAnimation && newAnimation.Value.Id == AnimationID)
         {
             //Set the activity button to a pause button.
-            ActionIcon.Text = "\uf04c";
-            ActionLabel.Text = "Pause";
+            Dispatcher.Dispatch(() =>
+            {
+                ActionIcon.Text = "\uf04c";
+                ActionLabel.Text = "Pause";
+            });
         }
         else
         {
             //Set the activity button to a play button.
-            ActionIcon.Text = "\uf04b";
-            ActionLabel.Text = "Play";
+            Dispatcher.Dispatch(() =>
+            {
+                ActionIcon.Text = "\uf04b";
+                ActionLabel.Text = "Play";
+            });
         }
     }
 
@@ -90,7 +99,7 @@ public partial class GlyphEntry : ContentView, IDisposable
                 return;
 
             //Disable the activity controls, the AnimationRunner_OnStateChanged callback will re-enable them (unless we fail to start the animation).
-            ToggleControls(false, false, false);
+            Dispatcher.Dispatch(() => ToggleControls(false, false, false));
 
             //Start the animation.
             if (await Storage.LoadAnimation(AnimationID) is not SAnimation animation)
@@ -107,7 +116,7 @@ public partial class GlyphEntry : ContentView, IDisposable
             if (startResult.IsCanceled || startResult.IsFaulted)
             {
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to start animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-                ToggleControls(true, false, false);
+                Dispatcher.Dispatch(() => ToggleControls(true, true, true));
             }
         });
     }
@@ -133,7 +142,7 @@ public partial class GlyphEntry : ContentView, IDisposable
     private void GlyphConfigurator_Disappearing(object? sender, EventArgs e)
     {
         //glyphConfigurator won't be null here.
-        NameLabel.Text = glyphConfigurator!.animation.Name;
+        SetNameLabel(glyphConfigurator!.Animation.Name);
         glyphConfigurator.Dispose();
         glyphConfigurator = null;
 
@@ -162,10 +171,57 @@ public partial class GlyphEntry : ContentView, IDisposable
         OnDeleted?.Invoke(this, e);
     }
 
-    private void ToggleControls(bool actionButtonEnabled, bool editButtonEnabled, bool deleteButtonEnabled)
+    private void SetNameLabel(string text) =>
+        NameLabel.Text = text.Length > 20 - 3 ? text.Substring(0, 20 - 3) + "..." : text;
+
+    public void ToggleControls(bool actionButtonEnabled, bool editButtonEnabled, bool deleteButtonEnabled)
     {
-        ActionContainer.IsEnabled = actionButtonEnabled;
-        EditContainer.IsEnabled = editButtonEnabled;
-        DeleteContainer.IsEnabled = deleteButtonEnabled;
+        Color foregroundColour = Application.Current!.RequestedTheme == AppTheme.Dark ? Color.FromArgb("#FFFFFF") : Color.FromArgb("#000000");
+        Color disabledColour = Color.FromArgb("#808080");
+
+        if (actionButtonEnabled)
+        {
+            ActionContainer.IsEnabled = true;
+            ActionIcon.TextColor = foregroundColour;
+            ActionLabel.TextColor = foregroundColour;
+        }
+        else
+        {
+            ActionContainer.IsEnabled = true;
+            ActionIcon.TextColor = disabledColour;
+            ActionLabel.TextColor = disabledColour;
+        }
+
+        if (editButtonEnabled)
+        {
+            EditContainer.IsEnabled = editButtonEnabled;
+            EditIcon.TextColor = foregroundColour;
+            EditLabel.TextColor = foregroundColour;
+        }
+        else
+        {
+            EditContainer.IsEnabled = editButtonEnabled;
+            EditIcon.TextColor = disabledColour;
+            EditLabel.TextColor = disabledColour;
+        }
+
+        if (deleteButtonEnabled)
+        {
+            DeleteContainer.IsEnabled = deleteButtonEnabled;
+            DeleteIcon.TextColor = foregroundColour;
+            DeleteLabel.TextColor = foregroundColour;
+        }
+        else
+        {
+            DeleteContainer.IsEnabled = deleteButtonEnabled;
+            DeleteIcon.TextColor = disabledColour;
+            DeleteLabel.TextColor = disabledColour;
+        }
+    }
+
+    public void RequestedThemeChanged(bool isDark)
+    {
+        //We can call the ToggleControls method to refresh the controls colours.
+        ToggleControls(ActionContainer.IsEnabled, EditContainer.IsEnabled, DeleteContainer.IsEnabled);
     }
 }

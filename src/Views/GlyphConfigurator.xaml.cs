@@ -4,24 +4,27 @@ using Glyphy.LED;
 using Glyphy.Misc;
 using Microsoft.Maui.Controls;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Glyphy.Views;
 
 public partial class GlyphConfigurator : ContentPage, IDisposable
 {
     #region Properties
+    private SAnimation _animation;
     private InputControlSyncer<double> brightnessInputControlSyncer;
     private InputControlSyncer<double> transitionTimeInputControlSyncer;
     private InputControlSyncer<double> durationInputControlSyncer;
 
+    public SAnimation Animation => _animation;
     //TODO: Have the save icon go from inactive to active when there are unsaved changes.
     private bool hasUnsavedChanges = false;
     //TODO: Have the back icon go red when the ability to discard changes is available.
     private bool canDiscardChanges = false;
-    public SAnimation animation { get; private set; }
     private int currentFrameIndex = 0;
-    private EAddressable selectedLED = EAddressable.CAMERA;
     #endregion
 
     #region Constructors
@@ -30,7 +33,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         //Set to true for new animations.
         hasUnsavedChanges = true;
-        animation = SAnimation.CreateNewAnimation();
+        _animation = SAnimation.CreateNewAnimation();
 
         SharedConstructor();
 	}
@@ -41,7 +44,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         SAnimation? animation = Storage.LoadAnimation(id).Result;
         if (animation is null)
             throw new IOException("Failed to load animation.");
-        this.animation = animation.Value;
+        _animation = animation.Value;
 
         SharedConstructor();
     }
@@ -73,7 +76,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             InterpolationPicker.Items.Add(EnumKeyToFormattedString(key));
         InterpolationPicker.SelectedIndex = 0;
 
-        AnimationNameEntry.Text = animation.Name;
+        AnimationNameEntry.Text = _animation.Name;
 
         TransitionTimeSlider.Minimum = SFrame.MIN_TRANSITION_TIME;
         TransitionTimeSlider.Maximum = SFrame.MAX_TRANSITION_TIME;
@@ -81,7 +84,11 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         DurationSlider.Minimum = SFrame.MIN_DURATION;
         DurationSlider.Maximum = SFrame.MAX_DURATION;
 
-        #region Input syncers
+        #region Inputs
+        AnimationNameEntry.TextChanged += AnimationNameEntry_TextChanged;
+        LEDPicker.SelectedIndexChanged += LEDPicker_SelectedIndexChanged;
+        InterpolationPicker.SelectedIndexChanged += InterpolationPicker_SelectedIndexChanged;
+
         brightnessInputControlSyncer = new();
         brightnessInputControlSyncer.AddControl(BrightnessSlider);
         brightnessInputControlSyncer.AddControl(BrightnessEntry);
@@ -97,8 +104,6 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         durationInputControlSyncer.AddControl(DurationEntry);
         durationInputControlSyncer.ValueChanged += Duration_ValueChanged;
         #endregion
-
-        LEDPicker.SelectedIndexChanged += LEDPicker_SelectedIndexChanged;
     }
     #endregion
 
@@ -112,24 +117,6 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             parts[i] = parts[i].Substring(0, 1).ToUpper() + parts[i].Substring(1);
         }
         return string.Join(' ', parts);
-    }
-
-    //I can't use this right now as I can't seem to get the selected item string from the picker.
-    private bool FormattedEnumStringToKey<TEnum>(string str, out TEnum? key) where TEnum : Enum
-    {
-        string keyString = string.Join('_', str.Split(' ')).ToUpper();
-
-        foreach (string name in Enum.GetNames(typeof(TEnum)))
-        {
-            if (name == keyString)
-            {
-                key = (TEnum)Enum.Parse(typeof(TEnum), name);
-                return true;
-            }
-        }
-
-        key = default;
-        return false;
     }
 
     private EAddressable? GetSelectedAddressableLED()
@@ -152,9 +139,9 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             return null;
 
         SLEDValue ledConfiguration;
-        if (animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
+        if (_animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
         {
-            ledConfiguration = animation.Frames[currentFrameIndex].Values[selectedLED.Value];
+            ledConfiguration = _animation.Frames[currentFrameIndex].Values[selectedLED.Value];
         }
         else
         {
@@ -173,21 +160,76 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         if (selectedLED is null)
             return;
 
-        if (animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
-            animation.Frames[currentFrameIndex].Values[selectedLED.Value] = configuration;
+        SFrame frame = _animation.Frames[currentFrameIndex];
+        if (_animation.Frames[currentFrameIndex].Values.ContainsKey(selectedLED.Value))
+            _animation.Frames[currentFrameIndex].Values[selectedLED.Value] = configuration;
         else
-            animation.Frames[currentFrameIndex].Values.Add(selectedLED.Value, configuration);
+            _animation.Frames[currentFrameIndex].Values.Add(selectedLED.Value, configuration);
+        _animation.Frames[currentFrameIndex] = frame;
+    }
+
+    //TODO: Use the animator to transition to the new frame.
+    private void LoadFrame(uint frameIndex)
+    {
+        if (frameIndex >= _animation.Frames.Count)
+            throw new IndexOutOfRangeException("Frame index is out of range.");
+        currentFrameIndex = (int)frameIndex;
+
+        transitionTimeInputControlSyncer.SetValue(Math.Round(_animation.Frames[currentFrameIndex].TransitionTime, 1));
+        durationInputControlSyncer.SetValue(Math.Round(_animation.Frames[currentFrameIndex].Duration, 1));
+
+        Task.Run(() =>
+        {
+            foreach (EAddressable led in Enum.GetValues(typeof(EAddressable)))
+            {
+                if (_animation.Frames[currentFrameIndex].Values.ContainsKey(led))
+                {
+                    if (API.Running)
+                        _ = API.Instance.SetBrightness(led, _animation.Frames[currentFrameIndex].Values[led].Brightness);
+                    GlyphPreview.UpdatePreview(led, _animation.Frames[currentFrameIndex].Values[led].Brightness);
+                }
+                else
+                {
+                    if (API.Running)
+                        _ = API.Instance.SetBrightness(led, 0);
+                    GlyphPreview.UpdatePreview(led, 0);
+                }
+            }
+        });
+
+        //TODO: Update the UI to reflect the new frame.
+        if (_animation.Frames[currentFrameIndex].Values.Count == 0)
+            return;
+
+        KeyValuePair<EAddressable, SLEDValue> firstLED = _animation.Frames[currentFrameIndex].Values.First();
+        LEDPicker.SelectedIndex = (int)firstLED.Key;
+        brightnessInputControlSyncer.SetValue(Math.Round(firstLED.Value.Brightness * 100, 1));
+        InterpolationPicker.SelectedIndex = (int)firstLED.Value.InterpolationType;
     }
     #endregion
 
     #region Event handlers
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
+        bool hasUnsavedChanges = this.hasUnsavedChanges;
+
         ToggleControls(API.Running);
+
+        LoadFrame(0);
 
 #if ANDROID
         Android_ContentPage_Loaded(sender, e);
 #endif
+
+        this.hasUnsavedChanges = hasUnsavedChanges;
+    }
+
+    private void AnimationNameEntry_TextChanged(object? sender, TextChangedEventArgs e)
+    {
+        hasUnsavedChanges = true;
+
+        //Update configuration.
+        _animation.Name = AnimationNameEntry.Text;
     }
 
     private void LEDPicker_SelectedIndexChanged(object? sender, EventArgs e)
@@ -198,24 +240,35 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return;
 
-        brightnessInputControlSyncer.SetValue(ledConfiguration.Brightness * SLEDValue.MAX_BRIGHTNESS);
+        brightnessInputControlSyncer.SetValue(ledConfiguration.Brightness * 100);
         InterpolationPicker.SelectedIndex = (int)ledConfiguration.InterpolationType;
+    }
+
+    private void InterpolationPicker_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        hasUnsavedChanges = true;
+
+        //Update configuration.
+        if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
+            return;
+        ledConfiguration.InterpolationType = (EInterpolationType)InterpolationPicker.SelectedIndex;
+        UpdateCurrentLEDConfiguration(ledConfiguration);
     }
 
     private double? Brightness_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
+
         double roundedValue = Math.Round(newValue, 1);
 
         //Update configuration.
         if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return roundedValue;
-        //ledConfiguration.Brightness = (float)newValue / SLEDValue.MAX_BRIGHTNESS;
         ledConfiguration.Brightness = (float)newValue * 0.01f; //Multiplication is faster than division.
         UpdateCurrentLEDConfiguration(ledConfiguration);
 
         //Update live preview.
-        GlyphPreview.UpdatePreview(ledConfiguration.Led, newValue);
+        GlyphPreview.UpdatePreview(ledConfiguration.Led, ledConfiguration.Brightness);
 
         //Update physical LED.
         if (API.Running)
@@ -229,9 +282,9 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         hasUnsavedChanges = true;
 
         //Update configuration.
-        SFrame frame = animation.Frames[currentFrameIndex];
+        SFrame frame = _animation.Frames[currentFrameIndex];
         frame.TransitionTime = Math.Clamp((float)newValue, SFrame.MIN_TRANSITION_TIME, SFrame.MAX_TRANSITION_TIME);
-        animation.Frames[currentFrameIndex] = frame;
+        _animation.Frames[currentFrameIndex] = frame;
 
         return Math.Round(frame.TransitionTime, 1);
     }
@@ -241,9 +294,9 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         hasUnsavedChanges = true;
 
         //Update configuration.
-        SFrame frame = animation.Frames[currentFrameIndex];
+        SFrame frame = _animation.Frames[currentFrameIndex];
         frame.Duration = Math.Clamp((float)newValue, SFrame.MIN_DURATION, SFrame.MAX_DURATION);
-        animation.Frames[currentFrameIndex] = frame;
+        _animation.Frames[currentFrameIndex] = frame;
 
         return Math.Round(frame.Duration, 1);
     }
@@ -252,7 +305,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         try
         {
-            if (!await Storage.SaveAnimation(animation))
+            _animation.Normalize();
+            if (!await Storage.SaveAnimation(_animation))
                 throw new IOException();
             hasUnsavedChanges = false;
             canDiscardChanges = false;
@@ -276,7 +330,19 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     protected override bool OnBackButtonPressed()
     {
         if (!hasUnsavedChanges || canDiscardChanges)
+        {
+            Task.Run(() =>
+            {
+                if (!API.Running)
+                    return;
+
+                //Reset all LEDs to their default state.
+                foreach (EAddressable led in Enum.GetValues(typeof(EAddressable)))
+                    _ = API.Instance.SetBrightness(led, 0);
+            });
+
             return false;
+        }
 
         canDiscardChanges = true;
 

@@ -96,10 +96,11 @@ namespace Glyphy.Animation
                 {
                     OnStateChanged?.Invoke(ActiveAnimation);
 
-                    ActiveAnimation!.Value.Normalize();
+                    //Removing this can allow for errors but also allows for he user to enter custom configurations that are outside the bounds of the UI restrictions.
+                    //ActiveAnimation!.Value.Normalize();
 
                     //TODO: Optimise these operations.
-                    foreach (SFrame frame in ActiveAnimation.Value.Frames)
+                    foreach (SFrame frame in ActiveAnimation!.Value.Frames)
                     {
                         TimeSpan frameTime = TimeSpan.FromMicroseconds(1000 / ActiveAnimation.Value.FrameRate);
 
@@ -109,6 +110,7 @@ namespace Glyphy.Animation
                             startValues.Add(kvp.Key, await API.Instance.GetBrightness(kvp.Key));
 
                         //Transition to the frame.
+                        //TODO: Change this to a time based solution as it will be more accurate.
                         float transitionFrames = ActiveAnimation.Value.FrameRate * frame.TransitionTime;
                         for (float i = 0; i < transitionFrames; i++)
                         {
@@ -146,7 +148,7 @@ namespace Glyphy.Animation
                         }
                     }
                 }
-                catch {}
+                catch (Exception) {}
                 finally
                 {
                     //Clean up.

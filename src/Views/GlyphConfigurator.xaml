@@ -25,7 +25,7 @@
                     </Grid.ColumnSpacing>
                     <!--The IsTextPredictionEnabled property should disable autocorrect and so the active word underline too but it dosen't seem to.-->
                     <Entry x:Name="AnimationNameEntry" Grid.Column="0" HeightRequest="60"
-                           Placeholder="Name" Text="Untitled" FontFamily="dotmatrix" FontSize="30" Keyboard="Text" IsTextPredictionEnabled="False" MaxLength="20"/>
+                           Placeholder="Name" Text="Untitled" FontFamily="dotmatrix" FontSize="30" Keyboard="Text" IsTextPredictionEnabled="False" MaxLength="15"/>
                     <Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
                             BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
                             FontSize="Title" FontFamily="FASolid6" Text="&#xf0c7;" Clicked="SaveButton_Clicked"/>
@@ -73,6 +73,26 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.ColumnSpacing>
+                            <x:Double>10</x:Double>
+                        </Grid.ColumnSpacing>
+                        <Label Grid.Row="0" Grid.Column="0" Text="Transition Time" VerticalOptions="Center"/>
+                        <Slider x:Name="TransitionTimeSlider" Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
+                        <Entry x:Name="TransitionTimeEntry" Grid.Row="0" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="Duration" VerticalOptions="Center"/>
+                        <Slider x:Name="DurationSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
+                        <Entry x:Name="DurationEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+                    </Grid>
+                    <Label Text="LED Options" FontFamily="dotmatrix" FontSize="Small" Padding="0, 10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
@@ -96,14 +116,6 @@
 
                         <Label Grid.Row="2" Grid.Column="0" Text="Interpolation" VerticalOptions="Center"/>
                         <Picker x:Name="InterpolationPicker" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HeightRequest="45"/>
-
-                        <Label Grid.Row="3" Grid.Column="0" Text="Transition Time" VerticalOptions="Center"/>
-                        <Slider x:Name="TransitionTimeSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
-                        <Entry x:Name="TransitionTimeEntry" Grid.Row="3" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
-
-                        <Label Grid.Row="4" Grid.Column="0" Text="Duration" VerticalOptions="Center"/>
-                        <Slider x:Name="DurationSlider" Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="1" Value="0"/>
-                        <Entry x:Name="DurationEntry" Grid.Row="4" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
                     </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>

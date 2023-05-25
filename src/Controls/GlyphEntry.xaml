@@ -41,16 +41,16 @@
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="EditButton_Tapped" NumberOfTapsRequired="1"/>
                     </HorizontalStackLayout.GestureRecognizers>
-                    <Label FontFamily="FASolid6" Text="&#xf304;" VerticalTextAlignment="Center"/>
-                    <Label Text="Edit" VerticalTextAlignment="Center"/>
+                    <Label x:Name="EditIcon" FontFamily="FASolid6" Text="&#xf304;" VerticalTextAlignment="Center"/>
+                    <Label x:Name="EditLabel" Text="Edit" VerticalTextAlignment="Center"/>
                 </HorizontalStackLayout>
                 <Line Grid.Column="3"/>
                 <HorizontalStackLayout x:Name="DeleteContainer" Grid.Column="4" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
                     <HorizontalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Tapped="DeleteButton_Tapped" NumberOfTapsRequired="1"/>
                     </HorizontalStackLayout.GestureRecognizers>
-                    <Label FontFamily="FASolid6" Text="&#xf2ed;" VerticalTextAlignment="Center"/>
-                    <Label Text="Delete" VerticalTextAlignment="Center"/>
+                    <Label x:Name="DeleteIcon" FontFamily="FASolid6" Text="&#xf2ed;" VerticalTextAlignment="Center"/>
+                    <Label x:Name="DeleteLabel" Text="Delete" VerticalTextAlignment="Center"/>
                 </HorizontalStackLayout>
             </Grid>
         </toolkit:Expander>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 
 namespace Glyphy.Misc
@@ -13,7 +14,25 @@ namespace Glyphy.Misc
         /// T1 is the new value, T2 is the sender, the return value if given is the corrected value.
         /// </summary>
         public event Func<TValue, object, TValue?>? ValueChanged;
-        public TValue Value { get; private set; } = default;
+        //public TValue Value { get; private set; } = default;
+        public bool ControlsEnabled
+        {
+            get
+            {
+                List<View> views = new();
+                views.Concat(sliders);
+                views.Concat(entries);
+                return views.All(view => view.IsEnabled);
+            }
+            set
+            {
+                List<View> views = new();
+                views.Concat(sliders);
+                views.Concat(entries);
+                foreach (View view in views)
+                    view.IsEnabled = value;
+            }
+        }
 
         private readonly SemaphoreSlim _lock = new(1);
         private readonly Type tType = typeof(TValue);

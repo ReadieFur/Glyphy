@@ -21,7 +21,7 @@ namespace Glyphy.LED
         private DataInputStream outputStream;
         private uint maxBrightness = 0;
         //Yes I could've used a dictionary here but this method is slightly faster (I think).
-        private uint[] cachedBrightnessValues = new uint[Enum.GetNames<EAddressable>().Length];
+        private uint[] cachedBrightnessValues = new uint[Enum.GetValues<EAddressable>().Length];
 
         public API()
         {
@@ -225,14 +225,14 @@ namespace Glyphy.LED
         {
             //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
             //Optimised //(assumes the value is within a valid range, which it should be within this class):
-            return Math.Clamp(value * maxBrightness, 0f, 1f);
+            return Math.Clamp(value / maxBrightness, 0f, 1f);
         }
 
         private uint ToSystemRange(float value)
         {
             //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
             //Optimised:
-            return Math.Clamp((uint)value / maxBrightness, 0u, 1u);
+            return Math.Clamp((uint)(value * maxBrightness), 0u, maxBrightness);
         }
     }
 }

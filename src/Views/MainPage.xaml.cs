@@ -36,8 +36,8 @@ public partial class MainPage : ContentPage, IDisposable
 
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
-        foreach (string key in Enum.GetNames<EAddressable>())
-            GlyphPreview.UpdatePreview(Enum.Parse<EAddressable>(key), 0);
+        foreach (EAddressable value in Enum.GetValues<EAddressable>())
+            GlyphPreview.UpdatePreview(value, 0);
 
         //TODO: This can have a cleaner solution other than Task.Run right?
         Task.Run(async () =>
@@ -81,11 +81,11 @@ public partial class MainPage : ContentPage, IDisposable
             if (Navigation.NavigationStack.Count != 0 && Navigation.NavigationStack[Navigation.NavigationStack.Count - 1] is IThemeChangeHandler themeChangeHandler)
                 themeChangeHandler.RequestedThemeChanged(Application.Current!.RequestedTheme == AppTheme.Dark);
 
-            if (!Storage.GetAnimationIDs().Contains(glyphConfigurator.animation.Id))
+            if (!Storage.GetAnimationIDs().Contains(glyphConfigurator.Animation.Id))
                 return;
 
             GlyphEntry glyphEntry;
-            try { glyphEntry = new(glyphConfigurator.animation.Id); }
+            try { glyphEntry = new(glyphConfigurator.Animation.Id); }
             catch
             {
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to update animations.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
