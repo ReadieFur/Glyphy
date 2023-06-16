@@ -3,11 +3,13 @@ using Glyphy.Configuration;
 using Glyphy.Controls;
 using Glyphy.LED;
 using Glyphy.Misc;
+using Glyphy.Resources.Presets;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Glyphy.Views;
@@ -45,14 +47,28 @@ public partial class MainPage : ContentPage, IDisposable
             bool failedToLoad = false;
 
             //TODO: While we are loading these animations, disable controls and show a loading animation.
-            IEnumerable<Guid> animationIDs = Storage.GetAnimationIDs();
-            foreach (Guid animationID in animationIDs)
+            foreach (Guid animationID in Storage.GetAnimationIDs())
             {
                 if (await Storage.LoadAnimation(animationID) is not SAnimation sAnimation)
                     continue;
 
                 GlyphEntry glyphEntry;
                 try { glyphEntry = new(animationID); }
+                catch
+                {
+                    failedToLoad = true;
+                    continue;
+                }
+
+                glyphEntry.OnDeleted += (_, _) => configurationsList.Remove(glyphEntry);
+
+                Dispatcher.Dispatch(() => configurationsList.Add(glyphEntry));
+            }
+
+            foreach (SAnimation animation in Glyphs.Presets)
+            {
+                GlyphEntry glyphEntry;
+                try { glyphEntry = new(animation.Id, true); }
                 catch
                 {
                     failedToLoad = true;

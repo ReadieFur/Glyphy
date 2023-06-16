@@ -19,6 +19,7 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 	public string Name { get => (string)GetValue(NameProperty); set => SetValue(NameProperty, value); }*/
 
     public Guid AnimationID { get; private set; }
+    public bool IsReadonly { get; private set; }
 
     public event EventHandler? OnDeleted;
 
@@ -33,9 +34,10 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 		InitializeComponent();
 	}
 
-    public GlyphEntry(Guid AnimationID)
+    public GlyphEntry(Guid AnimationID, bool isReadonly = false)
     {
         this.AnimationID = AnimationID;
+        this.IsReadonly = isReadonly;
 
         InitializeComponent();
 
@@ -45,7 +47,11 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 
         SetNameLabel(animation.Name);
 
+        bool hideControls = isReadonly || AnimationRunner.IsRunning;
+        ToggleControls(true, hideControls, hideControls);
+
         AnimationRunner.OnStateChanged += AnimationRunner_OnStateChanged;
+
     }
 
     public void Dispose()
@@ -188,6 +194,12 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
 
     public void ToggleControls(bool actionButtonEnabled, bool editButtonEnabled, bool deleteButtonEnabled)
     {
+        if (IsReadonly)
+        {
+            editButtonEnabled = false;
+            deleteButtonEnabled = false;
+        }
+
         Color foregroundColour = Application.Current!.RequestedTheme == AppTheme.Dark ? Color.FromArgb("#FFFFFF") : Color.FromArgb("#000000");
         Color disabledColour = Color.FromArgb("#808080");
 

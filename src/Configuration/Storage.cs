@@ -1,9 +1,11 @@
 ﻿using Glyphy.Animation;
+using Glyphy.Resources.Presets;
 using Microsoft.Maui.Storage;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Glyphy.Configuration
@@ -39,7 +41,14 @@ namespace Glyphy.Configuration
                 string path = GetFilePath(id);
 
                 if (!File.Exists(path))
-                    return null;
+                {
+                    //If the file dosen't exist, attempt to load one of the presets.
+                    SAnimation preset = Glyphs.Presets.FirstOrDefault(a => a.Id == id);
+                    if (preset.Equals(default(SAnimation)))
+                        return null;
+
+                    return preset;
+                }
 
                 //TODO: Possibly sort data here (make sure the frames are in order).
                 return JsonConvert.DeserializeObject<SAnimation>(await File.ReadAllTextAsync(path));
