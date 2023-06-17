@@ -84,9 +84,17 @@ public partial class MainPage : ContentPage, IDisposable
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load one or more animations.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
         });
 
+        AnimationRunner.OnRunFrame += AnimationRunner_OnRunFrame;
+
 #if ANDROID
         Android_ContentPage_Loaded(sender, e);
 #endif
+    }
+
+    private void AnimationRunner_OnRunFrame(IReadOnlyList<SLEDValue> ledValues)
+    {
+        foreach (SLEDValue ledValue in ledValues)
+            GlyphPreview.UpdatePreview(ledValue.Led, ledValue.Brightness);
     }
 
     private async void NewConfigurationButton_Clicked(object sender, EventArgs e)
