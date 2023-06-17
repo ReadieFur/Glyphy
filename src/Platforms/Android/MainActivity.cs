@@ -48,16 +48,13 @@ public class MainActivity : MauiAppCompatActivity
         }
     }
 
-    public void SetSystemTheme(Android.Graphics.Color statusBarColour, Android.Graphics.Color navigationBarColour, bool useDarkIcons)
+    public void SetSystemTheme(bool useDarkIcons)
     {
         if (Window is null)
             return;
 
-        Window.SetStatusBarColor(statusBarColour);
 #pragma warning disable CA1422 // Validate platform compatibility
         Window.DecorView.SystemUiVisibility = useDarkIcons ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
 #pragma warning restore CA1422
-
-        Window.SetNavigationBarColor(navigationBarColour);
     }
 }

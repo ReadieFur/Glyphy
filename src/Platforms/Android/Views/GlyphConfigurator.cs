@@ -19,13 +19,7 @@ namespace Glyphy.Views
         private void MainApplication_OnResume(Android.App.Activity activity) =>
             ToggleControls(API.Running);
 
-        public void RequestedThemeChanged(bool isDark)
-        {
-            MainActivity.Instance.SetSystemTheme(
-                Android.Graphics.Color.ParseColor(isDark ? "#0D0D0D" : "#F2F2F2"),
-                isDark ? Android.Graphics.Color.Black : Android.Graphics.Color.White,
-                !isDark);
-        }
+        public void RequestedThemeChanged(bool isDark) => MainActivity.Instance.SetSystemTheme(!isDark);
 
         public void Android_Dispose()
         {

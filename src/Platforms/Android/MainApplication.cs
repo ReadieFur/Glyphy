@@ -5,6 +5,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 using System;
+using System.Diagnostics;
 
 namespace Glyphy;
 
@@ -25,6 +26,14 @@ public class MainApplication : MauiApplication
             .ConfigureLifecycleEvents(events =>
             {
                 events.AddAndroid(android => android
+                    .OnCreate((activity, _) =>
+                    {
+                        //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
+                        //TODO: Have the page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.
+                        //activity.Window?.SetFlags(Android.Views.WindowManagerFlags.LayoutNoLimits, Android.Views.WindowManagerFlags.LayoutNoLimits);
+                        activity.Window?.ClearFlags(Android.Views.WindowManagerFlags.TranslucentStatus);
+                        activity.Window?.SetStatusBarColor(Android.Graphics.Color.Transparent);
+                    })
                     .OnResume(e => OnResume?.Invoke(e))
                 );
             });
