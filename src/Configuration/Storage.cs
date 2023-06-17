@@ -67,6 +67,9 @@ namespace Glyphy.Configuration
                 if (Guid.TryParse(fileName, out Guid id))
                     yield return id;
             }
+
+            foreach (SAnimation preset in Glyphs.Presets)
+                yield return preset.Id;
         }
 
         public static bool DeleteAnimation(Guid id)

@@ -49,26 +49,18 @@ public partial class MainPage : ContentPage, IDisposable
             //TODO: While we are loading these animations, disable controls and show a loading animation.
             foreach (Guid animationID in Storage.GetAnimationIDs())
             {
-                if (await Storage.LoadAnimation(animationID) is not SAnimation sAnimation)
-                    continue;
-
                 GlyphEntry glyphEntry;
-                try { glyphEntry = new(animationID); }
-                catch
+
+                try
                 {
-                    failedToLoad = true;
-                    continue;
+                    if (await Storage.LoadAnimation(animationID) is not SAnimation sAnimation)
+                        throw new Exception("Failed to load animation from storage.");
+
+                    glyphEntry = new(
+                        animationID,
+                        Glyphs.Presets.Any(preset => preset.Id == animationID) //If the animation is a preset, make it readonly (this is slow as I check for the the ID every time, more presets = more time).
+                    );
                 }
-
-                glyphEntry.OnDeleted += (_, _) => configurationsList.Remove(glyphEntry);
-
-                Dispatcher.Dispatch(() => configurationsList.Add(glyphEntry));
-            }
-
-            foreach (SAnimation animation in Glyphs.Presets)
-            {
-                GlyphEntry glyphEntry;
-                try { glyphEntry = new(animation.Id, true); }
                 catch
                 {
                     failedToLoad = true;
@@ -84,6 +76,7 @@ public partial class MainPage : ContentPage, IDisposable
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load one or more animations.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
         });
 
+        //TODO: See if I need to skip this event callback when the app is unfocused.
         AnimationRunner.OnRunFrame += AnimationRunner_OnRunFrame;
 
 #if ANDROID

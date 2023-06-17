@@ -9,6 +9,7 @@
         //These two values are used for the API brightness values but will be converted to system values by the platform specific partial classes.
         public const float MIN_BRIGHTNESS = 0.0f;
         public const float MAX_BRIGHTNESS = 1.0f;
+        //TODO: Add a user defined max brightness value that we will then scale to.
 
         private static readonly object _LOCK = new object();
 
