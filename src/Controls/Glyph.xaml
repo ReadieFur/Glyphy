@@ -10,7 +10,7 @@
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
             </Frame.GestureRecognizers>
-            <Grid x:Name="GlyphContainer" Width="207.36" Height="433.2">
+            <Grid x:Name="GlyphContainer" WidthRequest="207.36" HeightRequest="433.2">
                 <!--TODO: Use the Material theme colour for the backround or try to get the device colour by the devices ID?-->
                 <Path x:Name="GlyphBase" Fill="{AppThemeBinding Dark=#2e2e2e, Light=#2e2e2e}" Data="M28.56,0H178.8a28.56,28.56,0,0,1,28.56,28.56V404.64A28.56,28.56,0,0,1,178.8,433.2H28.56A28.56,28.56,0,0,1,0,404.64V28.56A28.56,28.56,0,0,1,28.56,0Z"/>
                 <Path x:Name="GlyphCamera" Stroke="White" StrokeThickness="6" Data="M57.6,35.52S57.4,14.4,36.48,14.4,14.64,34.08,14.64,34.08v43.2S16.16,97.44,36,97.44s21.6-18.35,21.6-19.2V63.36"/>
