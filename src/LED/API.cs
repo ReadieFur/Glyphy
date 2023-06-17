@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Glyphy.LED
+﻿namespace Glyphy.LED
 {
     /// <summary>
     /// A wapper class for platform specific LED APIs, overengineered just for the sake of testing :)
