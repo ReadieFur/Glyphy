@@ -254,151 +254,7 @@ namespace Glyphy.Resources.Presets
             {
                 new()
                 {
-                    TransitionTime = 0,
-                    Duration = 0,
-                    Values = new()
-                    {
-                        {
-                            EAddressable.CAMERA,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CAMERA,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.DIAGONAL,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.DIAGONAL,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.CENTER_TOP_LEFT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.CENTER_TOP_RIGHT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.CENTER_BOTTOM_LEFT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.CENTER_BOTTOM_RIGHT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_1,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_1,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_2,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_2,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_3,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_3,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_4,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_4,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_5,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_5,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_6,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_6,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_7,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_7,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.LINE_8,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.LINE_8,
-                                Brightness = 0.5f
-                            }
-                        },
-                        {
-                            EAddressable.DOT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.DOT,
-                                Brightness = 0.5f
-                            }
-                        }
-                    }
-                },
-                //Fix this frames transition (flickers).
-                new()
-                {
-                    TransitionTime = 0.2f,
+                    TransitionTime = 0.3f,
                     Duration = 0,
                     Values = new()
                     {
@@ -575,7 +431,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -592,7 +448,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -708,7 +564,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -725,13 +581,13 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.25f,
+                    Duration = 0.15f,
                     Values = new()
                 },
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -748,7 +604,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -864,7 +720,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.05f,
+                    Duration = 0.04f,
                     Values = new()
                     {
                         {
@@ -1067,7 +923,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.13f,
+                    Duration = 0.025f,
                     Values = new()
                     {
                         {
@@ -1157,15 +1013,24 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.06f,
+                    Duration = 0.025f,
                     Values = new()
                 },
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.1f,
+                    Duration = 0.025f,
                     Values = new()
                     {
+                        {
+                            EAddressable.CAMERA,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.NONE,
+                                Led = EAddressable.CAMERA,
+                                Brightness = 1.0f
+                            }
+                        },
                         {
                             EAddressable.LINE_1,
                             new()
@@ -1243,13 +1108,13 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.06f,
+                    Duration = 0.025f,
                     Values = new()
                 },
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0,
+                    Duration = 0.02f,
                     Values = new()
                     {
                         {
@@ -1265,25 +1130,14 @@ namespace Glyphy.Resources.Presets
                 },
                 new()
                 {
-                    TransitionTime = 0.06f,
-                    Duration = 0.02f,
+                    TransitionTime = 0,
+                    Duration = 0.025f,
                     Values = new()
-                    {
-                        {
-                            EAddressable.DOT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.DOT,
-                                Brightness = 0
-                            }
-                        }
-                    }
                 },
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.02f,
+                    Duration = 0.025f,
                     Values = new()
                     {
                         {
@@ -1292,7 +1146,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.NONE,
                                 Led = EAddressable.DOT,
-                                Brightness = 1
+                                Brightness = 1.0f
                             }
                         }
                     }
@@ -1302,21 +1156,11 @@ namespace Glyphy.Resources.Presets
                     TransitionTime = 0,
                     Duration = 0,
                     Values = new()
-                    {
-                        {
-                            EAddressable.DOT,
-                            new()
-                            {
-                                InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.DOT,
-                                Brightness = 0
-                            }
-                        }
-                    }
                 }
             }
         };
 
+        //This animation needs updating as some subtile transitions are missing around the middle of the animation.
         public static readonly SAnimation ISOLATOR = new()
         {
             Id = Guid.Parse("8d32b1fa-6ba9-42a0-9000-193987e302f0"),
@@ -1467,10 +1311,12 @@ namespace Glyphy.Resources.Presets
                         }
                     }
                 },
-                //TODO: Pulse back up here to 0.85 for a moment.
+                //TODO: Fix this part of the animation to better match the original.
+#region FIX
                 new()
                 {
                     TransitionTime = 0.47f,
+                    //TransitionTime = 0.2f,
                     Duration = 0,
                     Values = new()
                     {
@@ -1480,7 +1326,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CAMERA,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1489,7 +1335,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DIAGONAL,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1498,7 +1344,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1507,7 +1353,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1516,7 +1362,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1525,7 +1371,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1534,7 +1380,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_1,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1543,7 +1389,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_2,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1552,7 +1398,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_3,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1561,7 +1407,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_4,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1570,7 +1416,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_5,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1579,7 +1425,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_6,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1588,7 +1434,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_7,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1597,7 +1443,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_8,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1606,11 +1452,155 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DOT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         }
                     }
                 },
+                /*new()
+                {
+                    TransitionTime = 0.1f,
+                    Duration = 0,
+                    Values = new()
+                    {
+                        {
+                            EAddressable.CAMERA,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.CAMERA,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.DIAGONAL,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.DIAGONAL,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.CENTER_TOP_LEFT,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.CENTER_TOP_LEFT,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.CENTER_TOP_RIGHT,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.CENTER_TOP_RIGHT,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.CENTER_BOTTOM_LEFT,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.CENTER_BOTTOM_LEFT,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.CENTER_BOTTOM_RIGHT,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.CENTER_BOTTOM_RIGHT,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_1,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_1,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_2,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_2,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_3,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_3,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_4,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_4,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_5,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_5,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_6,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_6,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_7,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_7,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.LINE_8,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.LINE_8,
+                                Brightness = 0.85f
+                            }
+                        },
+                        {
+                            EAddressable.DOT,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                Led = EAddressable.DOT,
+                                Brightness = 0.85f
+                            }
+                        }
+                    }
+                },*/
+#endregion
                 new()
                 {
                     TransitionTime = 0,
@@ -1623,7 +1613,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DIAGONAL,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1632,7 +1622,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1641,7 +1631,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1650,7 +1640,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1659,7 +1649,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1668,7 +1658,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_1,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1677,7 +1667,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_2,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1686,7 +1676,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_3,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1695,7 +1685,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_4,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1704,7 +1694,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_5,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1713,7 +1703,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_6,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1722,7 +1712,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_7,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1731,7 +1721,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_8,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -1740,7 +1730,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DOT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         }
                     }
@@ -1757,7 +1747,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DIAGONAL,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1766,7 +1756,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1775,7 +1765,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1784,7 +1774,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1793,7 +1783,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1802,7 +1792,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_1,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1811,7 +1801,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_2,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1820,7 +1810,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_3,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1829,7 +1819,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_4,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1838,7 +1828,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_5,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1847,7 +1837,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_6,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1856,7 +1846,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_7,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1865,7 +1855,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.LINE_8,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1874,7 +1864,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DOT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         }
                     }
@@ -1891,7 +1881,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1900,7 +1890,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1909,7 +1899,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1918,7 +1908,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1927,7 +1917,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DOT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         }
                     }
@@ -1950,7 +1940,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1959,7 +1949,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1968,7 +1958,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -1977,7 +1967,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         }
                     }
@@ -1994,7 +1984,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -2003,7 +1993,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -2012,7 +2002,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -2021,7 +2011,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         },
                         {
@@ -2030,7 +2020,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.DOT,
-                                Brightness = 0.7f
+                                Brightness = 0.5f
                             }
                         }
                     }
@@ -2047,7 +2037,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -2056,7 +2046,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -2065,7 +2055,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         },
                         {
@@ -2074,7 +2064,7 @@ namespace Glyphy.Resources.Presets
                             {
                                 InterpolationType = EInterpolationType.SMOOTH_STEP,
                                 Led = EAddressable.CENTER_BOTTOM_RIGHT,
-                                Brightness = 0.4f
+                                Brightness = 0.2f
                             }
                         }
                     }
@@ -2126,13 +2116,13 @@ namespace Glyphy.Resources.Presets
         {
             Id = Guid.Parse("80fc14b5-eec2-4838-82cd-c8c43b6c2cb7"),
             Name = "Gamma",
-            FrameRate = 30,
+            FrameRate = 75,
             Frames = new()
             {
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.35f,
+                    Duration = 0.025f,
                     Values = new()
                     {
                         {
@@ -2149,13 +2139,7 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0.65f,
-                    Values = new()
-                },
-                new()
-                {
-                    TransitionTime = 0,
-                    Duration = 0.35f,
+                    Duration = 0.025f,
                     Values = new()
                     {
                         {
@@ -2235,12 +2219,30 @@ namespace Glyphy.Resources.Presets
                 new()
                 {
                     TransitionTime = 0,
+                    Duration = 0.025f,
+                    Values = new()
+                    {
+                        {
+                            EAddressable.DIAGONAL,
+                            new()
+                            {
+                                InterpolationType = EInterpolationType.NONE,
+                                Led = EAddressable.DIAGONAL,
+                                Brightness = 1.0f
+                            }
+                        }
+                    }
+                },
+                new()
+                {
+                    TransitionTime = 0,
                     Duration = 0,
                     Values = new()
                 }
             }
         };
 
+        //TODO: This animation needs speeding up and the diagonal LED to have interpolation.
         public static readonly SAnimation BEAK = new()
         {
             Id = Guid.Parse("14cd19ce-c92e-43eb-9c7c-6f5caf6385af"),
@@ -2464,13 +2466,13 @@ namespace Glyphy.Resources.Presets
         {
             Id = Guid.Parse("9b5d1574-0dfd-4df4-a85f-d7eb5a53e9e8"),
             Name = "Nope",
-            FrameRate = 30,
+            FrameRate = 75,
             Frames = new()
             {
                 new()
                 {
                     TransitionTime = 0,
-                    Duration = 0,
+                    Duration = 0.03f,
                     Values = new()
                     {
                         {
@@ -2510,11 +2512,11 @@ namespace Glyphy.Resources.Presets
                             }
                         },
                         {
-                            EAddressable.CENTER_TOP_RIGHT,
+                            EAddressable.CENTER_BOTTOM_RIGHT,
                             new()
                             {
                                 InterpolationType = EInterpolationType.NONE,
-                                Led = EAddressable.CENTER_TOP_RIGHT,
+                                Led = EAddressable.CENTER_BOTTOM_RIGHT,
                                 Brightness = 1.0f
                             }
                         }
@@ -2522,57 +2524,69 @@ namespace Glyphy.Resources.Presets
                 },
                 new()
                 {
-                    TransitionTime = 0.1f,
-                    Duration = 0,
+                    TransitionTime = 0,
+                    Duration = 0.03f,
+                    Values = new()
+                },
+                new()
+                {
+                    TransitionTime = 0,
+                    Duration = 0.03f,
                     Values = new()
                     {
                         {
                             EAddressable.CAMERA,
                             new()
                             {
-                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                InterpolationType = EInterpolationType.NONE,
                                 Led = EAddressable.CAMERA,
-                                Brightness = 0
+                                Brightness = 1.0f
                             }
                         },
                         {
                             EAddressable.CENTER_TOP_LEFT,
                             new()
                             {
-                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                InterpolationType = EInterpolationType.NONE,
                                 Led = EAddressable.CENTER_TOP_LEFT,
-                                Brightness = 0
+                                Brightness = 1.0f
                             }
                         },
                         {
                             EAddressable.CENTER_TOP_RIGHT,
                             new()
                             {
-                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                InterpolationType = EInterpolationType.NONE,
                                 Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0
+                                Brightness = 1.0f
                             }
                         },
                         {
                             EAddressable.CENTER_BOTTOM_LEFT,
                             new()
                             {
-                                InterpolationType = EInterpolationType.SMOOTH_STEP,
+                                InterpolationType = EInterpolationType.NONE,
                                 Led = EAddressable.CENTER_BOTTOM_LEFT,
-                                Brightness = 0
+                                Brightness = 1.0f
                             }
                         },
                         {
-                            EAddressable.CENTER_TOP_RIGHT,
+                            EAddressable.CENTER_BOTTOM_RIGHT,
                             new()
                             {
-                                InterpolationType = EInterpolationType.SMOOTH_STEP,
-                                Led = EAddressable.CENTER_TOP_RIGHT,
-                                Brightness = 0
+                                InterpolationType = EInterpolationType.NONE,
+                                Led = EAddressable.CENTER_BOTTOM_RIGHT,
+                                Brightness = 1.0f
                             }
                         }
                     }
                 },
+                new()
+                {
+                    TransitionTime = 0,
+                    Duration = 0,
+                    Values = new()
+                }
             }
         };
     }
