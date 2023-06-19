@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static System.TimeZoneInfo;
 
 namespace Glyphy.Resources.Presets
 {
@@ -14,6 +15,22 @@ namespace Glyphy.Resources.Presets
             .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(field => field.FieldType == typeof(SAnimation))
             .Select(field => (SAnimation)field.GetValue(null)!);
+
+        public static readonly SAnimation OFF = new()
+        {
+            Id = Guid.Parse("f9cadedb-4c86-46e5-a218-1e5ffa38adc1"),
+            Name = "Off",
+            FrameRate = 1,
+            Frames = new()
+            {
+                new()
+                {
+                    TransitionTime = 0,
+                    Duration = 0,
+                    Values = new()
+                }
+            }
+        };
 
         public static readonly SAnimation OI = new()
         {
