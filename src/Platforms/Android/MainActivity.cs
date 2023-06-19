@@ -8,9 +8,9 @@ using Glyphy.Platforms.Android;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.Maui.LifecycleEvents.AndroidLifecycle;
 
 namespace Glyphy;
 
@@ -39,6 +39,23 @@ public class MainActivity : MauiAppCompatActivity
 
         //TODO: Move this request to a UI element.
         //Task.Run(RequestNotificationAccess);
+
+        //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
+        //TODO: Have a page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.
+        Window!.SetFlags(WindowManagerFlags.LayoutNoLimits, WindowManagerFlags.LayoutNoLimits);
+        Window!.ClearFlags(WindowManagerFlags.TranslucentStatus);
+        Window!.SetStatusBarColor(Android.Graphics.Color.Transparent);
+
+        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, args) =>
+        {
+#pragma warning disable CA1422 // Validate platform compatibility
+            Window!.DecorView.SystemUiVisibility = args.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
+#pragma warning restore CA1422
+        };
+
+#pragma warning disable CA1422 // Validate platform compatibility
+        Window!.DecorView.SystemUiVisibility = Microsoft.Maui.Controls.Application.Current!.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
+#pragma warning restore CA1422
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
@@ -72,16 +89,6 @@ public class MainActivity : MauiAppCompatActivity
                 else throw;
             }
         }
-    }
-
-    public void SetSystemTheme(bool useDarkIcons)
-    {
-        if (Window is null)
-            return;
-
-#pragma warning disable CA1422 // Validate platform compatibility
-        Window.DecorView.SystemUiVisibility = useDarkIcons ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
-#pragma warning restore CA1422
     }
 
     public async Task<bool> RequestNotificationAccess() => await RequestNotificationAccess(null);

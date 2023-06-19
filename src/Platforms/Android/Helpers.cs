@@ -3,11 +3,33 @@ using Java.Lang;
 using Console = System.Console;
 using Java.IO;
 using Microsoft.Maui.ApplicationModel;
+using Android.Util;
 
 namespace Glyphy.Platforms.Android
 {
     internal class Helpers
     {
+        public static int StatusBarHeight => GetBarDimention("status_bar_height");
+
+        public static int NavigationBarHeight => GetBarDimention("navigation_bar_height");
+
+        private static int GetBarDimention(string resourceName)
+        {
+            int? statusBarHeight = 0;
+            int? resourceId = Platform.CurrentActivity?.Resources?.GetIdentifier(resourceName, "dimen", "android");
+            if (resourceId is not null && resourceId > 0)
+                statusBarHeight = Platform.CurrentActivity?.Resources?.GetDimensionPixelSize(resourceId.Value);
+
+            if (statusBarHeight is null)
+                throw new NullReferenceException("Unable to get height.");
+
+            DisplayMetrics? displayMetrics = Platform.CurrentActivity?.Resources?.DisplayMetrics;
+            if (displayMetrics is null)
+                throw new NullReferenceException("Unable to get display metrics.");
+
+            return (int)(statusBarHeight.Value / displayMetrics.Density);
+        }
+
         public static bool CreateRootSubProcess(out Process? subProcess)
         {
             subProcess = null;

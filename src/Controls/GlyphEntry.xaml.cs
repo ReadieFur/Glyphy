@@ -13,7 +13,7 @@ namespace Glyphy.Controls;
 
 //TODO: Change the code structure so that this class handles all of the actions for the animations related to the glyph entry and then have the MainPage only handle the addition and removal of the glyph entries.
 //TODO: When files are loaded, if they fail assume they have been deleted and remove this entry from the UI but don't attempt to delete the file.
-public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
+public partial class GlyphEntry : ContentView, IDisposable
 {
     /*public static readonly BindableProperty NameProperty = BindableProperty.Create(nameof(Name), typeof(string), typeof(GlyphEntry), "Untitled");
 	public string Name { get => (string)GetValue(NameProperty); set => SetValue(NameProperty, value); }*/
@@ -163,9 +163,6 @@ public partial class GlyphEntry : ContentView, IDisposable, IThemeChangeHandler
         SetNameLabel(glyphConfigurator!.Animation.Name);
         glyphConfigurator.Dispose();
         glyphConfigurator = null;
-
-        if (Navigation.NavigationStack.Count != 0 && Navigation.NavigationStack[Navigation.NavigationStack.Count - 1] is IThemeChangeHandler themeChangeHandler)
-            themeChangeHandler.RequestedThemeChanged(Application.Current!.RequestedTheme == AppTheme.Dark);
     }
 
     private void DeleteButton_Tapped(object sender, TappedEventArgs e)

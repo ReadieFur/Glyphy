@@ -8,7 +8,7 @@
     <NavigationPage.HasNavigationBar>
         <x:Boolean>false</x:Boolean>
     </NavigationPage.HasNavigationBar>
-    <!--TODO: In the future I would like to impliment some sort of timeline editor for the LEDs to allow for more customisation and finer control.-->
+    <!--TODO: In the future I would like to implement some sort of time-line editor for the LEDs to allow for more customization and finer control.-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -122,7 +122,7 @@
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
-        <HorizontalStackLayout Grid.Row="0" BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" Padding="30,0">
+        <HorizontalStackLayout x:Name="Header" Grid.Row="0" BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" Padding="30,0">
             <HorizontalStackLayout.Resources>
                 <x:Double x:Key="IconSize">20</x:Double>
             </HorizontalStackLayout.Resources>

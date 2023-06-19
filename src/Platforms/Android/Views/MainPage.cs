@@ -1,15 +1,14 @@
-﻿using Glyphy.Misc;
+﻿using Glyphy.Platforms.Android;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 
 namespace Glyphy.Views
 {
-    public partial class MainPage : ContentPage, IThemeChangeHandler
+    public partial class MainPage : ContentPage
     {
         private void Android_ContentPage_Loaded(object sender, System.EventArgs e)
         {
-            RequestedThemeChanged(Application.Current!.RequestedTheme == Microsoft.Maui.ApplicationModel.AppTheme.Dark);
+            Padding = new(Padding.Left, Padding.Top + Helpers.StatusBarHeight, Padding.Right, Padding.Bottom + Helpers.NavigationBarHeight);
         }
-
-        public void RequestedThemeChanged(bool isDark) => MainActivity.Instance.SetSystemTheme(!isDark);
     }
 }

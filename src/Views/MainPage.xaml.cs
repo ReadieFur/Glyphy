@@ -9,31 +9,17 @@ using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Glyphy.Views;
 
-public partial class MainPage : ContentPage, IDisposable
+public partial class MainPage : ContentPage
 {
     public MainPage()
 	{
 		InitializeComponent();
 
         VersionNumber.Text = AppInfo.VersionString;
-
-        Application.Current!.RequestedThemeChanged += MainPage_RequestedThemeChanged;
-    }
-
-    public void Dispose()
-    {
-        Application.Current!.RequestedThemeChanged -= MainPage_RequestedThemeChanged;
-    }
-
-    private void MainPage_RequestedThemeChanged(object? sender, AppThemeChangedEventArgs e)
-    {
-        if (Navigation.NavigationStack.Count != 0 && Navigation.NavigationStack[Navigation.NavigationStack.Count - 1] is IThemeChangeHandler themeChangeHandler)
-            themeChangeHandler.RequestedThemeChanged(e.RequestedTheme == AppTheme.Dark);
     }
 
     private void ContentPage_Loaded(object sender, EventArgs e)
@@ -95,9 +81,6 @@ public partial class MainPage : ContentPage, IDisposable
         GlyphConfigurator glyphConfigurator = new();
         glyphConfigurator.Disappearing += (_, _) => Task.Run(() =>
         {
-            if (Navigation.NavigationStack.Count != 0 && Navigation.NavigationStack[Navigation.NavigationStack.Count - 1] is IThemeChangeHandler themeChangeHandler)
-                themeChangeHandler.RequestedThemeChanged(Application.Current!.RequestedTheme == AppTheme.Dark);
-
             if (!Storage.GetAnimationIDs().Contains(glyphConfigurator.Animation.Id))
                 return;
 
