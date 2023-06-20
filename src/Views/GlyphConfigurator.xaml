@@ -24,7 +24,7 @@
                     <Grid.ColumnSpacing>
                         <x:Double>10</x:Double>
                     </Grid.ColumnSpacing>
-                    <!--The IsTextPredictionEnabled property should disable autocorrect and so the active word underline too but it dosen't seem to.-->
+                    <!--The IsTextPredictionEnabled property should disable auto-correct and so the active word underline too but it doesn't seem to.-->
                     <Entry x:Name="AnimationNameEntry" Grid.Column="0" HeightRequest="60"
                            Placeholder="Name" Text="Untitled" FontFamily="dotmatrix" FontSize="30" Keyboard="Text" IsTextPredictionEnabled="False" MaxLength="15"/>
                     <Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"

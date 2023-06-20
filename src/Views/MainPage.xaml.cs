@@ -96,6 +96,12 @@ public partial class MainPage : ContentPage
 
             Dispatcher.Dispatch(() => configurationsList.Add(glyphEntry));
         });
+
         await Navigation.PushAsync(glyphConfigurator, true);
+    }
+
+    private async void NotificationsButton_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new NotificationsPage());
     }
 }

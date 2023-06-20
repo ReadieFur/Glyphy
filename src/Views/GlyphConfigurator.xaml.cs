@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using Glyphy.Animation;
 using Glyphy.Configuration;
 using Glyphy.LED;
@@ -31,8 +33,6 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public GlyphConfigurator()
     {
-        //Set to true for new animations.
-        hasUnsavedChanges = true;
         _animation = SAnimation.CreateNewAnimation();
 
         SharedConstructor();
@@ -311,11 +311,11 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             hasUnsavedChanges = false;
             canDiscardChanges = false;
 
-            await CommunityToolkit.Maui.Alerts.Toast.Make("Animation saved.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+            await Toast.Make("Animation saved.", ToastDuration.Short).Show();
         }
         catch
         {
-            await CommunityToolkit.Maui.Alerts.Toast.Make("Failed to save animation.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+            await Toast.Make("Failed to save animation.", ToastDuration.Long).Show();
         }
     }
 
@@ -346,7 +346,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
         canDiscardChanges = true;
 
-        CommunityToolkit.Maui.Alerts.Toast.Make("Unsaved changes.\nPress again to discard changes.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+        Toast.Make("Unsaved changes.\nPress again to discard changes.", ToastDuration.Long).Show();
 
         return true;
     }

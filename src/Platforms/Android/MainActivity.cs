@@ -8,6 +8,7 @@ using Glyphy.Platforms.Android;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,16 @@ public class MainActivity : MauiAppCompatActivity
     internal static MainActivity Instance { get; private set; } = null!;
 
     private event Action<int, Result, Intent?>? OnActivityResultEvent;
+
+    public bool HasNotificationAccess
+    {
+        get
+        {
+            if (PackageName is null)
+                throw new NullReferenceException(nameof(PackageName));
+            return NotificationManagerCompat.GetEnabledListenerPackages(this).Contains(PackageName);
+        }
+    }
 
     protected override void OnCreate(Bundle? savedInstanceState)
     {
@@ -97,10 +108,7 @@ public class MainActivity : MauiAppCompatActivity
     {
         const int NOTIFICATION_ACCESS_REQUEST_CODE = 1001;
 
-        if (PackageName is null)
-            throw new NullReferenceException(nameof(PackageName));
-
-        if (NotificationManagerCompat.GetEnabledListenerPackages(this).Contains(PackageName))
+        if (HasNotificationAccess)
             return true;
 
         ManualResetEventSlim activityResultResetEvent = new(false);
@@ -122,6 +130,6 @@ public class MainActivity : MauiAppCompatActivity
                 activityResultResetEvent.Wait(cancellationToken.Value);
         });
 
-        return NotificationManagerCompat.GetEnabledListenerPackages(this).Contains(PackageName);
+        return HasNotificationAccess;
     }
 }

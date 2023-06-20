@@ -9,6 +9,7 @@ using Glyphy.Animation;
 using Glyphy.Configuration;
 using Android.OS;
 using Android.Content;
+using System.Diagnostics;
 
 //https://developer.android.com/reference/android/service/notification/NotificationListenerService
 namespace Glyphy.Platforms.Android
@@ -22,8 +23,15 @@ namespace Glyphy.Platforms.Android
     [IntentFilter(new string[] { "android.service.notification.NotificationListenerService" })]
     public class NotificationListenerService : ANotificationListenerService
     {
-        PowerManager powerManager = null!;
-        NotificationManager notificationManager = null!;
+        public const string DEFAULT_KEY = "default";
+
+        public static NotificationListenerService? Instance { get; private set; } = null!;
+
+        public static bool IsRunning => Instance is not null;
+
+        //These won't be null during a running instance.
+        private PowerManager powerManager = null!;
+        private NotificationManager notificationManager = null!;
 
         public override void OnListenerConnected()
         {
@@ -41,6 +49,18 @@ namespace Glyphy.Platforms.Android
                 notificationManager = _notificationManager;
             else
                 throw new NullReferenceException("NotificationManager is null.");
+
+            Instance = this;
+        }
+
+        public override void OnListenerDisconnected()
+        {
+            Instance = null;
+
+            base.OnListenerDisconnected();
+
+            powerManager = null!;
+            notificationManager = null!;
         }
 
         //This won't be called before OnListenerConnected so we don't need to null check the managers.
@@ -48,24 +68,46 @@ namespace Glyphy.Platforms.Android
         {
             base.OnNotificationPosted(sbn);
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             //I am building for Android 12.0+ so I don't need to validate the platform compatibility here.
 #pragma warning disable CA1416 // Validate platform compatibility
+            //Make this an option that the user can disable.
             if (powerManager.IsPowerSaveMode || notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority)
                 return;
 #pragma warning restore CA1416
 
 #if DEBUG && true
-            //TESTING:
-            try
+            Task.Run(async () =>
             {
-                if (!AnimationRunner.IsRunning)
-                    AnimationRunner.StartAnimation(Glyphy.Resources.Presets.Glyphs.GUIRO);
-            }
-            catch
-            {
-                //This try/catch/rethrow is just for me to remember to structure it like this for production.
-                throw;
-            }
+                try
+                {
+                    IReadOnlyDictionary<string, Guid> cachedNotificationConfiguration = await Storage.GetCachedNotificationServiceConfiguration();
+
+                    Guid cachedAnimationID;
+                    if (sbn?.PackageName is not null && cachedNotificationConfiguration.ContainsKey(sbn.PackageName))
+                        cachedAnimationID = cachedNotificationConfiguration[sbn.PackageName];
+                    else if (cachedNotificationConfiguration.ContainsKey(DEFAULT_KEY))
+                        cachedAnimationID = cachedNotificationConfiguration[DEFAULT_KEY];
+                    else
+                        return;
+
+                    SAnimation? animation = await Storage.LoadAnimation(cachedAnimationID);
+                    if (animation is null)
+                        return;
+
+                    //Wait for x milliseconds since the stopwatch started as it seems this event fires much faster than tho notification sound does.
+                    int timeToWait = 500 - (int)stopwatch.ElapsedMilliseconds;
+                    if (timeToWait > 0)
+                        await Task.Delay(timeToWait);
+
+                    if (AnimationRunner.IsRunning)
+                        return;
+
+                    await AnimationRunner.StartAnimation(animation.Value);
+                }
+                catch {}
+            });
 #endif
         }
     }

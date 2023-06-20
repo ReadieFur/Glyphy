@@ -55,4 +55,13 @@
 	<ItemGroup>
 	  <Folder Include="Resources\mipmap-xxxhdpi\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Controls\NotificationEntry.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\NotificationsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
 </Project>
