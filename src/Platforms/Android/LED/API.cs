@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SIOException = System.IO.IOException;
+using Glyphy.Configuration;
 
 namespace Glyphy.LED
 {
@@ -214,7 +215,7 @@ namespace Glyphy.LED
 
         public async override Task SetBrightness(EAddressable addressableLED, float brightness)
         {
-            uint systemBrightness = ToSystemRange(brightness);
+            uint systemBrightness = ToSystemRange(brightness * (await Storage.GetCachedSettings()).BrightnessMultiplier);
 
             cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = systemBrightness;
 
@@ -224,14 +225,14 @@ namespace Glyphy.LED
         private float ToNormalisedRange(uint value)
         {
             //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
-            //Optimised //(assumes the value is within a valid range, which it should be within this class):
+            //Optimized //(assumes the value is within a valid range, which it should be within this class):
             return Math.Clamp(value / maxBrightness, 0f, 1f);
         }
 
         private uint ToSystemRange(float value)
         {
             //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
-            //Optimised:
+            //Optimized:
             return Math.Clamp((uint)(value * maxBrightness), 0u, maxBrightness);
         }
     }

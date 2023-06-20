@@ -8,7 +8,7 @@ namespace Glyphy.Views
     {
         private void Android_ContentPage_Loaded(object sender, System.EventArgs e)
         {
-            Padding = new(Padding.Left, Padding.Top + Helpers.StatusBarHeight, Padding.Right, Padding.Bottom + Helpers.NavigationBarHeight);
+            Padding = new(Padding.Left, /*Padding.Top + */Helpers.StatusBarHeight, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
         }
     }
 }

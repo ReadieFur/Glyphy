@@ -66,20 +66,23 @@ namespace Glyphy.Platforms.Android
         //This won't be called before OnListenerConnected so we don't need to null check the managers.
         public override void OnNotificationPosted(global::Android.Service.Notification.StatusBarNotification? sbn)
         {
-            base.OnNotificationPosted(sbn);
-
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            //I am building for Android 12.0+ so I don't need to validate the platform compatibility here.
-#pragma warning disable CA1416 // Validate platform compatibility
-            //Make this an option that the user can disable.
-            if (powerManager.IsPowerSaveMode || notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority)
-                return;
-#pragma warning restore CA1416
+            base.OnNotificationPosted(sbn);
 
 #if DEBUG && true
             Task.Run(async () =>
             {
+                SSettings cachedSettings = await Storage.GetCachedSettings();
+
+                //I am building for Android 12.0+ so I don't need to validate the platform compatibility here.
+#pragma warning disable CA1416 // Validate platform compatibility
+                //Make this an option that the user can disable.
+                if ((powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode)
+                    || (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb))
+                    return;
+#pragma warning restore CA1416
+
                 try
                 {
                     IReadOnlyDictionary<string, Guid> cachedNotificationConfiguration = await Storage.GetCachedNotificationServiceConfiguration();

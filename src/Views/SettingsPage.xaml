@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Glyphy.Views.SettingsPage"
+             Loaded="ContentPage_Loaded">
+    <NavigationPage.HasNavigationBar>
+        <x:Boolean>false</x:Boolean>
+    </NavigationPage.HasNavigationBar>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="30,10,30,10" Spacing="25">
+                <VerticalStackLayout>
+                    <Label Text="General" FontFamily="dotmatrix" FontSize="Subtitle" Padding="0, 10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.ColumnSpacing>
+                            <x:Double>10</x:Double>
+                        </Grid.ColumnSpacing>
+
+                        <Label Grid.Row="0" Grid.Column="0" Text="Brightness Multiplier" VerticalOptions="Center"/>
+                        <Slider x:Name="BrightnessMultiplierSlider" Grid.Row="0" Grid.Column="1" Value="0"/>
+                        <Entry x:Name="BrightnessMultiplierEntry" Grid.Row="0" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+                    </Grid>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label Text="Notification Service" FontFamily="dotmatrix" FontSize="Subtitle" Padding="0, 10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.ColumnSpacing>
+                            <x:Double>10</x:Double>
+                        </Grid.ColumnSpacing>
+
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Ignore Power Saving Mode" VerticalOptions="Center"/>
+                        <Switch x:Name="IgnorePowerSavingModeSwitch" Grid.Row="0" Grid.Column="2" IsToggled="False"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Ignore Do Not Disturb" VerticalOptions="Center"/>
+                        <Switch x:Name="IgnoreDoNotDisturbSwitch" Grid.Row="1" Grid.Column="2" IsToggled="False"/>
+                    </Grid>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label x:Name="StoragePathLabel" Text="Storage Path:" FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <HorizontalStackLayout x:Name="Header" Grid.Row="0" BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" Padding="30,0">
+            <HorizontalStackLayout.Resources>
+                <x:Double x:Key="IconSize">20</x:Double>
+            </HorizontalStackLayout.Resources>
+            <HorizontalStackLayout.Spacing>
+                <x:Double>5</x:Double>
+            </HorizontalStackLayout.Spacing>
+            <Button x:Name="BackButton" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center"
+                        BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                        FontSize="Title" FontFamily="FASolid6" Text="&#xf060;" Clicked="BackButton_Clicked"/>
+            <Label Text="Settings" FontSize="Title" VerticalOptions="Center" Margin="0,0,0,2.5"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

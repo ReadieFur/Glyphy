@@ -25,15 +25,15 @@ namespace Glyphy.Views
 
         private void Android_ContentPage_Loaded(object sender, EventArgs e)
         {
-            Header.Padding = new(Header.Padding.Left, Header.Padding.Top + Helpers.StatusBarHeight, Header.Padding.Right, Header.Padding.Bottom);
-            Padding = new(Padding.Left, Padding.Top, Padding.Right, Padding.Bottom + Helpers.NavigationBarHeight);
+            Header.Padding = new(Header.Padding.Left, /*Header.Padding.Top + */Helpers.StatusBarHeight, Header.Padding.Right, Header.Padding.Bottom);
+            Padding = new(Padding.Left, Padding.Top, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
 
             //Check if the user has granted notification permissions.
             if (!MainActivity.Instance.HasNotificationAccess)
             {
                 Task.Run(async () =>
                 {
-                    if (await MainActivity.Instance.RequestNotificationAccess())
+                    if (!await MainActivity.Instance.RequestNotificationAccess())
                     {
                         Dispatcher.Dispatch(async () =>
                         {

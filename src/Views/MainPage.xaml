@@ -13,12 +13,19 @@
                 <!--TODO: Have this shrink in size a small bit and then become sticky as the application header-->
                 <Grid>
                     <Label Grid.Row="0" Text="Glyphy" FontFamily="dotmatrix" FontSize="40" HorizontalOptions="Start"/>
-                    <!--Possibly add a highlight to this icon for first time use to indicate what it does.-->
-                    <Button x:Name="NotificationsButton" HorizontalOptions="End"
+                    <HorizontalStackLayout HorizontalOptions="End">
+                        <!--Possibly add a highlight to this icon for first time use to indicate what it does.-->
+                        <Button x:Name="NotificationsButton"
                             FontFamily="FASolid6" Text="&#xf0f3;" FontSize="Large"
                             BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
                             CornerRadius="25" WidthRequest="50" HeightRequest="50"
                             Clicked="NotificationsButton_Clicked"/>
+                        <Button x:Name="SettingsButton"
+                            FontFamily="FASolid6" Text="&#xf013;" FontSize="Large"
+                            BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                            CornerRadius="25" WidthRequest="50" HeightRequest="50"
+                            Clicked="SettingsButton_Clicked"/>
+                    </HorizontalStackLayout>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>

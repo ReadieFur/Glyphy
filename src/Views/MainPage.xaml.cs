@@ -104,4 +104,9 @@ public partial class MainPage : ContentPage
     {
         await Navigation.PushAsync(new NotificationsPage());
     }
+
+    private async void SettingsButton_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new SettingsPage());
+    }
 }

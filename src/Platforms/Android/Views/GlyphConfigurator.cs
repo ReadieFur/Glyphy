@@ -10,8 +10,8 @@ namespace Glyphy.Views
     {
         private void Android_ContentPage_Loaded(object sender, EventArgs e)
         {
-            Header.Padding = new(Header.Padding.Left, Header.Padding.Top + Helpers.StatusBarHeight, Header.Padding.Right, Header.Padding.Bottom);
-            Padding = new(Padding.Left, Padding.Top, Padding.Right, Padding.Bottom + Helpers.NavigationBarHeight);
+            Header.Padding = new(Header.Padding.Left, /*Header.Padding.Top + */Helpers.StatusBarHeight, Header.Padding.Right, Header.Padding.Bottom);
+            Padding = new(Padding.Left, Padding.Top, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
 
             //Potential race condition here where the check runs before the API starts.
             MainApplication.OnResume += MainApplication_OnResume;

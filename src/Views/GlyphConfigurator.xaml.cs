@@ -259,12 +259,13 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         hasUnsavedChanges = true;
 
-        double roundedValue = Math.Round(newValue, 1);
+        double clampedValue = Math.Clamp(newValue, 0, 100);
+        double roundedValue = Math.Round(clampedValue, 1);
 
         //Update configuration.
         if (GetCurrentLEDConfiguration() is not SLEDValue ledConfiguration)
             return roundedValue;
-        ledConfiguration.Brightness = (float)newValue * 0.01f; //Multiplication is faster than division.
+        ledConfiguration.Brightness = Misc.Helpers.ConvertNumberRange((float)clampedValue, 0, 100, SLEDValue.MIN_BRIGHTNESS, SLEDValue.MAX_BRIGHTNESS);
         UpdateCurrentLEDConfiguration(ledConfiguration);
 
         //Update live preview.
@@ -281,24 +282,30 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         hasUnsavedChanges = true;
 
+        double clampedValue = Math.Clamp(newValue, SFrame.MIN_TRANSITION_TIME, SFrame.MAX_TRANSITION_TIME);
+        double roundedValue = Math.Round(clampedValue, 2);
+
         //Update configuration.
         SFrame frame = _animation.Frames[currentFrameIndex];
-        frame.TransitionTime = Math.Clamp((float)newValue, SFrame.MIN_TRANSITION_TIME, SFrame.MAX_TRANSITION_TIME);
+        frame.TransitionTime = (float)clampedValue;
         _animation.Frames[currentFrameIndex] = frame;
 
-        return Math.Round(frame.TransitionTime, 1);
+        return roundedValue;
     }
 
     private double? Duration_ValueChanged(double newValue, object? sender)
     {
         hasUnsavedChanges = true;
 
+        double clampedValue = Math.Clamp(newValue, SFrame.MIN_DURATION, SFrame.MAX_DURATION);
+        double roundedValue = Math.Round(clampedValue, 2);
+
         //Update configuration.
         SFrame frame = _animation.Frames[currentFrameIndex];
-        frame.Duration = Math.Clamp((float)newValue, SFrame.MIN_DURATION, SFrame.MAX_DURATION);
+        frame.Duration = (float)clampedValue;
         _animation.Frames[currentFrameIndex] = frame;
 
-        return Math.Round(frame.Duration, 1);
+        return roundedValue;
     }
 
     private async void SaveButton_Clicked(object sender, EventArgs e)
