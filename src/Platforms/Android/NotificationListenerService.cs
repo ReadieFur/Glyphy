@@ -2,25 +2,28 @@
 using ANotificationListenerService = Android.Service.Notification.NotificationListenerService;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Glyphy.Animation;
 using Glyphy.Configuration;
 using Android.OS;
 using Android.Content;
 using System.Diagnostics;
+using Android;
+using FlagFilterType = Android.Service.Notification.FlagFilterType;
 
 //https://developer.android.com/reference/android/service/notification/NotificationListenerService
 namespace Glyphy.Platforms.Android
 {
     //Have notification animations be disabled while the app is focused.
     [Service(
-        Label = "Notification Listener Service",
+        Label = "Notification Lighting Service",
         Exported = false,
-        Permission = "android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        Permission = Manifest.Permission.BindNotificationListenerService
     )]
     [IntentFilter(new string[] { "android.service.notification.NotificationListenerService" })]
+    //Set the required meta-data to signal that we only want to receive notifications that appear to the user (otherwise we get all notifications such as when the device rotation is changed).
+    [MetaData(name: MetaDataDefaultFilterTypes, Value = nameof(FlagFilterType.Conversations) + "|" + nameof(FlagFilterType.Alerting))]
+    [MetaData(name: MetaDataDisabledFilterTypes, Value = nameof(FlagFilterType.Ongoing) + "|" + nameof(FlagFilterType.Silent))]
     public class NotificationListenerService : ANotificationListenerService
     {
         public const string DEFAULT_KEY = "default";
@@ -57,7 +60,9 @@ namespace Glyphy.Platforms.Android
         {
             Instance = null;
 
+#if ANDROID24_0_OR_GREATER
             base.OnListenerDisconnected();
+#endif
 
             powerManager = null!;
             notificationManager = null!;
@@ -70,16 +75,17 @@ namespace Glyphy.Platforms.Android
 
             base.OnNotificationPosted(sbn);
 
-#if DEBUG && true
             Task.Run(async () =>
             {
                 SSettings cachedSettings = await Storage.GetCachedSettings();
 
                 //I am building for Android 12.0+ so I don't need to validate the platform compatibility here.
 #pragma warning disable CA1416 // Validate platform compatibility
-                //Make this an option that the user can disable.
-                if ((powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode)
-                    || (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb))
+                //TODO: Ignore notifications from this application (as for now I will only be posting the long-running foreground service notification).
+                if (sbn is null
+                    || (powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode) //Power saver mode.
+                    || (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb) //Do not disturb.
+                    || (sbn.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.
                     return;
 #pragma warning restore CA1416
 
@@ -104,14 +110,13 @@ namespace Glyphy.Platforms.Android
                     if (timeToWait > 0)
                         await Task.Delay(timeToWait);
 
-                    if (AnimationRunner.IsRunning)
+                    if (AnimationRunner.GetQueuedInterrupts > 0)
                         return;
 
-                    await AnimationRunner.StartAnimation(animation.Value);
+                    await AnimationRunner.AddInterruptAnimation(animation.Value);
                 }
                 catch {}
             });
-#endif
         }
     }
 }

@@ -10,8 +10,10 @@ using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using ForegroundService = Glyphy.Platforms.Android.ForegroundService;
 
 namespace Glyphy;
 
@@ -67,6 +69,25 @@ public class MainActivity : MauiAppCompatActivity
 #pragma warning disable CA1422 // Validate platform compatibility
         Window!.DecorView.SystemUiVisibility = Microsoft.Maui.Controls.Application.Current!.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
 #pragma warning restore CA1422
+
+        //Start foreground service.
+        //TODO: Implement this, request post notification access.
+        Intent foregroundServiceIntent = new(this, typeof(ForegroundService));
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+        {
+#pragma warning disable CA1416 // Validate platform compatibility
+            NotificationChannel channel = new NotificationChannel("glyphy", "Glyphy", NotificationImportance.Min);
+            channel.SetSound(null, null);
+            channel.EnableVibration(false);
+            //channel.LockscreenVisibility = NotificationVisibility.Secret;
+            NotificationManager? notificationManager = GetSystemService(NotificationService) as NotificationManager;
+            notificationManager?.CreateNotificationChannel(channel);
+
+            StartForegroundService(foregroundServiceIntent);
+#pragma warning restore CA1416 // Validate platform compatibility
+        }
+        else
+            StartService(foregroundServiceIntent);
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)

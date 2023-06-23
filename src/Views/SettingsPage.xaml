@@ -56,6 +56,32 @@
                         <Switch x:Name="IgnoreDoNotDisturbSwitch" Grid.Row="1" Grid.Column="2" IsToggled="False"/>
                     </Grid>
                 </VerticalStackLayout>
+                <!--TEMP: MOVE FOREGROUND SERVICE OPTIONS TO MAIN PAGE-->
+                <VerticalStackLayout>
+                    <Label Text="Ambient Service" FontFamily="dotmatrix" FontSize="Subtitle" Padding="0, 10"/>
+                    <!--<Label Text="Play an animation all the time!" FontSize="Small" Padding="0, 10"/>-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.ColumnSpacing>
+                            <x:Double>10</x:Double>
+                        </Grid.ColumnSpacing>
+
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Enabled" VerticalOptions="Center"/>
+                        
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Restart Interval" VerticalOptions="Center"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Animation" VerticalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
                 <VerticalStackLayout>
                     <Label x:Name="StoragePathLabel" Text="Storage Path:" FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
                 </VerticalStackLayout>
