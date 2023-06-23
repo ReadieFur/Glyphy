@@ -10,9 +10,10 @@ using Android.Content;
 using System.Diagnostics;
 using Android;
 using FlagFilterType = Android.Service.Notification.FlagFilterType;
+using Android.Runtime;
 
 //https://developer.android.com/reference/android/service/notification/NotificationListenerService
-namespace Glyphy.Platforms.Android
+namespace Glyphy.Platforms.Android.Services
 {
     //Have notification animations be disabled while the app is focused.
     [Service(
@@ -24,17 +25,25 @@ namespace Glyphy.Platforms.Android
     //Set the required meta-data to signal that we only want to receive notifications that appear to the user (otherwise we get all notifications such as when the device rotation is changed).
     [MetaData(name: MetaDataDefaultFilterTypes, Value = nameof(FlagFilterType.Conversations) + "|" + nameof(FlagFilterType.Alerting))]
     [MetaData(name: MetaDataDisabledFilterTypes, Value = nameof(FlagFilterType.Ongoing) + "|" + nameof(FlagFilterType.Silent))]
-    public class NotificationListenerService : ANotificationListenerService
+    public class NotificationLightingService : ANotificationListenerService
     {
         public const string DEFAULT_KEY = "default";
 
-        public static NotificationListenerService? Instance { get; private set; } = null!;
+        public static NotificationLightingService? Instance { get; private set; } = null!;
 
         public static bool IsRunning => Instance is not null;
 
         //These won't be null during a running instance.
         private PowerManager powerManager = null!;
         private NotificationManager notificationManager = null!;
+
+        [return: GeneratedEnum]
+        public override StartCommandResult OnStartCommand(Intent? intent, [GeneratedEnum] StartCommandFlags flags, int startId)
+        {
+            //Signal that if the system kills the service, it should be restarted.
+            return StartCommandResult.Sticky;
+
+        }
 
         public override void OnListenerConnected()
         {

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="internalOnly" package="com.readiefur.glyphy">
 	<uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
 	<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Glyphy"></application>
-	<uses-sdk android:minSdkVersion="31" />
+	<uses-sdk android:minSdkVersion="31" android:targetSdkVersion="33" />
 </manifest>

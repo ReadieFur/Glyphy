@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using AndroidX.Core.App;
 using Glyphy.Platforms.Android;
+using Glyphy.Platforms.Android.Services;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using System;
@@ -45,13 +46,11 @@ public class MainActivity : MauiAppCompatActivity
         //Register services.
         //https://learn.microsoft.com/en-us/dotnet/api/android.content.pm.packagemanager.setcomponentenabledsetting?view=xamarin-android-sdk-13
 
-        PackageManager!.SetComponentEnabledSetting(
-            new(this, Java.Lang.Class.FromType(typeof(NotificationListenerService))),
-            ComponentEnabledState.Enabled,
-            ComponentEnableOption.DontKillApp);
+        //Start the notification service.
+        Helpers.StartService<NotificationLightingService>(false);
 
-        //TODO: Move this request to a UI element.
-        //Task.Run(RequestNotificationAccess);
+        //Start the ambient service.
+        Helpers.StartService<AmbientLightingService>(false);
 
         //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
         //TODO: Have a page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.
@@ -69,25 +68,6 @@ public class MainActivity : MauiAppCompatActivity
 #pragma warning disable CA1422 // Validate platform compatibility
         Window!.DecorView.SystemUiVisibility = Microsoft.Maui.Controls.Application.Current!.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
 #pragma warning restore CA1422
-
-        //Start foreground service.
-        //TODO: Implement this, request post notification access.
-        Intent foregroundServiceIntent = new(this, typeof(ForegroundService));
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-        {
-#pragma warning disable CA1416 // Validate platform compatibility
-            NotificationChannel channel = new NotificationChannel("glyphy", "Glyphy", NotificationImportance.Min);
-            channel.SetSound(null, null);
-            channel.EnableVibration(false);
-            //channel.LockscreenVisibility = NotificationVisibility.Secret;
-            NotificationManager? notificationManager = GetSystemService(NotificationService) as NotificationManager;
-            notificationManager?.CreateNotificationChannel(channel);
-
-            StartForegroundService(foregroundServiceIntent);
-#pragma warning restore CA1416 // Validate platform compatibility
-        }
-        else
-            StartService(foregroundServiceIntent);
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)

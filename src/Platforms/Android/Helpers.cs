@@ -1,9 +1,14 @@
 ﻿using System;
-using Java.Lang;
 using Console = System.Console;
+using Java.Lang;
 using Java.IO;
+using JProcess = Java.Lang.Process;
 using Microsoft.Maui.ApplicationModel;
 using Android.Util;
+using Android.App;
+using Android.Content.PM;
+using Android.OS;
+using Android.Content;
 
 namespace Glyphy.Platforms.Android
 {
@@ -30,7 +35,7 @@ namespace Glyphy.Platforms.Android
             return (int)(statusBarHeight.Value / displayMetrics.Density);
         }
 
-        public static bool CreateRootSubProcess(out Process? subProcess)
+        public static bool CreateRootSubProcess(out JProcess? subProcess)
         {
             subProcess = null;
             try
@@ -67,6 +72,52 @@ namespace Glyphy.Platforms.Android
                     subProcess.Dispose();
 
                 return false;
+            }
+        }
+
+        public static void StartService<TService>(bool asForeground) where TService : Service
+        {
+            if (Platform.CurrentActivity is null)
+                throw new NullReferenceException($"Unable to start service. {nameof(Platform.CurrentActivity)} is null.");
+
+            if (asForeground)
+            {
+                Intent foregroundServiceIntent = new(Platform.AppContext, typeof(TService));
+
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                {
+#pragma warning disable CA1416 // Validate platform compatibility
+                    //Configure the notification channel to be silent and not show a badge.
+                    NotificationChannel channel = new NotificationChannel("glyphy", $"Glyphy {typeof(TService).Name}", NotificationImportance.Min);
+                    channel.SetSound(null, null);
+                    channel.EnableVibration(false);
+                    channel.SetShowBadge(false);
+                    //channel.LockscreenVisibility = NotificationVisibility.Secret;
+
+                    //Create the notification channel.
+                    NotificationManager? notificationManager = Platform.CurrentActivity.GetSystemService(Context.NotificationService) as NotificationManager;
+                    if (notificationManager is null)
+                        throw new NullReferenceException($"Unable to start service. {nameof(notificationManager)} is null.");
+                    notificationManager.CreateNotificationChannel(channel);
+
+                    //Start the service.
+                    Platform.AppContext.StartForegroundService(foregroundServiceIntent);
+#pragma warning restore CA1416 // Validate platform compatibility
+                }
+                else
+                {
+                    Platform.AppContext.StartService(foregroundServiceIntent);
+                }
+            }
+            else
+            {
+                if (Platform.CurrentActivity.PackageManager is null)
+                    throw new NullReferenceException($"Unable to start service. {nameof(Platform.CurrentActivity.PackageManager)} is null.");
+
+                Platform.CurrentActivity.PackageManager.SetComponentEnabledSetting(
+                    new(Platform.AppContext, Class.FromType(typeof(TService))),
+                    ComponentEnabledState.Enabled,
+                    ComponentEnableOption.DontKillApp);
             }
         }
     }
