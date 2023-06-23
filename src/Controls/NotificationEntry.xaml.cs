@@ -1,4 +1,5 @@
 using Glyphy.Configuration;
+using Glyphy.Configuration.NotificationConfiguration;
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,12 @@ public partial class NotificationEntry : ContentView
 
         GlyphPicker.ItemsSource = glyphs.Values.ToList();
 
-        bool hasStoredValue = Storage.GetCachedNotificationServiceConfiguration().Result.TryGetValue(packageName, out Guid storedGlyphID);
-        if (hasStoredValue && glyphs.ContainsKey(storedGlyphID))
+        bool hasStoredValue = Storage.NotificationServiceSettings.GetCached().Result.Configuration.TryGetValue(packageName, out SNotificationConfiguration notificationConfiguration);
+        if (hasStoredValue && glyphs.ContainsKey(notificationConfiguration.AnimationID))
         {
             EnabledSwitch.IsToggled = true;
             GlyphPicker.IsEnabled = true;
-            GlyphPicker.SelectedIndex = glyphs.Keys.ToList().IndexOf(storedGlyphID);
+            GlyphPicker.SelectedIndex = glyphs.Keys.ToList().IndexOf(notificationConfiguration.AnimationID);
         }
         else
         {
@@ -53,34 +54,29 @@ public partial class NotificationEntry : ContentView
 
     private void EnabledSwitch_Toggled(object? sender, ToggledEventArgs e)
     {
-        bool isToggled = EnabledSwitch.IsToggled;
-
         Task.Run(async () =>
         {
-            //This conversion of the dictionary does take time but I'm willing to accept that as it's a safety feature (at least for now) to not have the cached value be directly mutable.
-            Dictionary<string, Guid> notificationServiceConfiguration = (await Storage.GetCachedNotificationServiceConfiguration()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            SNotificationConfigurationRoot notificationServiceConfiguration = await Storage.NotificationServiceSettings.GetCached();
 
-            GlyphPicker.IsEnabled = isToggled;
+            GlyphPicker.IsEnabled = e.Value;
 
-            if (isToggled)
+            if (notificationServiceConfiguration.Configuration.ContainsKey(PackageName))
             {
-                //TODO: Store these in an object so they can be disabled but keep track of what animation they were set to.
-                //GlyphPicker.SelectedIndex = glyphs.Keys.ToList().IndexOf(GET_DEFAULT);
-
-                if (notificationServiceConfiguration.ContainsKey(PackageName))
-                    notificationServiceConfiguration[PackageName] = Glyphy.Resources.Presets.Glyphs.OFF.Id;
-                else
-                    notificationServiceConfiguration.Add(PackageName, Glyphy.Resources.Presets.Glyphs.OFF.Id);
+                SNotificationConfiguration configuration = notificationServiceConfiguration.Configuration[PackageName];
+                configuration.Enabled = e.Value;
+                notificationServiceConfiguration.Configuration[PackageName] = configuration;
             }
             else
             {
-                GlyphPicker.SelectedIndex = -1;
-
-                if (notificationServiceConfiguration.ContainsKey(PackageName))
-                    notificationServiceConfiguration.Remove(PackageName);
+                notificationServiceConfiguration.Configuration.Add(PackageName, new()
+                {
+                    PackageName = PackageName,
+                    Enabled = e.Value,
+                    AnimationID = Glyphy.Resources.Presets.Glyphs.OFF.Id
+                });
             }
 
-            await Storage.SaveNotificationServiceConfiguration(notificationServiceConfiguration);
+            await Storage.NotificationServiceSettings.Save(notificationServiceConfiguration);
         });
     }
 
@@ -88,19 +84,29 @@ public partial class NotificationEntry : ContentView
     {
         if (GlyphPicker.SelectedIndex < 0 || GlyphPicker.SelectedIndex > Glyphs.Count)
             return;
-        Guid selectedAnimation = Glyphs.ElementAt(GlyphPicker.SelectedIndex).Key;
+        Guid selectedAnimationID = Glyphs.ElementAt(GlyphPicker.SelectedIndex).Key;
 
         Task.Run(async () =>
         {
-            //This conversion of the dictionary does take time but I'm willing to accept that as it's a safety feature (at least for now) to not have the cached value be directly mutable.
-            Dictionary<string, Guid> notificationServiceConfiguration = (await Storage.GetCachedNotificationServiceConfiguration()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            SNotificationConfigurationRoot notificationServiceConfiguration = await Storage.NotificationServiceSettings.GetCached();
 
-            if (notificationServiceConfiguration.ContainsKey(PackageName))
-                notificationServiceConfiguration[PackageName] = selectedAnimation;
+            if (notificationServiceConfiguration.Configuration.ContainsKey(PackageName))
+            {
+                SNotificationConfiguration configuration = notificationServiceConfiguration.Configuration[PackageName];
+                configuration.AnimationID = selectedAnimationID;
+                notificationServiceConfiguration.Configuration[PackageName] = configuration;
+            }
             else
-                notificationServiceConfiguration.Add(PackageName, selectedAnimation);
+            {
+                notificationServiceConfiguration.Configuration.Add(PackageName, new()
+                {
+                    PackageName = PackageName,
+                    Enabled = true,
+                    AnimationID = selectedAnimationID
+                });
+            }
 
-            await Storage.SaveNotificationServiceConfiguration(notificationServiceConfiguration);
+            await Storage.NotificationServiceSettings.Save(notificationServiceConfiguration);
         });
     }
 }

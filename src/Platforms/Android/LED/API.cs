@@ -215,7 +215,7 @@ namespace Glyphy.LED
 
         public async override Task SetBrightness(EAddressable addressableLED, float brightness)
         {
-            uint systemBrightness = ToSystemRange(brightness * (await Storage.GetCachedSettings()).BrightnessMultiplier);
+            uint systemBrightness = ToSystemRange(brightness * (await Storage.Settings.GetCached()).BrightnessMultiplier);
 
             cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = systemBrightness;
 

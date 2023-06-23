@@ -1,7 +1,8 @@
-﻿using Android.App;
+﻿#define ADD_DELAY //This can sometimes be useful as the notification event can fire before the notification sound plays. TODO: Find a more reliable, dynamic, way to do this.
+
+using Android.App;
 using ANotificationListenerService = Android.Service.Notification.NotificationListenerService;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Glyphy.Animation;
 using Glyphy.Configuration;
@@ -11,6 +12,7 @@ using System.Diagnostics;
 using Android;
 using FlagFilterType = Android.Service.Notification.FlagFilterType;
 using Android.Runtime;
+using Glyphy.Configuration.NotificationConfiguration;
 
 //https://developer.android.com/reference/android/service/notification/NotificationListenerService
 namespace Glyphy.Platforms.Android.Services
@@ -72,13 +74,15 @@ namespace Glyphy.Platforms.Android.Services
         //This won't be called before OnListenerConnected so we don't need to null check the managers.
         public override void OnNotificationPosted(global::Android.Service.Notification.StatusBarNotification? sbn)
         {
+#if ADD_DELAY
             Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
 
             base.OnNotificationPosted(sbn);
 
             Task.Run(async () =>
             {
-                SSettings cachedSettings = await Storage.GetCachedSettings();
+                SSettings cachedSettings = await Storage.Settings.GetCached();
 
                 //I am building for Android 12.0+ so I don't need to validate the platform compatibility here.
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -92,13 +96,13 @@ namespace Glyphy.Platforms.Android.Services
 
                 try
                 {
-                    IReadOnlyDictionary<string, Guid> cachedNotificationConfiguration = await Storage.GetCachedNotificationServiceConfiguration();
+                    SNotificationConfigurationRoot notificationServiceConfiguration = await Storage.NotificationServiceSettings.GetCached();
 
                     Guid cachedAnimationID;
-                    if (sbn?.PackageName is not null && cachedNotificationConfiguration.ContainsKey(sbn.PackageName))
-                        cachedAnimationID = cachedNotificationConfiguration[sbn.PackageName];
-                    else if (cachedNotificationConfiguration.ContainsKey(DEFAULT_KEY))
-                        cachedAnimationID = cachedNotificationConfiguration[DEFAULT_KEY];
+                    if (sbn?.PackageName is not null && notificationServiceConfiguration.Configuration.ContainsKey(sbn.PackageName))
+                        cachedAnimationID = notificationServiceConfiguration.Configuration[sbn.PackageName].AnimationID;
+                    else if (notificationServiceConfiguration.Configuration.ContainsKey(DEFAULT_KEY))
+                        cachedAnimationID = notificationServiceConfiguration.Configuration[DEFAULT_KEY].AnimationID;
                     else
                         return;
 
@@ -106,10 +110,12 @@ namespace Glyphy.Platforms.Android.Services
                     if (animation is null)
                         return;
 
+#if ADD_DELAY
                     //Wait for x milliseconds since the stopwatch started as it seems this event fires much faster than tho notification sound does.
                     int timeToWait = 500 - (int)stopwatch.ElapsedMilliseconds;
                     if (timeToWait > 0)
                         await Task.Delay(timeToWait);
+#endif
 
                     if (AnimationRunner.GetQueuedInterrupts > 0)
                         return;

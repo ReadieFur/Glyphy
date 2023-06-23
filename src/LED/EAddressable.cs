@@ -1,4 +1,4 @@
-﻿//#define PRETTY_JSON
+﻿#define PRETTY_JSON
 
 using System.Text.Json.Serialization;
 

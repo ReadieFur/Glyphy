@@ -30,7 +30,7 @@ public partial class SettingsPage : ContentPage
         IgnorePowerSavingModeSwitch.IsEnabled = false;
         IgnoreDoNotDisturbSwitch.IsEnabled = false;
 
-        Task.Run(async () => cachedSettings = await Storage.GetCachedSettings())
+        Task.Run(async () => cachedSettings = await Storage.Settings.GetCached())
             .ContinueWith((res) =>
             {
                 double brightnessValue = Math.Round(cachedSettings.BrightnessMultiplier, 1);
@@ -79,7 +79,7 @@ public partial class SettingsPage : ContentPage
     private async void BackButton_Clicked(object sender, EventArgs e)
     {
         //Is this task wrapping necessary?
-        await Task.Run(async () => await Storage.SaveSettings(cachedSettings));
+        await Task.Run(async () => await Storage.Settings.Save(cachedSettings));
         await Navigation.PopAsync();
     }
 }

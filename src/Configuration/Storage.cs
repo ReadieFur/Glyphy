@@ -1,4 +1,5 @@
 ﻿using Glyphy.Animation;
+using Glyphy.Configuration.NotificationConfiguration;
 using Glyphy.Resources.Presets;
 using Microsoft.Maui.Storage;
 using Newtonsoft.Json;
@@ -10,19 +11,15 @@ using System.Threading.Tasks;
 
 namespace Glyphy.Configuration
 {
-    //TODO: Store any NotificationService related items in memory for faster access times as well as keeping track of last write times for these values so they can be updated from the disk when nessecary.
+    //TODO: Store any NotificationService related items in memory for faster access times as well as keeping track of last write times for these values so they can be updated from the disk when necessary.
     public static class Storage
     {
         public static string BasePath => FileSystem.Current.AppDataDirectory;
 
-        private static readonly string NotificationConfigurationPath = Path.Combine(BasePath, "notification_service_configuration.json");
+        public static readonly CachedConfigurationWrapper<SNotificationConfigurationRoot> NotificationServiceSettings = new(Path.Combine(BasePath, "notification_service_configuration.json"));
+        public static readonly CachedConfigurationWrapper<SSettings> Settings = new(Path.Combine(BasePath, "settings.json"));
 
-        private static readonly string SettingsPath = Path.Combine(BasePath, "settings.json");
-
-        private static Dictionary<string, Guid>? _notificationServiceConfiguration = null;
-
-        private static SSettings? _settings = null;
-
+        #region Animations
         private static string GetAnimationFilePath(Guid id) =>
             Path.Combine(BasePath, id.ToString() + ".json");
 
@@ -99,94 +96,6 @@ namespace Glyphy.Configuration
 
             return true;
         }
-
-        public static async Task<bool> SaveNotificationServiceConfiguration(Dictionary<string, Guid> notificationServiceConfiguration)
-        {
-            try
-            {
-                if (notificationServiceConfiguration is null)
-                    throw new NullReferenceException(nameof(notificationServiceConfiguration));
-
-                _notificationServiceConfiguration = notificationServiceConfiguration;
-
-                await File.WriteAllTextAsync(
-                    NotificationConfigurationPath,
-                    JsonConvert.SerializeObject(notificationServiceConfiguration));
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static async Task<Dictionary<string, Guid>?> LoadNotificationServiceConfiguration()
-        {
-            try
-            {
-                if (!File.Exists(NotificationConfigurationPath))
-                    _notificationServiceConfiguration = new Dictionary<string, Guid>();
-                else
-                    _notificationServiceConfiguration = JsonConvert.DeserializeObject<Dictionary<string, Guid>>(await File.ReadAllTextAsync(NotificationConfigurationPath))!;
-
-                return _notificationServiceConfiguration;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public static async Task<IReadOnlyDictionary<string, Guid>> GetCachedNotificationServiceConfiguration()
-        {
-            if (_notificationServiceConfiguration is not null)
-                return _notificationServiceConfiguration;
-
-            return await LoadNotificationServiceConfiguration() ?? throw new NullReferenceException("Failed to load configuration.");
-        }
-
-        public static async Task<bool> SaveSettings(SSettings settings)
-        {
-            try
-            {
-                _settings = settings;
-
-                await File.WriteAllTextAsync(
-                    SettingsPath,
-                    JsonConvert.SerializeObject(settings));
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static async Task<SSettings?> LoadSettings()
-        {
-            try
-            {
-                if (!File.Exists(SettingsPath))
-                    _settings = new();
-                else
-                    _settings = JsonConvert.DeserializeObject<SSettings>(await File.ReadAllTextAsync(SettingsPath))!;
-
-                return _settings;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public static async Task<SSettings> GetCachedSettings()
-        {
-            if (_settings is not null)
-                return _settings.Value;
-
-            return await LoadSettings() ?? throw new NullReferenceException("Failed to load settings.");
-        }
+        #endregion
     }
 }
