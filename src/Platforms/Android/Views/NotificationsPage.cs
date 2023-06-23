@@ -6,7 +6,7 @@ using CommunityToolkit.Maui.Core;
 using Glyphy.Animation;
 using Glyphy.Configuration;
 using Glyphy.Controls;
-using Glyphy.Platforms.Android;
+using Glyphy.Platforms.Android.Services;
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
@@ -29,11 +29,11 @@ namespace Glyphy.Views
             Padding = new(Padding.Left, Padding.Top, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
 
             //Check if the user has granted notification permissions.
-            if (!MainActivity.Instance.HasNotificationAccess)
+            if (!Helpers.HasNotificationAccess)
             {
                 Task.Run(async () =>
                 {
-                    if (!await MainActivity.Instance.RequestNotificationAccess())
+                    if (!await Helpers.RequestNotificationAccess())
                     {
                         Dispatcher.Dispatch(async () =>
                         {
@@ -75,7 +75,7 @@ namespace Glyphy.Views
                 #region Defaults
                 Dispatcher.Dispatch(() => DefaultGlyphPicker.ItemsSource = cachedGlyphs.Values.ToList());
 
-                bool hasDefaultValue = (await Storage.GetCachedNotificationServiceConfiguration()).TryGetValue(NotificationListenerService.DEFAULT_KEY, out Guid storedDefaultGlyphID);
+                bool hasDefaultValue = (await Storage.GetCachedNotificationServiceConfiguration()).TryGetValue(NotificationLightingService.DEFAULT_KEY, out Guid storedDefaultGlyphID);
                 if (hasDefaultValue && cachedGlyphs.ContainsKey(storedDefaultGlyphID))
                 {
                     Dispatcher.Dispatch(() =>
@@ -192,17 +192,17 @@ namespace Glyphy.Views
                     //TODO: Store these in an object so they can be disabled but keep track of what animation they were set to.
                     //GlyphPicker.SelectedIndex = glyphs.Keys.ToList().IndexOf(GET_DEFAULT);
 
-                    if (notificationServiceConfiguration.ContainsKey(NotificationListenerService.DEFAULT_KEY))
-                        notificationServiceConfiguration[NotificationListenerService.DEFAULT_KEY] = Glyphy.Resources.Presets.Glyphs.OFF.Id;
+                    if (notificationServiceConfiguration.ContainsKey(NotificationLightingService.DEFAULT_KEY))
+                        notificationServiceConfiguration[NotificationLightingService.DEFAULT_KEY] = Glyphy.Resources.Presets.Glyphs.OFF.Id;
                     else
-                        notificationServiceConfiguration.Add(NotificationListenerService.DEFAULT_KEY, Glyphy.Resources.Presets.Glyphs.OFF.Id);
+                        notificationServiceConfiguration.Add(NotificationLightingService.DEFAULT_KEY, Glyphy.Resources.Presets.Glyphs.OFF.Id);
                 }
                 else
                 {
                     DefaultGlyphPicker.SelectedIndex = -1;
 
-                    if (notificationServiceConfiguration.ContainsKey(NotificationListenerService.DEFAULT_KEY))
-                        notificationServiceConfiguration.Remove(NotificationListenerService.DEFAULT_KEY);
+                    if (notificationServiceConfiguration.ContainsKey(NotificationLightingService.DEFAULT_KEY))
+                        notificationServiceConfiguration.Remove(NotificationLightingService.DEFAULT_KEY);
                 }
 
                 await Storage.SaveNotificationServiceConfiguration(notificationServiceConfiguration);
@@ -220,10 +220,10 @@ namespace Glyphy.Views
                 //This conversion of the dictionary does take time but I'm willing to accept that as it's a safety feature (at least for now) to not have the cached value be directly mutable.
                 Dictionary<string, Guid> notificationServiceConfiguration = (await Storage.GetCachedNotificationServiceConfiguration()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                if (notificationServiceConfiguration.ContainsKey(NotificationListenerService.DEFAULT_KEY))
-                    notificationServiceConfiguration[NotificationListenerService.DEFAULT_KEY] = selectedAnimation;
+                if (notificationServiceConfiguration.ContainsKey(NotificationLightingService.DEFAULT_KEY))
+                    notificationServiceConfiguration[NotificationLightingService.DEFAULT_KEY] = selectedAnimation;
                 else
-                    notificationServiceConfiguration.Add(NotificationListenerService.DEFAULT_KEY, selectedAnimation);
+                    notificationServiceConfiguration.Add(NotificationLightingService.DEFAULT_KEY, selectedAnimation);
 
                 await Storage.SaveNotificationServiceConfiguration(notificationServiceConfiguration);
             });

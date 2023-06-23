@@ -29,10 +29,6 @@ namespace Glyphy.Platforms.Android.Services
     {
         public const string DEFAULT_KEY = "default";
 
-        public static NotificationLightingService? Instance { get; private set; } = null!;
-
-        public static bool IsRunning => Instance is not null;
-
         //These won't be null during a running instance.
         private PowerManager powerManager = null!;
         private NotificationManager notificationManager = null!;
@@ -61,14 +57,10 @@ namespace Glyphy.Platforms.Android.Services
                 notificationManager = _notificationManager;
             else
                 throw new NullReferenceException("NotificationManager is null.");
-
-            Instance = this;
         }
 
         public override void OnListenerDisconnected()
         {
-            Instance = null;
-
 #if ANDROID24_0_OR_GREATER
             base.OnListenerDisconnected();
 #endif

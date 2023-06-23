@@ -3,53 +3,29 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-using AndroidX.Core.App;
 using Glyphy.Platforms.Android;
 using Glyphy.Platforms.Android.Services;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
-using ForegroundService = Glyphy.Platforms.Android.ForegroundService;
 
 namespace Glyphy;
 
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-    //Temporary solution until I can access the Android Window object from my views.
-    internal static MainActivity Instance { get; private set; } = null!;
-
-    private event Action<int, Result, Intent?>? OnActivityResultEvent;
-
-    public bool HasNotificationAccess
-    {
-        get
-        {
-            if (PackageName is null)
-                throw new NullReferenceException(nameof(PackageName));
-            return NotificationManagerCompat.GetEnabledListenerPackages(this).Contains(PackageName);
-        }
-    }
+    internal static event Action<int, Result, Intent?>? OnActivityResultEvent;
 
     protected override void OnCreate(Bundle? savedInstanceState)
     {
-        if (Instance is null)
-            Instance = this;
-
         base.OnCreate(savedInstanceState);
 
         //Register services.
         //https://learn.microsoft.com/en-us/dotnet/api/android.content.pm.packagemanager.setcomponentenabledsetting?view=xamarin-android-sdk-13
 
-        //Start the notification service.
+        //Start services.
         Helpers.StartService<NotificationLightingService>(false);
-
-        //Start the ambient service.
         Helpers.StartService<AmbientLightingService>(false);
 
         //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
@@ -58,14 +34,9 @@ public class MainActivity : MauiAppCompatActivity
         Window!.ClearFlags(WindowManagerFlags.TranslucentStatus);
         Window!.SetStatusBarColor(Android.Graphics.Color.Transparent);
 
+#pragma warning disable CA1422 // Validate platform compatibility
         Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, args) =>
-        {
-#pragma warning disable CA1422 // Validate platform compatibility
             Window!.DecorView.SystemUiVisibility = args.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
-#pragma warning restore CA1422
-        };
-
-#pragma warning disable CA1422 // Validate platform compatibility
         Window!.DecorView.SystemUiVisibility = Microsoft.Maui.Controls.Application.Current!.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
 #pragma warning restore CA1422
     }
@@ -101,36 +72,5 @@ public class MainActivity : MauiAppCompatActivity
                 else throw;
             }
         }
-    }
-
-    public async Task<bool> RequestNotificationAccess() => await RequestNotificationAccess(null);
-
-    public async Task<bool> RequestNotificationAccess(CancellationToken? cancellationToken = null)
-    {
-        const int NOTIFICATION_ACCESS_REQUEST_CODE = 1001;
-
-        if (HasNotificationAccess)
-            return true;
-
-        ManualResetEventSlim activityResultResetEvent = new(false);
-
-        Intent intent = new("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-        StartActivityForResult(intent, NOTIFICATION_ACCESS_REQUEST_CODE);
-
-        OnActivityResultEvent += (requestCode, resultCode, data) =>
-        {
-            if (requestCode == NOTIFICATION_ACCESS_REQUEST_CODE)
-                activityResultResetEvent.Set();
-        };
-
-        await Task.Run(() =>
-        {
-            if (cancellationToken is null)
-                activityResultResetEvent.Wait();
-            else
-                activityResultResetEvent.Wait(cancellationToken.Value);
-        });
-
-        return HasNotificationAccess;
     }
 }

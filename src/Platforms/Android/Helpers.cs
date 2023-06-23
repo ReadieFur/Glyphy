@@ -9,11 +9,61 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Content;
+using AndroidX.Core.App;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Glyphy.Platforms.Android
 {
-    internal class Helpers
+    internal static class Helpers
     {
+        #region Notification Access
+        public static bool HasNotificationAccess
+        {
+            get
+            {
+                if (Platform.AppContext.PackageName is null)
+                    throw new NullReferenceException(nameof(Platform.AppContext.PackageName));
+                return NotificationManagerCompat.GetEnabledListenerPackages(Platform.AppContext).Contains(Platform.AppContext.PackageName);
+            }
+        }
+
+        public static async Task<bool> RequestNotificationAccess() => await RequestNotificationAccess(null);
+
+        public static async Task<bool> RequestNotificationAccess(CancellationToken? cancellationToken = null)
+        {
+            const int NOTIFICATION_ACCESS_REQUEST_CODE = 1001;
+
+            if (Platform.CurrentActivity is null)
+                throw new NullReferenceException(nameof(Platform.CurrentActivity));
+
+            if (HasNotificationAccess)
+                return true;
+
+            ManualResetEventSlim activityResultResetEvent = new(false);
+
+            Intent intent = new("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            Platform.CurrentActivity.StartActivityForResult(intent, NOTIFICATION_ACCESS_REQUEST_CODE);
+
+            MainActivity.OnActivityResultEvent += (requestCode, resultCode, data) =>
+            {
+                if (requestCode == NOTIFICATION_ACCESS_REQUEST_CODE)
+                    activityResultResetEvent.Set();
+            };
+
+            await Task.Run(() =>
+            {
+                if (cancellationToken is null)
+                    activityResultResetEvent.Wait();
+                else
+                    activityResultResetEvent.Wait(cancellationToken.Value);
+            });
+
+            return HasNotificationAccess;
+        }
+        #endregion
+
+        #region System UI
         public static int StatusBarHeight => GetBarDimention("status_bar_height");
 
         public static int NavigationBarHeight => GetBarDimention("navigation_bar_height");
@@ -34,7 +84,9 @@ namespace Glyphy.Platforms.Android
 
             return (int)(statusBarHeight.Value / displayMetrics.Density);
         }
+        #endregion
 
+        #region Root Process
         public static bool CreateRootSubProcess(out JProcess? subProcess)
         {
             subProcess = null;
@@ -74,7 +126,9 @@ namespace Glyphy.Platforms.Android
                 return false;
             }
         }
+        #endregion
 
+        #region Services
         public static void StartService<TService>(bool asForeground) where TService : Service
         {
             if (Platform.CurrentActivity is null)
@@ -120,5 +174,6 @@ namespace Glyphy.Platforms.Android
                     ComponentEnableOption.DontKillApp);
             }
         }
+        #endregion
     }
 }
