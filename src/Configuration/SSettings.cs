@@ -5,7 +5,8 @@ namespace Glyphy.Configuration
 {
     public struct SSettings : IConfigurationBase
     {
-        public float Version { get; set; } = 1.0f;
+        public const float VERSION = 1.0f;
+        public float Version { get; set; } = VERSION;
 
         public const float BRIGHTNESS_MULTIPLIER_MAX = API.MAX_BRIGHTNESS;
         public const float BRIGHTNESS_MULTIPLIER_MIN = API.MIN_BRIGHTNESS + 0.05f;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Glyphy.Configuration
 {
-    //TODO: Add a version check using the interface and call the respective update method if there is a major version mismatch.
+    //TODO: Add a version check using the interface and call the respective update method if there is a major version mismatch (parse to IConfigurationBase to load the value without error).
     public class CachedConfigurationWrapper<TSetting> where TSetting : struct, IConfigurationBase //, new()
     {
         private readonly string ItemStoragePath;

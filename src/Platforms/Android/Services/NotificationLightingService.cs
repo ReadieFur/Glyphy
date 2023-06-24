@@ -31,16 +31,15 @@ namespace Glyphy.Platforms.Android.Services
     {
         public const string DEFAULT_KEY = "default";
 
-        //These won't be null during a running instance.
-        private PowerManager powerManager = null!;
-        private NotificationManager notificationManager = null!;
+        //These shouldn't be null during an active instance.
+        private PowerManager? powerManager = null;
+        private NotificationManager? notificationManager = null;
 
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent? intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
             //Signal that if the system kills the service, it should be restarted.
             return StartCommandResult.Sticky;
-
         }
 
         public override void OnListenerConnected()
@@ -88,6 +87,8 @@ namespace Glyphy.Platforms.Android.Services
 #pragma warning disable CA1416 // Validate platform compatibility
                 //TODO: Ignore notifications from this application (as for now I will only be posting the long-running foreground service notification).
                 if (sbn is null
+                    || powerManager is null
+                    || notificationManager is null
                     || (powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode) //Power saver mode.
                     || (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb) //Do not disturb.
                     || (sbn.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.

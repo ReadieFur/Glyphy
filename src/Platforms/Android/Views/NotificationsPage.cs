@@ -21,7 +21,6 @@ namespace Glyphy.Views
     public partial class NotificationsPage : ContentPage
     {
         private Dictionary<Guid, string> cachedGlyphs = new();
-
         private bool IsDisappearing = false;
 
         private void Android_ContentPage_Loaded(object sender, EventArgs e)

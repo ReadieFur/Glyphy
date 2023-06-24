@@ -1,6 +1,5 @@
 ﻿using Glyphy.LED;
 using Glyphy.Platforms.Android;
-using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using System;
 

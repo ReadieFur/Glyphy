@@ -62,7 +62,7 @@ public partial class MainPage : ContentPage
                 _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load one or more animations.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
         });
 
-        //TODO: See if I need to skip this event callback when the app is unfocused.
+        //Assume the app is focused when this is called (it should be).
         AnimationRunner.OnRunFrame += AnimationRunner_OnRunFrame;
 
 #if ANDROID

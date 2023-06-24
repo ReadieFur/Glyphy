@@ -3,18 +3,22 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
+using Glyphy.Configuration;
 using Glyphy.Platforms.Android;
 using Glyphy.Platforms.Android.Services;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Glyphy;
 
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
+    private const bool AMBIENT_SERVICE_IS_FOREGROUND = false;
+
     internal static event Action<int, Result, Intent?>? OnActivityResultEvent;
 
     protected override void OnCreate(Bundle? savedInstanceState)
@@ -24,9 +28,14 @@ public class MainActivity : MauiAppCompatActivity
         //Register services.
         //https://learn.microsoft.com/en-us/dotnet/api/android.content.pm.packagemanager.setcomponentenabledsetting?view=xamarin-android-sdk-13
 
+        //Register services.
+        Helpers.RegisterService<NotificationLightingService>();
+        Helpers.RegisterService<AmbientLightingService>();
+
         //Start services.
         Helpers.StartService<NotificationLightingService>(false);
-        Helpers.StartService<AmbientLightingService>(false);
+        //Now started in the OnPause method.
+        //Helpers.StartService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
 
         //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
         //TODO: Have a page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.
@@ -35,9 +44,9 @@ public class MainActivity : MauiAppCompatActivity
         Window!.SetStatusBarColor(Android.Graphics.Color.Transparent);
 
 #pragma warning disable CA1422 // Validate platform compatibility
-        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, args) =>
-            Window!.DecorView.SystemUiVisibility = args.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
-        Window!.DecorView.SystemUiVisibility = Microsoft.Maui.Controls.Application.Current!.RequestedTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
+        Action<AppTheme> RequestedThemeChangedCallback = appTheme => Window!.DecorView.SystemUiVisibility = appTheme == AppTheme.Light ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : (StatusBarVisibility)SystemUiFlags.Visible;
+        Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += (_, args) => RequestedThemeChangedCallback(args.RequestedTheme);
+        RequestedThemeChangedCallback(Microsoft.Maui.Controls.Application.Current!.RequestedTheme);
 #pragma warning restore CA1422
     }
 
@@ -52,7 +61,26 @@ public class MainActivity : MauiAppCompatActivity
         base.OnAttachedToWindow();
 
         RefreshAPI();
-        MainApplication.OnResume += _ => RefreshAPI();
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        
+        RefreshAPI();
+
+        Helpers.StopService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
+    }
+
+    protected override void OnPause()
+    {
+        base.OnPause();
+
+        Task.Run(async () =>
+        {
+            if ((await Storage.AmbientService.GetCached()).Enabled)
+                Helpers.StartService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
+        });
     }
 
     private void RefreshAPI()

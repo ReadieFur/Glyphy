@@ -34,6 +34,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     public GlyphConfigurator()
     {
         _animation = new();
+        //Add a default frame.
+        _animation.Frames.Add(new());
 
         SharedConstructor();
 	}

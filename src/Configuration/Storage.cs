@@ -18,6 +18,7 @@ namespace Glyphy.Configuration
 
         public static readonly CachedConfigurationWrapper<SNotificationConfigurationRoot> NotificationServiceSettings = new(Path.Combine(BasePath, "notification_service_configuration.json"));
         public static readonly CachedConfigurationWrapper<SSettings> Settings = new(Path.Combine(BasePath, "settings.json"));
+        public static readonly CachedConfigurationWrapper<SAmbientServiceConfiguration> AmbientService = new(Path.Combine(BasePath, "ambient_service.json"));
 
         #region Animations
         private static string GetAnimationFilePath(Guid id) =>

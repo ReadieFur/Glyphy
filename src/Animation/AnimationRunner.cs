@@ -3,12 +3,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glyphy.Animation
 {
+    //Fix the issue where this class sometimes becomes bricked when stopping animations.
     public class AnimationRunner
     {
         public static bool IsRunning => ActiveAnimation is not null;
