@@ -32,11 +32,6 @@ public class MainActivity : MauiAppCompatActivity
         Helpers.RegisterService<NotificationLightingService>();
         Helpers.RegisterService<AmbientLightingService>();
 
-        //Start services.
-        Helpers.StartService<NotificationLightingService>(false);
-        //Now started in the OnPause method.
-        //Helpers.StartService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
-
         //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
         //TODO: Have a page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.
         Window!.SetFlags(WindowManagerFlags.LayoutNoLimits, WindowManagerFlags.LayoutNoLimits);
