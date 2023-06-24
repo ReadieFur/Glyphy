@@ -11,10 +11,11 @@ namespace Glyphy.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    private InputControlSyncer<double> brightnessMultiplierInputControlSyncer;
+    private readonly InputControlSyncer<double> brightnessMultiplierInputControlSyncer = new();
+    private readonly InputControlSyncer<double> ambientServiceRestartIntervalControlSyncer = new();
+    private readonly Dictionary<Guid, string> cachedGlyphs = new();
     private SSettings cachedSettings;
     private SAmbientServiceConfiguration cachedAmbientServiceConfiguration;
-    private Dictionary<Guid, string> cachedGlyphs = new();
 
     public SettingsPage()
     {
@@ -24,7 +25,6 @@ public partial class SettingsPage : ContentPage
         //TODO: Make this path clickable.
         //Launcher.OpenAsync(new OpenFileRequest { File = new Microsoft.Maui.Storage.ReadOnlyFile(Storage.BasePath) });
 
-        brightnessMultiplierInputControlSyncer = new();
         brightnessMultiplierInputControlSyncer.AddControl(BrightnessMultiplierSlider);
         brightnessMultiplierInputControlSyncer.AddControl(BrightnessMultiplierEntry);
         brightnessMultiplierInputControlSyncer.ControlsEnabled = false;
@@ -34,8 +34,13 @@ public partial class SettingsPage : ContentPage
         IgnorePowerSavingModeSwitch.IsEnabled = false;
         IgnoreDoNotDisturbSwitch.IsEnabled = false;
 
+        ambientServiceRestartIntervalControlSyncer.AddControl(AmbientServiceRestartIntervalSlider);
+        ambientServiceRestartIntervalControlSyncer.AddControl(AmbientServiceRestartIntervalEntry);
+        ambientServiceRestartIntervalControlSyncer.ControlsEnabled = false;
+        AmbientServiceRestartIntervalSlider.Minimum = SAmbientServiceConfiguration.RESTART_INTERVAL_MIN;
+        AmbientServiceRestartIntervalSlider.Maximum = SAmbientServiceConfiguration.RESTART_INTERVAL_MAX;
+
         AmbientServiceSwitch.IsEnabled = false;
-        AmbientServiceRestartIntervalEntry.IsEnabled = false;
         AmbientServicePicker.IsEnabled = false;
 
         Task.Run(async () => cachedSettings = await Storage.Settings.GetCached())
@@ -77,8 +82,8 @@ public partial class SettingsPage : ContentPage
                     AmbientServiceSwitch.IsToggled = cachedAmbientServiceConfiguration.Enabled;
                     AmbientServiceSwitch.IsEnabled = true;
 
-                    AmbientServiceRestartIntervalEntry.Text = Math.Round(cachedAmbientServiceConfiguration.RestartInterval, 1).ToString();
-                    AmbientServiceRestartIntervalEntry.IsEnabled = true;
+                    ambientServiceRestartIntervalControlSyncer.SetValue(cachedAmbientServiceConfiguration.RestartInterval);
+                    ambientServiceRestartIntervalControlSyncer.ControlsEnabled = true;
 
                     AmbientServicePicker.ItemsSource = cachedGlyphs.Values.ToList();
                     AmbientServicePicker.SelectedIndex = cachedGlyphs.Keys.ToList().IndexOf(cachedAmbientServiceConfiguration.AnimationID); //-1 if not found (which is fine).
@@ -86,7 +91,7 @@ public partial class SettingsPage : ContentPage
                 });
 
                 AmbientServiceSwitch.Toggled += AmbientServiceSwitch_Toggled;
-                AmbientServiceRestartIntervalEntry.TextChanged += AmbientServiceRestartIntervalEntry_TextChanged;
+                ambientServiceRestartIntervalControlSyncer.ValueChanged += AmbientServiceRestartIntervalControlSyncer_ValueChanged;
                 AmbientServicePicker.SelectedIndexChanged += AmbientServicePicker_SelectedIndexChanged;
             });
     }
@@ -128,21 +133,16 @@ public partial class SettingsPage : ContentPage
         Task.Run(async () => await Storage.AmbientService.Save(cachedAmbientServiceConfiguration));
     }
 
-    private void AmbientServiceRestartIntervalEntry_TextChanged(object? sender, TextChangedEventArgs e)
+    private double? AmbientServiceRestartIntervalControlSyncer_ValueChanged(double newValue, object? sender)
     {
-        if (!double.TryParse(e.NewTextValue, out double result))
-        {
-            AmbientServiceRestartIntervalEntry.Text = e.OldTextValue;
-            return;
-        }
-
-        double clampedValue = Math.Clamp(result, SAmbientServiceConfiguration.RESTART_INTERVAL_MIN, SAmbientServiceConfiguration.RESTART_INTERVAL_MAX);
+        double clampedValue = Math.Clamp(newValue, SAmbientServiceConfiguration.RESTART_INTERVAL_MIN, SAmbientServiceConfiguration.RESTART_INTERVAL_MAX);
+        double roundedValue = Math.Round(clampedValue, 1);
 
         cachedAmbientServiceConfiguration.RestartInterval = (float)clampedValue;
 
-        AmbientServiceRestartIntervalEntry.Text = Math.Round(clampedValue, 1).ToString();
-
         Task.Run(async () => await Storage.AmbientService.Save(cachedAmbientServiceConfiguration));
+
+        return roundedValue;
     }
 
     private void AmbientServicePicker_SelectedIndexChanged(object? sender, EventArgs e)

@@ -79,12 +79,12 @@
                         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Enabled" VerticalOptions="Center"/>
                         <Switch x:Name="AmbientServiceSwitch" Grid.Row="0" Grid.Column="2" IsToggled="False"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Restart Interval" VerticalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="0" Text="Restart Interval" VerticalOptions="Center"/>
+                        <Slider x:Name="AmbientServiceRestartIntervalSlider" Grid.Row="1" Grid.Column="1" Value="0"/>
                         <Entry x:Name="AmbientServiceRestartIntervalEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
 
-                        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Animation" VerticalOptions="Center"/>
-                        <!--The WidthRequest/HorizontalOptions below is not ideal. The element was not aligning properly and I'm not entirely sure why.-->
-                        <Picker x:Name="AmbientServicePicker" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="End" WidthRequest="150"/>
+                        <Label Grid.Row="2" Grid.Column="0" Text="Animation" VerticalOptions="Center"/>
+                        <Picker x:Name="AmbientServicePicker" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
 
                         <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Paused while the app is focused." FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
                     </Grid>
