@@ -9,7 +9,7 @@ namespace Glyphy.Platforms.Android.Services
 {
     //TODO: Figure out what property to set to disable the ">" icon on the right side of the tile.
     [Service(
-        Label = "Glyphy Ambient QS",
+        Label = "Glyphy Ambient Service",
         Icon = "@drawable/ic_widgets_black_24dp",
         Exported = true, //https://stackoverflow.com/questions/74769099/tile-in-quicksettings-not-working-after-updating-sdk-to-31
         Permission = global::Android.Manifest.Permission.BindQuickSettingsTile
@@ -65,6 +65,10 @@ namespace Glyphy.Platforms.Android.Services
                 SAmbientServiceConfiguration ambientServiceConfiguration = await Storage.AmbientService.GetCached();
                 SAnimation? animation = await Storage.LoadAnimation(ambientServiceConfiguration.AnimationID);
                 tile.Subtitle = animation?.Name ?? "None";
+            }
+            else
+            {
+                tile.Subtitle = "Disabled";
             }
 
             tile.UpdateTile();
