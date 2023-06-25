@@ -66,10 +66,6 @@ namespace Glyphy.Platforms.Android.Services
                 SAnimation? animation = await Storage.LoadAnimation(ambientServiceConfiguration.AnimationID);
                 tile.Subtitle = animation?.Name ?? "None";
             }
-            else
-            {
-                tile.Subtitle = "Disabled";
-            }
 
             tile.UpdateTile();
         }
