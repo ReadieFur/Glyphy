@@ -76,18 +76,32 @@
                             <x:Double>10</x:Double>
                         </Grid.ColumnSpacing>
 
-                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Enabled" VerticalOptions="Center"/>
-                        <Switch x:Name="AmbientServiceSwitch" Grid.Row="0" Grid.Column="2" IsToggled="False"/>
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Paused while the app is focused." FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Text="Restart Interval" VerticalOptions="Center"/>
-                        <Slider x:Name="AmbientServiceRestartIntervalSlider" Grid.Row="1" Grid.Column="1" Value="0"/>
-                        <Entry x:Name="AmbientServiceRestartIntervalEntry" Grid.Row="1" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Enabled" VerticalOptions="Center"/>
+                        <Switch x:Name="AmbientServiceSwitch" Grid.Row="1" Grid.Column="2" IsToggled="False"/>
 
-                        <Label Grid.Row="2" Grid.Column="0" Text="Animation" VerticalOptions="Center"/>
-                        <Picker x:Name="AmbientServicePicker" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+                        <Label Grid.Row="2" Grid.Column="0" Text="Restart Interval" VerticalOptions="Center"/>
+                        <Slider x:Name="AmbientServiceRestartIntervalSlider" Grid.Row="2" Grid.Column="1" Value="0"/>
+                        <Entry x:Name="AmbientServiceRestartIntervalEntry" Grid.Row="2" Grid.Column="2" MinimumWidthRequest="50" Keyboard="Numeric"/>
 
-                        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Paused while the app is focused." FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+                        <Label Grid.Row="3" Grid.Column="0" Text="Animation" VerticalOptions="Center"/>
+                        <Picker x:Name="AmbientServicePicker" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"/>
                     </Grid>
+                </VerticalStackLayout>
+                <Label Text="Misc" FontFamily="dotmatrix" FontSize="Subtitle" Padding="0, 10, 0, 0"/>
+                <VerticalStackLayout Margin="0, -10, 0, 0">
+                    <VerticalStackLayout.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}"/>
+                            <Setter Property="TextColor" Value="{AppThemeBinding Dark=White, Light=Black}"/>
+                        </Style>
+                    </VerticalStackLayout.Resources>
+                    <Label Text="If you find that the program keeps stopping, you may need to increase your background process limit."/>
+                    <Label Text="In order to do this developer mode must be enabled. Click the button below, then click on 'Software info' and then tap your 'build number' 5 times."/>
+                    <Button Text="Go to 'About Device'" Clicked="AboutDeviceButton_Clicked" Margin="10"/>
+                    <Label Text="Next, click the button below to go to the developer options and scroll down to where it says 'Background process limit', then change your background process limit to something like 4."/>
+                    <Button Text="Go to 'Developer Options'" Clicked="DeveloperProcessOptionsButton_Clicked" Margin="10, 10, 10, 0"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout>
                     <Label x:Name="StoragePathLabel" Text="Storage Path:" FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
