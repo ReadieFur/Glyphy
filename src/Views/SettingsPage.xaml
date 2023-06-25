@@ -99,9 +99,9 @@
                     </VerticalStackLayout.Resources>
                     <Label Text="If you find that the program keeps stopping, you may need to increase your background process limit."/>
                     <Label Text="In order to do this developer mode must be enabled. Click the button below, then click on 'Software info' and then tap your 'build number' 5 times."/>
-                    <Button Text="Go to 'About Device'" Clicked="AboutDeviceButton_Clicked" Margin="10"/>
+                    <Button x:Name="AboutDeviceButton" Text="Go to 'About Device'" Margin="10"/>
                     <Label Text="Next, click the button below to go to the developer options and scroll down to where it says 'Background process limit', then change your background process limit to something like 4."/>
-                    <Button Text="Go to 'Developer Options'" Clicked="DeveloperProcessOptionsButton_Clicked" Margin="10, 10, 10, 0"/>
+                    <Button x:Name="DeveloperProcessOptionsButton" Text="Go to 'Developer Options'" Margin="10, 10, 10, 0"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout>
                     <Label x:Name="StoragePathLabel" Text="Storage Path:" FontSize="Micro" TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>

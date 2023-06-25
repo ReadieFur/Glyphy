@@ -94,6 +94,10 @@ public partial class SettingsPage : ContentPage
                 ambientServiceRestartIntervalControlSyncer.ValueChanged += AmbientServiceRestartIntervalControlSyncer_ValueChanged;
                 AmbientServicePicker.SelectedIndexChanged += AmbientServicePicker_SelectedIndexChanged;
             });
+
+#if ANDROID
+        Android_Constructor();
+#endif
     }
 
     private void ContentPage_Loaded(object sender, EventArgs e)
