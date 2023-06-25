@@ -17,7 +17,7 @@ namespace Glyphy;
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-    private const bool AMBIENT_SERVICE_IS_FOREGROUND = false;
+    internal const bool AMBIENT_SERVICE_IS_FOREGROUND = false;
 
     internal static event Action<int, Result, Intent?>? OnActivityResultEvent;
 
@@ -30,7 +30,8 @@ public class MainActivity : MauiAppCompatActivity
 
         //Register services.
         Helpers.RegisterService<NotificationLightingService>();
-        Helpers.RegisterService<AmbientLightingService>();
+        //Helpers.RegisterService<AmbientLightingService>(); //I don't think I need to do this for this service as the code I use within this method might only be relevant for "bound" services (i.e. services that are managed by the system).
+        Helpers.RegisterService<AmbientLightingServiceQSTile>();
 
         //https://stackoverflow.com/questions/73926834/net-maui-transparent-status-bar
         //TODO: Have a page wrapper pad the top and bottom of the page by the respective amounts for the status bar and navigation bar.

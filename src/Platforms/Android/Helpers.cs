@@ -216,6 +216,31 @@ namespace Glyphy.Platforms.Android
                     register ? ComponentEnabledState.Enabled : ComponentEnabledState.Disabled,
                     ComponentEnableOption.DontKillApp);
         }
+
+        public static bool IsServiceRunning<TService>() where TService : Service
+        {
+            if (Platform.CurrentActivity is null)
+                throw new NullReferenceException($"Unable to check if service is running. {nameof(Platform.CurrentActivity)} is null.");
+
+            if (Platform.CurrentActivity.PackageManager is null)
+                throw new NullReferenceException($"Unable to check if service is running. {nameof(Platform.CurrentActivity.PackageManager)} is null.");
+
+            ComponentName componentName = new(Platform.AppContext, Class.FromType(typeof(TService)));
+            ComponentName? serviceComponentName = Platform.CurrentActivity.PackageManager.GetServiceInfo(componentName, PackageInfoFlags.Services) is null ? null : componentName;
+
+            if (serviceComponentName is null)
+                throw new NullReferenceException($"Unable to check if service is running. {nameof(serviceComponentName)} is null.");
+
+            ActivityManager? activityManager = Platform.CurrentActivity.GetSystemService(Context.ActivityService) as ActivityManager;
+            if (activityManager is null)
+                throw new NullReferenceException($"Unable to check if service is running. {nameof(activityManager)} is null.");
+
+            foreach (ActivityManager.RunningServiceInfo service in activityManager.GetRunningServices(int.MaxValue))
+                if (service.Service?.ClassName == serviceComponentName.ClassName && service.Service?.PackageName == serviceComponentName.PackageName)
+                    return true;
+
+            return false;
+        }
         #endregion
     }
 }
