@@ -63,7 +63,7 @@
                     </Grid>
                 </Grid>
                 <VerticalStackLayout>
-                    <Label Grid.Row="0" Text="Configurations" FontFamily="dotmatrix" FontSize="30"/>
+                    <Label Grid.Row="0" Text="Glyphs" FontFamily="dotmatrix" FontSize="30"/>
                     <VerticalStackLayout x:Name="configurationsList" Padding="0, 10, 0, 0" Spacing="10"/>
                 </VerticalStackLayout>
             </VerticalStackLayout>
