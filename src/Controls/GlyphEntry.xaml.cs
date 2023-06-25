@@ -48,11 +48,10 @@ public partial class GlyphEntry : ContentView, IDisposable
 
         SetNameLabel(animation.Name);
 
-        bool hideControls = isReadonly || AnimationRunner.IsRunning;
-        ToggleControls(true, hideControls, hideControls);
+        bool editDeleteControlsEnabled = !(isReadonly || AnimationRunner.IsRunning);
+        ToggleControls(true, editDeleteControlsEnabled, editDeleteControlsEnabled);
 
         AnimationRunner.OnStateChanged += AnimationRunner_OnStateChanged;
-
     }
 
     public void Dispose()
@@ -86,6 +85,9 @@ public partial class GlyphEntry : ContentView, IDisposable
 
     private void ActionButton_Tapped(object sender, TappedEventArgs e)
 	{
+        if (!ActionContainer.IsEnabled)
+            return;
+
         //We don't need to lock here as this runs on the main thread and is only ever invoked from the UI.
         if (tappedActionTask is not null)
             return;
@@ -146,6 +148,9 @@ public partial class GlyphEntry : ContentView, IDisposable
 
     private void EditButton_Tapped(object sender, TappedEventArgs e)
 	{
+        if (!EditContainer.IsEnabled)
+            return;
+
         //TODO: Disable the controls while an editor is active.
         Task.Run(() =>
         {
@@ -172,6 +177,9 @@ public partial class GlyphEntry : ContentView, IDisposable
 
     private void DeleteButton_Tapped(object sender, TappedEventArgs e)
 	{
+        if (!DeleteContainer.IsEnabled)
+            return;
+
 		if (lastDeleteClick < DateTime.Now - TimeSpan.FromSeconds(5))
 		{
             lastDeleteClick = DateTime.Now;
