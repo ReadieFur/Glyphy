@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using Glyphy.Animation;
 using Glyphy.Configuration;
 using Glyphy.Misc;
@@ -89,23 +90,24 @@ public partial class GlyphEntry : ContentView, IDisposable
         if (tappedActionTask is not null)
             return;
 
+        //TODO: I think this is the point where the animation runner can freeze up but its difficult to figure out what it is that is breaking here.
         tappedActionTask = Task.Run(async () =>
         {
             SAnimation? previousAnimation = AnimationRunner.ActiveAnimation;
 
-            //We will always stop a task here as we will either be starting a new animation or stopping the current one, both which require a stopping of the previous animation.
-            Task stopResult;
-            try
+            if (AnimationRunner.IsRunning)
             {
-                CancellationTokenSource cancellationTokenSource = new();
-                cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
-                stopResult = AnimationRunner.StopAnimation(cancellationTokenSource.Token);
-                await stopResult;
-            }
-            catch
-            {
-                _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to stop current animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-                return;
+                try
+                {
+                    CancellationTokenSource cancellationTokenSource = new();
+                    cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(2500));
+                    await AnimationRunner.StopAnimation(cancellationTokenSource.Token);
+                }
+                catch
+                {
+                    Dispatcher.Dispatch(() => Toast.Make("Failed to stop current animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show());
+                    return;
+                }
             }
             
             //If the previous animation was the same as the current animation then we don't need to start a new animation.
@@ -118,7 +120,7 @@ public partial class GlyphEntry : ContentView, IDisposable
             //Start the animation.
             if (await Storage.LoadAnimation(AnimationID) is not SAnimation animation)
             {
-                _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Short);
+                Dispatcher.Dispatch(() => Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show());
                 return;
             }
 
@@ -132,8 +134,11 @@ public partial class GlyphEntry : ContentView, IDisposable
             }
             catch
             {
-                _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to start animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-                Dispatcher.Dispatch(() => ToggleControls(true, true, true));
+                Dispatcher.Dispatch(() =>
+                {
+                    Toast.Make("Failed to start animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+                    ToggleControls(true, true, true);
+                });
             }
         });
         tappedActionTask.ContinueWith((task) => tappedActionTask = null);
@@ -147,7 +152,7 @@ public partial class GlyphEntry : ContentView, IDisposable
             try { glyphConfigurator = new(AnimationID); }
             catch
             {
-                _ = CommunityToolkit.Maui.Alerts.Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+                Dispatcher.Dispatch(() => Toast.Make("Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Short).Show());
                 return;
             }
 
@@ -170,7 +175,7 @@ public partial class GlyphEntry : ContentView, IDisposable
 		if (lastDeleteClick < DateTime.Now - TimeSpan.FromSeconds(5))
 		{
             lastDeleteClick = DateTime.Now;
-			deletionToast = CommunityToolkit.Maui.Alerts.Toast.Make("Click again to confirm deletion.", CommunityToolkit.Maui.Core.ToastDuration.Short);
+			deletionToast = Toast.Make("Click again to confirm deletion.", CommunityToolkit.Maui.Core.ToastDuration.Short);
             deletionToast.Show();
 			return;
 		}
@@ -238,11 +243,5 @@ public partial class GlyphEntry : ContentView, IDisposable
             DeleteIcon.TextColor = disabledColour;
             DeleteLabel.TextColor = disabledColour;
         }
-    }
-
-    public void RequestedThemeChanged(bool isDark)
-    {
-        //We can call the ToggleControls method to refresh the controls colours.
-        ToggleControls(ActionContainer.IsEnabled, EditContainer.IsEnabled, DeleteContainer.IsEnabled);
     }
 }

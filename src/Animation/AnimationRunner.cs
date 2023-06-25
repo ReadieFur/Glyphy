@@ -77,6 +77,9 @@ namespace Glyphy.Animation
 
                 if (runner is not null)
                     await runner;
+
+                //Clear the buffered LED values.
+                await AddInterruptAnimation(Resources.Presets.Glyphs.OFF);
             }
             finally
             {
@@ -114,7 +117,7 @@ namespace Glyphy.Animation
                 cancellationTokenSource = new();
 
                 //Run the "off" animation as a temporary workaround to make use of the interrupt method all the time.
-                ActiveAnimation = Glyphy.Resources.Presets.Glyphs.OFF;
+                ActiveAnimation = Resources.Presets.Glyphs.OFF;
                 runner = RunnerTask();
             }
             finally
