@@ -68,6 +68,7 @@ public class MainActivity : MauiAppCompatActivity
         Helpers.StopService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
     }
 
+    //This is called just after the app goes out of focus and so if the background process limit is set to 0, I have found this doesn't get called.
     protected override void OnPause()
     {
         base.OnPause();
