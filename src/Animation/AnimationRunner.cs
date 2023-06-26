@@ -171,8 +171,8 @@ namespace Glyphy.Animation
 
                         //Get starting values.
                         Dictionary<EAddressable, float> startValues = new();
-                        foreach (KeyValuePair<EAddressable, SLEDValue> kvp in frame.Values)
-                            startValues.Add(kvp.Key, await API.Instance.GetBrightness(kvp.Key));
+                        foreach (EAddressable ledKey in Enum.GetValues<EAddressable>())
+                            startValues.Add(ledKey, await API.Instance.GetBrightness(ledKey));
 
                         //Transition to the frame.
                         TimeSpan transitionEndTime = TimeSpan.FromSeconds(frame.TransitionTime);

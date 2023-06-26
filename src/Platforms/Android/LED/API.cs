@@ -37,9 +37,12 @@ namespace Glyphy.LED
             outputStream = new DataInputStream(rootProcess.InputStream);
 
             RefreshMaxBrightness().Wait();
+
+            for (int i = 0; i < cachedBrightnessValues.Length; i++)
+                cachedBrightnessValues[i] = 0;
         }
 
-        //I'm not going to impliment a check to see if we have disposed. Just don't call this manually.
+        //I'm not going to implement a check to see if we have disposed. Just don't call this manually.
         public void Dispose()
         {
             inputStream.Dispose();
@@ -215,10 +218,9 @@ namespace Glyphy.LED
 
         public async override Task SetBrightness(EAddressable addressableLED, float brightness)
         {
+            cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
+
             uint systemBrightness = ToSystemRange(brightness * (await Storage.Settings.GetCached()).BrightnessMultiplier);
-
-            cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = systemBrightness;
-
             await Exec($"echo {GetAddressableSystemID(addressableLED)} {systemBrightness} > {BASE_PATH}/single_led_br");
         }
 
@@ -226,14 +228,14 @@ namespace Glyphy.LED
         {
             //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
             //Optimized //(assumes the value is within a valid range, which it should be within this class):
-            return Math.Clamp(value / maxBrightness, 0f, 1f);
+            return Math.Clamp((float)value / maxBrightness, 0f, 1f);
         }
 
         private uint ToSystemRange(float value)
         {
             //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
             //Optimized:
-            return Math.Clamp((uint)(value * maxBrightness), 0u, maxBrightness);
+            return Math.Clamp(Convert.ToUInt32(value * maxBrightness), 0u, maxBrightness);
         }
     }
 }
