@@ -220,7 +220,13 @@ namespace Glyphy.LED
         {
             cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
 
-            uint systemBrightness = ToSystemRange(brightness * (await Storage.Settings.GetCached()).BrightnessMultiplier);
+            uint systemBrightness = ToSystemRange(
+                MathF.Pow(
+                    brightness //Base brightness
+                    * (await Storage.Settings.GetCached()).BrightnessMultiplier, //Brightness multiplier
+                    2f) //Exponential curve (I've added this as the visual change in brightness gets smaller as the brightness increases. The value I have set here is arbitrary).
+                );
+
             await Exec($"echo {GetAddressableSystemID(addressableLED)} {systemBrightness} > {BASE_PATH}/single_led_br");
         }
 

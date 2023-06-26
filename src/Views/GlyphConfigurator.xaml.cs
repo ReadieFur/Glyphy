@@ -339,6 +339,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     /// </summary>
     private void DeleteFrameButton_Clicked(object sender, EventArgs e)
     {
+        hasUnsavedChanges = true;
+
         _animation.Frames.RemoveAt(currentFrameIndex);
         FrameList.RemoveAt(currentFrameIndex);
 
@@ -370,6 +372,8 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     /// </summary>
     private void AddFrameButton_Clicked(object sender, EventArgs e)
     {
+        hasUnsavedChanges = true;
+
         _animation.Frames.Insert(currentFrameIndex + 1, new());
         FrameList.Insert(currentFrameIndex + 1, CreateFrameButton((uint)currentFrameIndex + 1));
 
