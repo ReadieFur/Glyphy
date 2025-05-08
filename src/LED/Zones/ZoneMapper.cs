@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
 
 namespace Glyphy.LED.Zones
 {
@@ -66,6 +63,14 @@ namespace Glyphy.LED.Zones
                 .ToArray();
         }
 
+        /// <summary>
+        /// Attempts to sterilize an LED array to a given platforms zone mapping.
+        /// </summary>
+        /// <typeparam name="TZone">The zone platform to sterilize to.</typeparam>
+        /// <param name="source">The input LED array.</param>
+        /// <returns>The specified platforms zone mapping.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static Dictionary<TZone, int> ArrayToZone<TZone>(int[] source) where TZone : struct, Enum
         {
             Type tZoneType = typeof(TZone);
@@ -81,7 +86,11 @@ namespace Glyphy.LED.Zones
             return mapping;
         }
 
-        private static bool IsEnumZone<TZone>()
+        /// <summary>
+        /// Checks if the enum type is a variant of EPhoneZone.
+        /// </summary>
+        /// <returns>True if TZone is a variant of EPhoneZone, otherwise false.</returns>
+        private static bool IsEnumZone<TZone>() where TZone : Enum
         {
             Type tZoneType = typeof(TZone);
             return tZoneType == typeof(EPhoneOneZones) ||
