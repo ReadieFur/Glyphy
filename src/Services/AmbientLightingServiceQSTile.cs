@@ -4,15 +4,16 @@ using Android.Service.QuickSettings;
 using Glyphy.Animation;
 using Glyphy.Configuration;
 using System.Threading.Tasks;
+using Helpers = Glyphy.Misc.Helpers;
 
-namespace Glyphy.Platforms.Android.Services
+namespace Glyphy.Services
 {
     //TODO: Figure out what property to set to disable the ">" icon on the right side of the tile.
     [Service(
         Label = "Glyphy Ambient Service",
         Icon = "@drawable/ic_widgets_black_24dp",
         Exported = true, //https://stackoverflow.com/questions/74769099/tile-in-quicksettings-not-working-after-updating-sdk-to-31
-        Permission = global::Android.Manifest.Permission.BindQuickSettingsTile
+        Permission = Android.Manifest.Permission.BindQuickSettingsTile
     )]
     [IntentFilter(new[] { "android.service.quicksettings.action.QS_TILE" })]
     [MetaData(MetaDataActiveTile, Value = "true")]

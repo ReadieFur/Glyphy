@@ -15,7 +15,7 @@ using Android.Runtime;
 using Glyphy.Configuration.NotificationConfiguration;
 
 //https://developer.android.com/reference/android/service/notification/NotificationListenerService
-namespace Glyphy.Platforms.Android.Services
+namespace Glyphy.Services
 {
     //Have notification animations be disabled while the app is focused.
     [Service(
@@ -71,7 +71,7 @@ namespace Glyphy.Platforms.Android.Services
         }
 
         //This won't be called before OnListenerConnected so we don't need to null check the managers.
-        public override void OnNotificationPosted(global::Android.Service.Notification.StatusBarNotification? sbn)
+        public override void OnNotificationPosted(Android.Service.Notification.StatusBarNotification? sbn)
         {
 #if ADD_DELAY
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -89,8 +89,8 @@ namespace Glyphy.Platforms.Android.Services
                 if (sbn is null
                     || powerManager is null
                     || notificationManager is null
-                    || (powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode) //Power saver mode.
-                    || (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb) //Do not disturb.
+                    || powerManager.IsPowerSaveMode && !cachedSettings.IgnorePowerSaverMode //Power saver mode.
+                    || notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !cachedSettings.IgnoreDoNotDisturb //Do not disturb.
                     || (sbn.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.
                     return;
 #pragma warning restore CA1416

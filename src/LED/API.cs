@@ -1,22 +1,48 @@
-﻿//#define USE_ASYNC_STREAM
-
+﻿using Glyphy.Configuration;
+using Java.Interop;
 using Java.IO;
-using JIOException = Java.IO.IOException;
-using JProcess = Java.Lang.Process;
-using Glyphy.Platforms.Android;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
+using JIOException = Java.IO.IOException;
+using JProcess = Java.Lang.Process;
 using SIOException = System.IO.IOException;
-using Glyphy.Configuration;
-using System.Diagnostics;
-using Java.Interop;
 
 namespace Glyphy.LED
 {
     //Some "odd" choices have been made here but they were in the intrest of making the API as fast as possible as it will be called very frequently.
-    public partial class API : ALEDAPI, IDisposable
+    public class API : IDisposable
     {
+        //These two values are used for the API brightness values but will be converted to system values by the platform specific partial classes.
+        public const float MIN_BRIGHTNESS = 0.0f;
+        public const float MAX_BRIGHTNESS = 1.0f;
+
+        private static readonly object _LOCK = new object();
+
+        private static API? _instance = null;
+
+        public static bool Running => _instance is not null;
+
+        //I am using this to make the API only initalize when called (as opposed to a static constructor).
+        public static API Instance
+        {
+            get
+            {
+                //It is quicker to check if the instance is null before locking, at which point it will be ok to peform the check again.
+                if (_instance is null)
+                {
+                    lock (_LOCK)
+                    {
+                        if (_instance is null)
+                        {
+                            _instance = new();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
         private const string BASE_PATH = "/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led";
 
         private JProcess rootProcess;
@@ -38,7 +64,7 @@ namespace Glyphy.LED
 
         public API()
         {
-            if (!Helpers.CreateRootSubProcess(out JProcess? _rootProcess)
+            if (!Misc.Helpers.CreateRootSubProcess(out JProcess? _rootProcess)
                 || _rootProcess is null
                 || _rootProcess.OutputStream is null
                 || _rootProcess.InputStream is null)
@@ -176,7 +202,7 @@ namespace Glyphy.LED
             maxBrightness = uint.Parse(result);
         }
 
-        public async override Task<float> GetBrightness(EGroup ledGroup)
+        public async Task<float> GetBrightness(EGroup ledGroup)
         {
             string? result = await Exec("cat " + BASE_PATH + "/" + GetGroupSystemName(ledGroup), true);
             if (result is null)
@@ -187,10 +213,10 @@ namespace Glyphy.LED
                 return ToNormalisedRange(parsedResult);
         }
 
-        public override Task<float> GetBrightness(EAddressable adressableLED) =>
+        public Task<float> GetBrightness(EAddressable adressableLED) =>
             Task.FromResult(ToNormalisedRange(cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]));
 
-        public async override Task SetBrightness(EGroup ledGroup, float brightness)
+        public async Task SetBrightness(EGroup ledGroup, float brightness)
         {
             uint systemBrightness = ToSystemRange(brightness);
 
@@ -228,7 +254,7 @@ namespace Glyphy.LED
             await Exec($"echo {systemBrightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
         }
 
-        public async override Task SetBrightness(EAddressable addressableLED, float brightness)
+        public async Task SetBrightness(EAddressable addressableLED, float brightness)
         {
             cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
 
@@ -255,36 +281,5 @@ namespace Glyphy.LED
             //Optimized:
             return Math.Clamp(Convert.ToUInt32(value * maxBrightness), 0u, maxBrightness);
         }
-
-        #region Java object extensions
-        //Manual definitions required by Ketchum.GlyphManager.ICallback.
-        public void SetJniIdentityHashCode(int value)
-        {
-        }
-
-        public void SetPeerReference(JniObjectReference reference)
-        {
-        }
-
-        public void SetJniManagedPeerState(JniManagedPeerStates value)
-        {
-        }
-
-        public void UnregisterFromRuntime()
-        {
-        }
-
-        public void DisposeUnlessReferenced()
-        {
-        }
-
-        public void Disposed()
-        {
-        }
-
-        public void Finalized()
-        {
-        }
-        #endregion
     }
 }

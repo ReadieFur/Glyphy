@@ -1,23 +1,30 @@
-﻿using System;
-using Console = System.Console;
-using Java.Lang;
-using Java.IO;
-using JProcess = Java.Lang.Process;
-using Microsoft.Maui.ApplicationModel;
-using Android.Util;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.OS;
 using Android.Content;
+using Android.OS;
+using Android.Service.Notification;
+using Android.Util;
 using AndroidX.Core.App;
+using Java.IO;
+using Microsoft.Maui.ApplicationModel;
+using System;
 using System.Threading.Tasks;
 using System.Threading;
-using Android.Service.Notification;
+using JProcess = Java.Lang.Process;
+using Console = System.Console;
+using Java.Lang;
 
-namespace Glyphy.Platforms.Android
+namespace Glyphy.Misc
 {
-    internal static class Helpers
+    public static class Helpers
     {
+        //https://stackoverflow.com/questions/929103/convert-a-number-range-to-another-range-maintaining-ratio
+        public static double ConvertNumberRange(double oldValue, double oldMin, double oldMax, double newMin, double newMax) =>
+            ((oldValue - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
+
+        public static float ConvertNumberRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax) =>
+            ((oldValue - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
+
         #region Notification Access
         public static bool HasNotificationAccess
         {

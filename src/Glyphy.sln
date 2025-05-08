@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyphy", "Glyphy\Glyphy.csproj", "{0C651DB6-2C08-44A5-A72A-89D4D02475A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyphy", "Glyphy.csproj", "{0C651DB6-2C08-44A5-A72A-89D4D02475A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Helpers = Glyphy.Misc.Helpers;
 
 namespace Glyphy.Views;
 
@@ -56,9 +57,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
     public void Dispose()
     {
-#if ANDROID
-        Android_Dispose();
-#endif
+        MainApplication.OnResume -= MainApplication_OnResume;
     }
 
     private void SharedConstructor()
@@ -243,12 +242,17 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
 
         LoadFrame(0);
 
-#if ANDROID
-        Android_ContentPage_Loaded(sender, e);
-#endif
+        Header.Padding = new(Header.Padding.Left, /*Header.Padding.Top + */Helpers.StatusBarHeight, Header.Padding.Right, Header.Padding.Bottom);
+        Padding = new(Padding.Left, Padding.Top, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
+
+        //Potential race condition here where the check runs before the API starts.
+        MainApplication.OnResume += MainApplication_OnResume;
 
         this.hasUnsavedChanges = hasUnsavedChanges;
     }
+
+    private void MainApplication_OnResume(Android.App.Activity activity) =>
+        ToggleControls(API.Running);
 
     private void AnimationNameEntry_TextChanged(object? sender, TextChangedEventArgs e)
     {

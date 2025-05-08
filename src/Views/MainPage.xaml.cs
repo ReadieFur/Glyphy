@@ -3,6 +3,7 @@ using Glyphy.Configuration;
 using Glyphy.Controls;
 using Glyphy.LED;
 using Glyphy.Misc;
+using Glyphy.Platforms.Android.LED;
 using Glyphy.Resources.Presets;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Helpers = Glyphy.Misc.Helpers;
 
 namespace Glyphy.Views;
 
@@ -110,8 +112,30 @@ public partial class MainPage : ContentPage
 
     private void DebugTestButton_Clicked(object sender, EventArgs e)
     {
-#if ANDROID
-        DebugTest_Android();
-#endif
+    }
+
+    private void Android_ContentPage_Loaded(object sender, System.EventArgs e)
+    {
+        Padding = new(Padding.Left, /*Padding.Top + */Helpers.StatusBarHeight, Padding.Right, /*Padding.Bottom + */Helpers.NavigationBarHeight);
+
+        Platform.ActivityStateChanged += Platform_ActivityStateChanged;
+    }
+
+    private void Platform_ActivityStateChanged(object? sender, ActivityStateChangedEventArgs e)
+    {
+        //To save CPU time, disable the Animation.AnimationRunner.OnRunFrame callback when the app isn't focused.
+        switch (e.State)
+        {
+            case ActivityState.Started:
+            case ActivityState.Resumed:
+                Animation.AnimationRunner.OnRunFrame += AnimationRunner_OnRunFrame;
+                break;
+            case ActivityState.Stopped:
+            case ActivityState.Paused:
+                Animation.AnimationRunner.OnRunFrame -= AnimationRunner_OnRunFrame;
+                break;
+            default:
+                break;
+        }
     }
 }

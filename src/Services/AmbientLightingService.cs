@@ -10,7 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Glyphy.Platforms.Android.Services
+namespace Glyphy.Services
 {
     [Service(
         Label = "Glyphy Ambient Service",
@@ -105,7 +105,7 @@ namespace Glyphy.Platforms.Android.Services
 
                     if (powerManager is null
                         || notificationManager is null
-                        || (powerManager.IsPowerSaveMode && !settings.IgnorePowerSaverMode) //Power saver mode.
+                        || powerManager.IsPowerSaveMode && !settings.IgnorePowerSaverMode //Power saver mode.
                         //|| (notificationManager.CurrentInterruptionFilter == InterruptionFilter.Priority && !settings.IgnoreDoNotDisturb) //Do not disturb.
                     )
                     {
