@@ -28,6 +28,8 @@ public class MainApplication : MauiApplication
                 );
             });
 
+
+
         //It turns out the line I want to remove is the auto-correct line, not the underline line so I have removed the following for now.
         //https://github.com/dotnet/maui/issues/7906#issuecomment-1264717945
         /*Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
