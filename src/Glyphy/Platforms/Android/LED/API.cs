@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SIOException = System.IO.IOException;
 using Glyphy.Configuration;
+using System.Diagnostics;
+using Java.Interop;
 
 namespace Glyphy.LED
 {
@@ -23,6 +25,16 @@ namespace Glyphy.LED
         private uint maxBrightness = 0;
         //Yes I could've used a dictionary here but this method is slightly faster (I think).
         private uint[] cachedBrightnessValues = new uint[Enum.GetValues<EAddressable>().Length];
+
+        public nint Handle => throw new NotImplementedException();
+
+        public int JniIdentityHashCode => throw new NotImplementedException();
+
+        public JniObjectReference PeerReference => throw new NotImplementedException();
+
+        public JniPeerMembers JniPeerMembers => throw new NotImplementedException();
+
+        public JniManagedPeerStates JniManagedPeerState => throw new NotImplementedException();
 
         public API()
         {
@@ -243,5 +255,36 @@ namespace Glyphy.LED
             //Optimized:
             return Math.Clamp(Convert.ToUInt32(value * maxBrightness), 0u, maxBrightness);
         }
+
+        #region Java object extensions
+        //Manual definitions required by Ketchum.GlyphManager.ICallback.
+        public void SetJniIdentityHashCode(int value)
+        {
+        }
+
+        public void SetPeerReference(JniObjectReference reference)
+        {
+        }
+
+        public void SetJniManagedPeerState(JniManagedPeerStates value)
+        {
+        }
+
+        public void UnregisterFromRuntime()
+        {
+        }
+
+        public void DisposeUnlessReferenced()
+        {
+        }
+
+        public void Disposed()
+        {
+        }
+
+        public void Finalized()
+        {
+        }
+        #endregion
     }
 }

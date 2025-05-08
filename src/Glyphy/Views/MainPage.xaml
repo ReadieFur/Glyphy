@@ -42,22 +42,13 @@
                         <Grid Grid.Row="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
-                            <!--<VerticalStackLayout Grid.Row="0">
-                            TODO: Service-->
-                            <!--<Label Text="Enabled" FontSize="Title"/>
-                            <Switch IsToggled="false" HorizontalOptions="Start"/>
-                        </VerticalStackLayout>-->
                             <VerticalStackLayout Grid.Row="0">
-                                <!--TODO: Bind to build number-->
-                                <Label Text="Version" FontSize="Title"/>
-                                <Label x:Name="VersionNumber" Text="N/A" FontSize="Body"/>
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Row="1">
-                                <Label Text="Author" FontSize="Title"/>
-                                <Label Text="ReadieFur" FontSize="Body"/>
+                                <Button HorizontalOptions="Start" VerticalOptions="End"
+                                    BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                                    CornerRadius="25" FontSize="Body"
+                                    Text="Debug Test"
+                                    Clicked="DebugTestButton_Clicked"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Grid>

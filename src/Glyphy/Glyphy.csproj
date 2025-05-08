@@ -2,8 +2,8 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <TargetFrameworks>net8.0-android</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net9.0-android35.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>Glyphy</RootNamespace>
     <UseMaui>true</UseMaui>
@@ -39,6 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Platforms\Android\Resources\drawable\ic_widgets_black_24dp.xml" />
+    <None Remove="Platforms\Android\Resources\KetchumSDK_Community_20250319.jar" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidLibrary Include="Platforms\Android\Resources\KetchumSDK_Community_20250319.jar" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />

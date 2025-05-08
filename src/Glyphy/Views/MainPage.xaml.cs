@@ -18,8 +18,6 @@ public partial class MainPage : ContentPage
     public MainPage()
 	{
 		InitializeComponent();
-
-        VersionNumber.Text = AppInfo.VersionString;
     }
 
     private void ContentPage_Loaded(object sender, EventArgs e)
@@ -108,5 +106,12 @@ public partial class MainPage : ContentPage
     private async void SettingsButton_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new SettingsPage());
+    }
+
+    private void DebugTestButton_Clicked(object sender, EventArgs e)
+    {
+#if ANDROID
+        DebugTest_Android();
+#endif
     }
 }

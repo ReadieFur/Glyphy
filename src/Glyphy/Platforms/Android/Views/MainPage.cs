@@ -1,6 +1,10 @@
 ﻿using Glyphy.Platforms.Android;
+using Glyphy.Platforms.Android.LED;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Ketchum = Com.Nothing.Ketchum;
 
 namespace Glyphy.Views
 {
@@ -29,6 +33,11 @@ namespace Glyphy.Views
                 default:
                     break;
             }
+        }
+
+        private static void DebugTest_Android()
+        {
+            _ = KetchumAPI.GetInstance();
         }
     }
 }
