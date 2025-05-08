@@ -11,6 +11,8 @@ using Com.Nothing.Ketchum;
 using Android.Content;
 using System.Threading;
 using Java.Lang;
+using System.Linq;
+using Glyphy.LED.Zones;
 
 namespace Glyphy.LED
 {
@@ -49,6 +51,7 @@ namespace Glyphy.LED
         private const string BASE_PATH = "/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led";
 
         public EPhoneType PhoneType { get; private set; } = EPhoneType.Unknown;
+        public string Codename { get; private set; } = string.Empty;
 
         private GlyphManager _glyphManager;
         private TaskCompletionSource _onAPIConnected = new(false);
@@ -67,22 +70,68 @@ namespace Glyphy.LED
             _glyphManager.UnInit();
         }
 
+#if DEBUG
+        public void DebugTest()
+        {
+            /*var builder = _glyphManager.GlyphFrameBuilder!;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var frame = builder
+                .BuildChannel(Glyph.Code_20111.B1)
+                .BuildPeriod(5000)
+                .BuildCycles(20)
+                .BuildInterval(1000)
+                .Build();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            _glyphManager.Animate(frame);*/
+
+            /*//Create array of 15 with 2048 as values.
+            int[] nums = Enumerable.Repeat(500, 15).ToArray();
+            _glyphManager.SetFrameColors(nums);*/
+
+            Dictionary<EPhoneOneZones, int> map = new()
+            {
+                { EPhoneOneZones.A1, 2048 },
+                { EPhoneOneZones.E1, 500 },
+                { EPhoneOneZones.B1, 4096 }
+            };
+            var frame = ZoneMapper.ZoneToArray(map);
+            _glyphManager.SetFrameColors(frame);
+        }
+#endif
+
         public void OnServiceConnected(ComponentName? p0)
         {
             if (Common.Is20111())
+            {
                 PhoneType = EPhoneType.PhoneOne;
+                Codename = Glyph.Device20111!;
+            }
             else if (Common.Is22111())
+            {
                 PhoneType = EPhoneType.PhoneTwo;
+                Codename = Glyph.Device22111!;
+                //Device22111i Secret/unreleased model?
+            }
             else if (Common.Is23111())
+            {
                 PhoneType = EPhoneType.PhoneTwoA;
+                Codename = Glyph.Device23111!;
+            }
             else if (Common.Is23113())
+            {
                 PhoneType = EPhoneType.PhoneTwoAPlus;
+                Codename = Glyph.Device23113!;
+            }
             else if (Common.Is24111())
+            {
                 PhoneType = EPhoneType.PhoneThreeA;
+                Codename = Glyph.Device24111!;
+            }
             else
                 throw new IndexOutOfRangeException("Unknown device type.");
 
-            if (!_glyphManager.Register($"DEVICE_{(uint)PhoneType}"))
+            //The docs would make it seem like the string to pass is "DEVICE_<ID>" but this is not true and rather the device codename is retrived by using the constant DEVICE_<ID>
+            if (!_glyphManager.Register(Codename))
                 throw new InvalidOperationException("Failed to register device.");
 
             _glyphManager.OpenSession();

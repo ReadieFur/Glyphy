@@ -21,9 +21,12 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
     }
 
+#if DEBUG
     private void DebugTestButton_Clicked(object sender, EventArgs e)
     {
+       API.Instance.DebugTest();
     }
+#endif
 
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
