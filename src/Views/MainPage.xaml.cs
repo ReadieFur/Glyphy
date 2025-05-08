@@ -3,7 +3,6 @@ using Glyphy.Configuration;
 using Glyphy.Controls;
 using Glyphy.LED;
 using Glyphy.Misc;
-using Glyphy.Platforms.Android.LED;
 using Glyphy.Resources.Presets;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -20,6 +19,10 @@ public partial class MainPage : ContentPage
     public MainPage()
 	{
 		InitializeComponent();
+    }
+
+    private void DebugTestButton_Clicked(object sender, EventArgs e)
+    {
     }
 
     private void ContentPage_Loaded(object sender, EventArgs e)
@@ -108,10 +111,6 @@ public partial class MainPage : ContentPage
     private async void SettingsButton_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new SettingsPage());
-    }
-
-    private void DebugTestButton_Clicked(object sender, EventArgs e)
-    {
     }
 
     private void Android_ContentPage_Loaded(object sender, System.EventArgs e)

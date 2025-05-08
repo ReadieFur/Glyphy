@@ -5,7 +5,6 @@ using Android.OS;
 using Android.Views;
 using Glyphy.Configuration;
 using Glyphy.Misc;
-using Glyphy.Platforms.Android;
 using Glyphy.Services;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
@@ -84,7 +83,7 @@ public class MainActivity : MauiAppCompatActivity
     private void RefreshAPI()
     {
         //We only have to start the API once, if superuser permissions are revoked mid-session, we can still use the API as that elevated process is still running.
-        if (!LED.API.Running)
+        if (!LED.API.IsReady)
         {
             try { _ = LED.API.Instance; }
             catch (Exception ex)

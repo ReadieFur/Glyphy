@@ -7,11 +7,15 @@ using System;
 using JIOException = Java.IO.IOException;
 using JProcess = Java.Lang.Process;
 using SIOException = System.IO.IOException;
+using Com.Nothing.Ketchum;
+using Android.Content;
+using System.Threading;
+using Java.Lang;
 
 namespace Glyphy.LED
 {
     //Some "odd" choices have been made here but they were in the intrest of making the API as fast as possible as it will be called very frequently.
-    public class API : IDisposable
+    public class API : Java.Lang.Object, IDisposable, GlyphManager.ICallback
     {
         //These two values are used for the API brightness values but will be converted to system values by the platform specific partial classes.
         public const float MIN_BRIGHTNESS = 0.0f;
@@ -20,9 +24,6 @@ namespace Glyphy.LED
         private static readonly object _LOCK = new object();
 
         private static API? _instance = null;
-
-        public static bool Running => _instance is not null;
-
         //I am using this to make the API only initalize when called (as opposed to a static constructor).
         public static API Instance
         {
@@ -43,94 +44,59 @@ namespace Glyphy.LED
             }
         }
 
+        public static bool IsReady => Instance._onAPIConnected.Task.IsCompleted;
+
         private const string BASE_PATH = "/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx_led";
 
-        private JProcess rootProcess;
-        private DataOutputStream inputStream;
-        private DataInputStream outputStream;
-        private uint maxBrightness = 0;
+        public EPhoneType PhoneType { get; private set; } = EPhoneType.Unknown;
+
+        private GlyphManager _glyphManager;
+        private TaskCompletionSource _onAPIConnected = new(false);
+        private uint _maxBrightness = 0;
         //Yes I could've used a dictionary here but this method is slightly faster (I think).
-        private uint[] cachedBrightnessValues = new uint[Enum.GetValues<EAddressable>().Length];
-
-        public nint Handle => throw new NotImplementedException();
-
-        public int JniIdentityHashCode => throw new NotImplementedException();
-
-        public JniObjectReference PeerReference => throw new NotImplementedException();
-
-        public JniPeerMembers JniPeerMembers => throw new NotImplementedException();
-
-        public JniManagedPeerStates JniManagedPeerState => throw new NotImplementedException();
+        private uint[] _cachedBrightnessValues = new uint[System.Enum.GetValues<EAddressable>().Length];
 
         public API()
         {
-            if (!Misc.Helpers.CreateRootSubProcess(out JProcess? _rootProcess)
-                || _rootProcess is null
-                || _rootProcess.OutputStream is null
-                || _rootProcess.InputStream is null)
-                throw new UnauthorizedAccessException("Unable to create root process.");
-            rootProcess = _rootProcess;
-
-            inputStream = new DataOutputStream(rootProcess.OutputStream);
-            outputStream = new DataInputStream(rootProcess.InputStream);
-
-            RefreshMaxBrightness().Wait();
-
-            for (int i = 0; i < cachedBrightnessValues.Length; i++)
-                cachedBrightnessValues[i] = 0;
+            _glyphManager = GlyphManager.GetInstance(Android.App.Application.Context) ?? throw new InvalidOperationException("Failed to connect to Glyph API.");
+            _glyphManager.Init(this);
         }
 
-        //I'm not going to implement a check to see if we have disposed. Just don't call this manually.
-        public void Dispose()
+        void IDisposable.Dispose()
         {
-            inputStream.Dispose();
-            outputStream.Dispose();
-            rootProcess.Destroy();
+            _glyphManager.UnInit();
         }
 
-        //MMM lovley #if blocks.
-        /// <summary>
-        /// Should be run on a background thread.
-        /// </summary>
-        private
-#if USE_ASYNC_STREAM
-            async
-#endif
-        Task<string?> Exec(string command, bool captureOutput = false)
+        public void OnServiceConnected(ComponentName? p0)
         {
-            //The async methods seem to hang indefinitely so I will be using the synchronous method.
-            //I find this odd because the synchronous methods are marked as deprecated, yet the comment on all of the the async method say "to be added".
+            if (Common.Is20111())
+                PhoneType = EPhoneType.PhoneOne;
+            else if (Common.Is22111())
+                PhoneType = EPhoneType.PhoneTwo;
+            else if (Common.Is23111())
+                PhoneType = EPhoneType.PhoneTwoA;
+            else if (Common.Is23113())
+                PhoneType = EPhoneType.PhoneTwoAPlus;
+            else if (Common.Is24111())
+                PhoneType = EPhoneType.PhoneThreeA;
+            else
+                throw new IndexOutOfRangeException("Unknown device type.");
 
-            if (captureOutput)
-            {
-                try
-                {
-                    while (outputStream.Available() > 0)
-#if USE_ASYNC_STREAM
-                        await outputStream.SkipBytesAsync(outputStream.Available());
-#else
-                        outputStream.SkipBytes(outputStream.Available());
-#endif
-                }
-                catch (JIOException) { /*Ignore*/ }
-            }
+            if (!_glyphManager.Register($"DEVICE_{(uint)PhoneType}"))
+                throw new InvalidOperationException("Failed to register device.");
 
-#if USE_ASYNC_STREAM
-            await inputStream.WriteBytesAsync(command + "\n");
-            await inputStream.FlushAsync();
-#else
-            inputStream.WriteBytes(command + "\n");
-            inputStream.Flush();
-#endif
+            _glyphManager.OpenSession();
 
-#if USE_ASYNC_STREAM
-            return captureOutput ? await outputStream.ReadLineAsync() : null;
-#else
-#pragma warning disable CS0618 // Type or member is obsolete
-            return Task.FromResult(captureOutput ? outputStream.ReadLine() : null);
-#pragma warning restore CS0618
-#endif
+            _onAPIConnected.SetResult();
         }
+
+        public void OnServiceDisconnected(ComponentName? p0)
+        {
+            _glyphManager.CloseSession();
+            _onAPIConnected.TrySetCanceled();
+        }
+
+        public async Task WaitForReady() => await Instance._onAPIConnected.Task;
 
         private string GetGroupSystemName(EGroup ledGroup)
         {
@@ -193,28 +159,13 @@ namespace Glyphy.LED
             };
         }
 
-        //Private for now.
-        private async Task RefreshMaxBrightness()
-        {
-            string? result = await Exec("cat " + BASE_PATH + "/brightness", captureOutput: true);
-            if (string.IsNullOrEmpty(result))
-                throw new NullReferenceException("Unable to get max brightness.");
-            maxBrightness = uint.Parse(result);
-        }
-
         public async Task<float> GetBrightness(EGroup ledGroup)
         {
-            string? result = await Exec("cat " + BASE_PATH + "/" + GetGroupSystemName(ledGroup), true);
-            if (result is null)
-                throw new SIOException("Failed to get brightness.");
-            else if (!uint.TryParse(result, out uint parsedResult))
-                throw new FormatException("Brightness value is invalid.");
-            else
-                return ToNormalisedRange(parsedResult);
+            throw new NotImplementedException();
         }
 
         public Task<float> GetBrightness(EAddressable adressableLED) =>
-            Task.FromResult(ToNormalisedRange(cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]));
+            Task.FromResult(ToNormalisedRange(_cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]));
 
         public async Task SetBrightness(EGroup ledGroup, float brightness)
         {
@@ -223,40 +174,40 @@ namespace Glyphy.LED
             switch (ledGroup)
             {
                 case EGroup.CAMERA:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = systemBrightness;
                     break;
                 case EGroup.DIAGONAL:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = systemBrightness;
                     break;
                 case EGroup.CENTER:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = systemBrightness;
                     break;
                 case EGroup.LINE:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = systemBrightness;
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = systemBrightness;
                     break;
                 case EGroup.DOT:
-                    cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = systemBrightness;
+                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = systemBrightness;
                     break;
                 default:
                     throw new KeyNotFoundException("Invalid device ID.");
             }
 
-            await Exec($"echo {systemBrightness} > {BASE_PATH}/{GetGroupSystemName(ledGroup)}");
+            throw new NotImplementedException();
         }
 
         public async Task SetBrightness(EAddressable addressableLED, float brightness)
         {
-            cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
+            _cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
 
             uint systemBrightness = ToSystemRange(
                 MathF.Pow(
@@ -265,21 +216,21 @@ namespace Glyphy.LED
                     2f) //Exponential curve (I've added this as the visual change in brightness gets smaller as the brightness increases. The value I have set here is arbitrary).
                 );
 
-            await Exec($"echo {GetAddressableSystemID(addressableLED)} {systemBrightness} > {BASE_PATH}/single_led_br");
+            throw new NotImplementedException();
         }
 
         private float ToNormalisedRange(uint value)
         {
             //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
             //Optimized //(assumes the value is within a valid range, which it should be within this class):
-            return Math.Clamp((float)value / maxBrightness, 0f, 1f);
+            return System.Math.Clamp((float)value / _maxBrightness, 0f, 1f);
         }
 
         private uint ToSystemRange(float value)
         {
             //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
             //Optimized:
-            return Math.Clamp(Convert.ToUInt32(value * maxBrightness), 0u, maxBrightness);
+            return System.Math.Clamp(Convert.ToUInt32(value * _maxBrightness), 0u, _maxBrightness);
         }
     }
 }

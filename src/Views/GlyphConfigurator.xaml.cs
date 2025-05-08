@@ -189,13 +189,13 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
             {
                 if (_animation.Frames[currentFrameIndex].Values.ContainsKey(led))
                 {
-                    if (API.Running)
+                    if (API.IsReady)
                         _ = API.Instance.SetBrightness(led, _animation.Frames[currentFrameIndex].Values[led].Brightness);
                     GlyphPreview.UpdatePreview(led, _animation.Frames[currentFrameIndex].Values[led].Brightness);
                 }
                 else
                 {
-                    if (API.Running)
+                    if (API.IsReady)
                         _ = API.Instance.SetBrightness(led, 0);
                     GlyphPreview.UpdatePreview(led, 0);
                 }
@@ -238,7 +238,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     {
         bool hasUnsavedChanges = this.hasUnsavedChanges;
 
-        ToggleControls(API.Running);
+        ToggleControls(API.IsReady);
 
         LoadFrame(0);
 
@@ -252,7 +252,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
     }
 
     private void MainApplication_OnResume(Android.App.Activity activity) =>
-        ToggleControls(API.Running);
+        ToggleControls(API.IsReady);
 
     private void AnimationNameEntry_TextChanged(object? sender, TextChangedEventArgs e)
     {
@@ -302,7 +302,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         GlyphPreview.UpdatePreview(ledConfiguration.Led, ledConfiguration.Brightness);
 
         //Update physical LED.
-        if (API.Running)
+        if (API.IsReady)
             _ = API.Instance.SetBrightness(ledConfiguration.Led, ledConfiguration.Brightness);
 
         return roundedValue;
@@ -420,7 +420,7 @@ public partial class GlyphConfigurator : ContentPage, IDisposable
         {
             Task.Run(() =>
             {
-                if (!API.Running)
+                if (!API.IsReady)
                     return;
 
                 //Reset all LEDs to their default state.
