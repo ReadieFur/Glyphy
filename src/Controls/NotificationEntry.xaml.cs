@@ -68,12 +68,12 @@ public partial class NotificationEntry : ContentView
             }
             else
             {
-                notificationServiceConfiguration.Configuration.Add(PackageName, new()
+                /*notificationServiceConfiguration.Configuration.Add(PackageName, new()
                 {
                     PackageName = PackageName,
                     Enabled = e.Value,
                     AnimationID = Glyphy.Resources.Presets.Glyphs.OFF.Id
-                });
+                });*/
             }
 
             await Storage.NotificationServiceSettings.Save(notificationServiceConfiguration);

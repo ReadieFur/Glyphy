@@ -25,7 +25,6 @@ public partial class GlyphEntry : ContentView, IDisposable
     public event EventHandler? OnDeleted;
 
     private Task? tappedActionTask = null;
-    private GlyphConfigurator? glyphConfigurator = null;
     private DateTime lastDeleteClick = DateTime.MinValue;
 	private CommunityToolkit.Maui.Core.IToast? deletionToast = null;
 
@@ -148,7 +147,7 @@ public partial class GlyphEntry : ContentView, IDisposable
 
     private void EditButton_Tapped(object sender, TappedEventArgs e)
 	{
-        if (!EditContainer.IsEnabled)
+        /*if (!EditContainer.IsEnabled)
             return;
 
         //TODO: Disable the controls while an editor is active.
@@ -164,20 +163,20 @@ public partial class GlyphEntry : ContentView, IDisposable
             glyphConfigurator.Disappearing += GlyphConfigurator_Disappearing;
 
             Dispatcher.Dispatch(() => _ = Navigation.PushAsync(glyphConfigurator, true));
-        });
+        });*/
     }
 
     private void GlyphConfigurator_Disappearing(object? sender, EventArgs e)
     {
-        //glyphConfigurator won't be null here.
+        /*//glyphConfigurator won't be null here.
         SetNameLabel(glyphConfigurator!.Animation.Name);
         glyphConfigurator.Dispose();
-        glyphConfigurator = null;
+        glyphConfigurator = null;*/
     }
 
     private void DeleteButton_Tapped(object sender, TappedEventArgs e)
 	{
-        if (!DeleteContainer.IsEnabled)
+        /*if (!DeleteContainer.IsEnabled)
             return;
 
 		if (lastDeleteClick < DateTime.Now - TimeSpan.FromSeconds(5))
@@ -196,7 +195,7 @@ public partial class GlyphEntry : ContentView, IDisposable
             deletionToast = null;
         }
 
-        OnDeleted?.Invoke(this, e);
+        OnDeleted?.Invoke(this, e);*/
     }
 
     private void SetNameLabel(string text) =>

@@ -15,6 +15,8 @@ namespace Glyphy.Resources.Presets
             .Where(field => field.FieldType == typeof(SAnimation))
             .Select(field => (SAnimation)field.GetValue(null)!);
 
+#if false
+
         public static readonly SAnimation OFF = new()
         {
             Id = Guid.Parse("f9cadedb-4c86-46e5-a218-1e5ffa38adc1"),
@@ -2605,5 +2607,6 @@ namespace Glyphy.Resources.Presets
                 }
             }
         };
+#endif
     }
 }

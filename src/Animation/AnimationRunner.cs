@@ -79,7 +79,7 @@ namespace Glyphy.Animation
                     await runner;
 
                 //Clear the buffered LED values.
-                await AddInterruptAnimation(Resources.Presets.Glyphs.OFF);
+                /*await AddInterruptAnimation(Resources.Presets.Glyphs.OFF);*/
             }
             finally
             {
@@ -117,7 +117,7 @@ namespace Glyphy.Animation
                 cancellationTokenSource = new();
 
                 //Run the "off" animation as a temporary workaround to make use of the interrupt method all the time.
-                ActiveAnimation = Resources.Presets.Glyphs.OFF;
+                /*ActiveAnimation = Resources.Presets.Glyphs.OFF;*/
                 runner = RunnerTask();
             }
             finally
@@ -156,6 +156,8 @@ namespace Glyphy.Animation
 
         private static Task AnimationTask(SAnimation animation, Func<Stopwatch?, Task>? interruptCallback = null)
         {
+            return Task.CompletedTask;
+#if false
             return Task.Run(async () =>
             {
                 try
@@ -269,6 +271,7 @@ namespace Glyphy.Animation
                 }
                 catch (Exception) {}
             });
+#endif
         }
 
         //TODO: Create a RunFrame method that can be called externally to run a single frame.

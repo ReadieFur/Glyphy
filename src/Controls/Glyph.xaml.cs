@@ -97,7 +97,7 @@ public partial class Glyph : ContentView
 #endif
     }
 
-    public void UpdatePreview(EAddressable led, double brightness)
+    /*public void UpdatePreview(EAddressable led, double brightness)
     {
         Color colour;
         if (led == EAddressable.RECORDING_LED)
@@ -156,5 +156,5 @@ public partial class Glyph : ContentView
                 GlyphDot.Fill = colour;
                 break;
         }
-    }
+    }*/
 }

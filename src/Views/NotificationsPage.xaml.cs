@@ -204,12 +204,12 @@ public partial class NotificationsPage : ContentPage
             }
             else
             {
-                notificationServiceConfiguration.Configuration.Add(NotificationLightingService.DEFAULT_KEY, new()
+                /*notificationServiceConfiguration.Configuration.Add(NotificationLightingService.DEFAULT_KEY, new()
                 {
                     PackageName = NotificationLightingService.DEFAULT_KEY,
                     Enabled = e.Value,
                     AnimationID = Glyphy.Resources.Presets.Glyphs.OFF.Id
-                });
+                });*/
             }
 
             await Storage.NotificationServiceSettings.Save(notificationServiceConfiguration);
