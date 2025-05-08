@@ -55,9 +55,7 @@ namespace Glyphy.LED
 
         private GlyphManager _glyphManager;
         private TaskCompletionSource _onAPIConnected = new(false);
-        private uint _maxBrightness = 0;
-        //Yes I could've used a dictionary here but this method is slightly faster (I think).
-        private uint[] _cachedBrightnessValues = new uint[System.Enum.GetValues<EAddressable>().Length];
+        private Type _activeZoneMappingType;
 
         public API()
         {
@@ -130,6 +128,8 @@ namespace Glyphy.LED
             else
                 throw new IndexOutOfRangeException("Unknown device type.");
 
+            _activeZoneMappingType = ZoneMapper.GetZoneTypeForDevice(PhoneType);
+
             //The docs would make it seem like the string to pass is "DEVICE_<ID>" but this is not true and rather the device codename is retrived by using the constant DEVICE_<ID>
             if (!_glyphManager.Register(Codename))
                 throw new InvalidOperationException("Failed to register device.");
@@ -147,139 +147,14 @@ namespace Glyphy.LED
 
         public async Task WaitForReady() => await Instance._onAPIConnected.Task;
 
-        private string GetGroupSystemName(EGroup ledGroup)
+        public async Task DrawFrame<TZone>(IReadOnlyDictionary<TZone, int> source) where TZone : struct, System.Enum
         {
-            return ledGroup switch
-            {
-                EGroup.CAMERA => "rear_cam_led_br",
-                EGroup.DIAGONAL => "front_cam_led_br",
-                EGroup.CENTER => "round_leds_br",
-                EGroup.LINE => "vline_leds_br",
-                EGroup.DOT => "dot_led_br",
-                _ => throw new KeyNotFoundException("Invalid device ID.")
-            };
-        }
+            if (typeof(TZone) != _activeZoneMappingType)
+                throw new ArgumentException("Unsupported zone mapping type for this device.");
 
-        private uint GetAddressableSystemID(EAddressable addressableLED)
-        {
-            return addressableLED switch
-            {
-                EAddressable.CAMERA => 7,
-                EAddressable.DIAGONAL => 1,
-                EAddressable.RECORDING_LED => 17,
-                EAddressable.CENTER_BOTTOM_LEFT => 2,
-                EAddressable.CENTER_BOTTOM_RIGHT => 3,
-                EAddressable.CENTER_TOP_LEFT => 5,
-                EAddressable.CENTER_TOP_RIGHT => 4,
-                EAddressable.LINE_1 => 13,
-                EAddressable.LINE_2 => 11,
-                EAddressable.LINE_3 => 9,
-                EAddressable.LINE_4 => 12,
-                EAddressable.LINE_5 => 10,
-                EAddressable.LINE_6 => 14,
-                EAddressable.LINE_7 => 15,
-                EAddressable.LINE_8 => 8,
-                EAddressable.DOT => 16,
-                _ => throw new KeyNotFoundException("Invalid device ID.")
-            };
-        }
+            int[] ledArray = ZoneMapper.ZoneToArray(source);
 
-        private int GetCachedBrightnessIndex(EAddressable addressableLED)
-        {
-            return addressableLED switch
-            {
-                EAddressable.CAMERA => 0,
-                EAddressable.DIAGONAL => 1,
-                EAddressable.RECORDING_LED => 2,
-                EAddressable.CENTER_BOTTOM_LEFT => 3,
-                EAddressable.CENTER_BOTTOM_RIGHT => 4,
-                EAddressable.CENTER_TOP_LEFT => 5,
-                EAddressable.CENTER_TOP_RIGHT => 6,
-                EAddressable.LINE_1 => 7,
-                EAddressable.LINE_2 => 8,
-                EAddressable.LINE_3 => 9,
-                EAddressable.LINE_4 => 10,
-                EAddressable.LINE_5 => 11,
-                EAddressable.LINE_6 => 12,
-                EAddressable.LINE_7 => 13,
-                EAddressable.LINE_8 => 14,
-                EAddressable.DOT => 15,
-                _ => throw new KeyNotFoundException("Invalid device ID.")
-            };
-        }
-
-        public async Task<float> GetBrightness(EGroup ledGroup)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<float> GetBrightness(EAddressable adressableLED) =>
-            Task.FromResult(ToNormalisedRange(_cachedBrightnessValues[GetCachedBrightnessIndex(adressableLED)]));
-
-        public async Task SetBrightness(EGroup ledGroup, float brightness)
-        {
-            uint systemBrightness = ToSystemRange(brightness);
-
-            switch (ledGroup)
-            {
-                case EGroup.CAMERA:
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CAMERA)] = systemBrightness;
-                    break;
-                case EGroup.DIAGONAL:
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DIAGONAL)] = systemBrightness;
-                    break;
-                case EGroup.CENTER:
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_LEFT)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_TOP_RIGHT)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_LEFT)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.CENTER_BOTTOM_RIGHT)] = systemBrightness;
-                    break;
-                case EGroup.LINE:
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_1)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_2)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_3)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_4)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_5)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_6)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_7)] = systemBrightness;
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.LINE_8)] = systemBrightness;
-                    break;
-                case EGroup.DOT:
-                    _cachedBrightnessValues[GetCachedBrightnessIndex(EAddressable.DOT)] = systemBrightness;
-                    break;
-                default:
-                    throw new KeyNotFoundException("Invalid device ID.");
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public async Task SetBrightness(EAddressable addressableLED, float brightness)
-        {
-            _cachedBrightnessValues[GetCachedBrightnessIndex(addressableLED)] = ToSystemRange(brightness);
-
-            uint systemBrightness = ToSystemRange(
-                MathF.Pow(
-                    brightness //Base brightness
-                    * (await Storage.Settings.GetCached()).BrightnessMultiplier, //Brightness multiplier
-                    2f) //Exponential curve (I've added this as the visual change in brightness gets smaller as the brightness increases. The value I have set here is arbitrary).
-                );
-
-            throw new NotImplementedException();
-        }
-
-        private float ToNormalisedRange(uint value)
-        {
-            //return Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0, maxBrightness, 0, 1), 0f, 1f);
-            //Optimized //(assumes the value is within a valid range, which it should be within this class):
-            return System.Math.Clamp((float)value / _maxBrightness, 0f, 1f);
-        }
-
-        private uint ToSystemRange(float value)
-        {
-            //(uint)Math.Clamp(Misc.Helpers.ConvertNumberRange(value, 0f, 1f, 0f, maxBrightness), 0, maxBrightness);
-            //Optimized:
-            return System.Math.Clamp(Convert.ToUInt32(value * _maxBrightness), 0u, _maxBrightness);
+            _glyphManager.SetFrameColors(ledArray);
         }
     }
 }

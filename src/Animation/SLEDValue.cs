@@ -11,7 +11,7 @@ namespace Glyphy.Animation
         [JsonIgnore] public const float MAX_BRIGHTNESS = API.MAX_BRIGHTNESS;
 
         [JsonProperty("interpolation_type")] public EInterpolationType InterpolationType { get; set; } = EInterpolationType.NONE;
-        [JsonProperty("led")] public EAddressable Led { get; set; } = EAddressable.CAMERA;
+        [JsonProperty("led")] public ushort Led { get; set; } = ushort.MinValue;
         [JsonProperty("brightness")] public float Brightness { get; set; } = MIN_BRIGHTNESS;
 
         public SLEDValue() {}

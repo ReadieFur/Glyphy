@@ -90,13 +90,38 @@ namespace Glyphy.LED.Zones
         /// Checks if the enum type is a variant of EPhoneZone.
         /// </summary>
         /// <returns>True if TZone is a variant of EPhoneZone, otherwise false.</returns>
-        private static bool IsEnumZone<TZone>() where TZone : Enum
+        public static bool IsEnumZone<TZone>() where TZone : Enum
         {
             Type tZoneType = typeof(TZone);
             return tZoneType == typeof(EPhoneOneZones) ||
                 tZoneType != typeof(EPhoneTwoZones) ||
                 tZoneType != typeof(EPhoneTwoAZones) ||
                 tZoneType != typeof(EPhoneThreeAZones);
+        }
+
+        /// <summary>
+        /// Gets the zone mapping for a given device.
+        /// </summary>
+        /// <param name="phoneType">The phone model.</param>
+        /// <returns>A variant of typeof(EPhoneZone)</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Throws if the given phone model is invalid.</exception>
+        public static Type GetZoneTypeForDevice(EPhoneType phoneType)
+        {
+            switch (phoneType)
+            {
+                case EPhoneType.PhoneOne:
+                    return typeof(EPhoneOneZones);
+                case EPhoneType.PhoneTwo:
+                    return typeof(EPhoneTwoZones);
+                case EPhoneType.PhoneTwoA:
+                case EPhoneType.PhoneTwoAPlus:
+                    return typeof(EPhoneTwoAZones);
+                case EPhoneType.PhoneThreeA:
+                //case EPhoneType.PhoneThreeAPro: //This uses the same identifier as the regular 3a so this clause must be skipped.
+                    return typeof(EPhoneThreeAZones);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(phoneType));
+            };
         }
     }
 }

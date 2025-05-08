@@ -14,7 +14,7 @@ namespace Glyphy.Animation
 
         [JsonProperty("transition_time")] public float TransitionTime { get; set; } = MIN_TRANSITION_TIME;
         [JsonProperty("duration")] public float Duration { get; set; } = MIN_DURATION;
-        [JsonProperty("values")] public Dictionary<EAddressable, SLEDValue> Values { get; set; } = new();
+        [JsonProperty("values")] public Dictionary<string, SLEDValue> Values { get; set; } = new();
 
         public SFrame() {}
 
@@ -26,7 +26,7 @@ namespace Glyphy.Animation
             float newTransitionTime = Math.Clamp(TransitionTime, MIN_TRANSITION_TIME, MAX_TRANSITION_TIME);
             madeCorrections |= newTransitionTime != TransitionTime;
 
-            foreach (KeyValuePair<EAddressable, SLEDValue> kvp in Values)
+            foreach (KeyValuePair<string, SLEDValue> kvp in Values)
             {
                 bool madeLEDCorrections = kvp.Value.Normalize();
                 madeCorrections |= madeLEDCorrections;
