@@ -1,8 +1,3 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Layouts;
 
 //https://github.com/dotnet/maui/discussions/6695

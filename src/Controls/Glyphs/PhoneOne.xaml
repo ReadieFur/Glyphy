@@ -4,7 +4,7 @@
              xmlns:controls="clr-namespace:Glyphy.Controls;assembly=Glyphy"
              xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              xmlns:gestures="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
-             x:Class="Glyphy.Controls.Glyph">
+             x:Class="Glyphy.Controls.Glyphs.PhoneOne">
     <controls:ViewBox Grid.Column="0">
         <Frame BackgroundColor="Transparent" BorderColor="Transparent" Padding="0" IsClippedToBounds="False">
             <Frame.GestureRecognizers>
@@ -20,7 +20,7 @@
                 <Path x:Name="GlyphCenterTopLeft" Stroke="White" StrokeThickness="6" Data="m 104.64,103.2 c -54.24,0 -90.72,38.02 -90.72,47.04 m 0,0 v 64.56" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphCenterBottomLeft" Stroke="White" StrokeThickness="6" Data="m 13.92,214.8 v 64.56 c 0,2.27 27.99,46.8 90,46.8" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphCenterBottomRight" Stroke="White" StrokeThickness="6" Data="m 103.92,326.16 c 62.01,0 89.28,-44.42 89.28,-47.52 v -60.48" StrokeLineCap="Round"/>
-                <!--I originally was going to use a single path here with a gradient, however I couldn't seem to get the gradient to work.-->
+                <!-- I originally was going to use a single path here with a gradient, however I couldn't seem to get the gradient to work (gradients on paths in MAUI are unsupported). -->
                 <Path x:Name="GlyphLine_8" Fill="White" StrokeThickness="6" Data="m 103.2,351.84 v 6.48" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphLine_7" Fill="White" StrokeThickness="6" Data="m 103.2,358.32 v 6.48" StrokeLineCap="Round"/>
                 <Path x:Name="GlyphLine_6" Fill="White" StrokeThickness="6" Data="m 103.2,364.8 v 6.48" StrokeLineCap="Round"/>

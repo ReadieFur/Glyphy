@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:Glyphy.Controls;assembly=Glyphy"
+             xmlns:glyphs="clr-namespace:Glyphy.Controls.Glyphs;assembly=Glyphy"
+             xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
              x:Class="Glyphy.Views.MainPage"
              Loaded="ContentPage_Loaded">
-    <NavigationPage.HasNavigationBar>
-        <x:Boolean>False</x:Boolean>
-    </NavigationPage.HasNavigationBar>
     <Grid>
         <ScrollView Padding="30,0">
             <VerticalStackLayout Spacing="25" VerticalOptions="Start">
@@ -17,12 +15,12 @@
                         <!--Possibly add a highlight to this icon for first time use to indicate what it does.-->
                         <Button x:Name="NotificationsButton"
                             FontFamily="FASolid6" Text="&#xf0f3;" FontSize="Large"
-                            BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                            BackgroundColor="Transparent"
                             CornerRadius="25" WidthRequest="50" HeightRequest="50"
                             Clicked="NotificationsButton_Clicked"/>
                         <Button x:Name="SettingsButton"
                             FontFamily="FASolid6" Text="&#xf013;" FontSize="Large"
-                            BackgroundColor="Transparent" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                            BackgroundColor="Transparent"
                             CornerRadius="25" WidthRequest="50" HeightRequest="50"
                             Clicked="SettingsButton_Clicked"/>
                     </HorizontalStackLayout>
@@ -32,7 +30,7 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <controls:Glyph x:Name="GlyphPreview"/>
+                    <glyphs:PhoneOne x:Name="GlyphPreview"/>
                     <Grid Grid.Column="1" Padding="30,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -45,7 +43,7 @@
                             </Grid.RowDefinitions>
                             <VerticalStackLayout Grid.Row="0">
                                 <Button HorizontalOptions="Start" VerticalOptions="End"
-                                    BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}"
                                     CornerRadius="25" FontSize="Body"
                                     Text="Debug Test"
                                     Clicked="DebugTestButton_Clicked"/>
@@ -61,7 +59,7 @@
         </ScrollView>
         <Grid Padding="30,0">
             <Button HorizontalOptions="End" VerticalOptions="End"
-                BackgroundColor="{AppThemeBinding Dark=#0D0D0D, Light=#F2F2F2}" TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}"
                 WidthRequest="50" HeightRequest="50" CornerRadius="25" FontSize="Body"
                 FontFamily="FASolid6" Text="&#x2b;"
                 Clicked="NewConfigurationButton_Clicked"/>

@@ -1,12 +1,20 @@
-﻿using Microsoft.Maui.Controls;
-
-namespace Glyphy;
-
-public partial class App : Application
+﻿namespace Glyphy
 {
-	public App()
-	{
-		InitializeComponent();
-		MainPage = new NavigationPage(new Views.NewPage1());
-	}
+    public partial class App : Application
+    {
+        public App()
+        {
+            InitializeComponent();
+
+#if ANDROID
+            Current!.RequestedThemeChanged += Current_RequestedThemeChanged;
+#endif
+
+#if DEBUG && true
+            MainPage = new Views.TestPage();
+#else
+            MainPage = new Views.MainPage();
+#endif
+        }
+    }
 }
