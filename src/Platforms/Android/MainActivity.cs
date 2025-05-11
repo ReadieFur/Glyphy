@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
@@ -6,12 +7,20 @@ using AndroidX.Core.View;
 using Window = Android.Views.Window;
 using MauiColor = Microsoft.Maui.Graphics.Color;
 using AndroidColor = Android.Graphics.Color;
+using Glyphy.Platforms.Android;
+using Glyphy.Platforms.Android.Services;
 
 namespace Glyphy
 {
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
+        internal const bool AMBIENT_SERVICE_IS_FOREGROUND = false;
+
+        internal delegate void ActivityResultEventHandler(int requestCode, Result resultCode, Intent? data);
+
+        internal static event ActivityResultEventHandler? OnActivityResultEvent;
+
         internal static void SetSystemUIScheme(AndroidColor statusBarColour, AndroidColor navigationBarColour, bool statusBarLight, bool navigationBarLight)
         {
             if (Platform.CurrentActivity?.Window is not Window window)
@@ -44,6 +53,29 @@ namespace Glyphy
                 AndroidColor androidColor = new(r, g, b);
                 SetSystemUIScheme(androidColor, androidColor, isDarkTheme, isDarkTheme);
             }
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            OnActivityResultEvent?.Invoke(requestCode, resultCode, data);
+        }
+
+        //This is called just after the app goes out of focus and so if the background process limit is set to 0, I have found this doesn't get called.
+        protected override void OnPause()
+        {
+            base.OnPause();
+
+            AndroidHelpers.StartService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            //Possibly refresh the UI theme here? (Although better to do from the UI context).
+
+            AndroidHelpers.StopService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
         }
     }
 }

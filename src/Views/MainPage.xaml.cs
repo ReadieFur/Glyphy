@@ -13,19 +13,17 @@
         }
 #endif
 
-        private void ContentPage_Loaded(object sender, EventArgs e)
+        private async void NotificationsButton_Clicked(object sender, EventArgs e)
         {
+            await Navigation.PushAsync(new NotificationsPage());
+        }
+
+        private async void SettingsButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SettingsPage());
         }
 
         private void NewConfigurationButton_Clicked(object sender, EventArgs e)
-        {
-        }
-
-        private void NotificationsButton_Clicked(object sender, EventArgs e)
-        {
-        }
-
-        private void SettingsButton_Clicked(object sender, EventArgs e)
         {
         }
     }

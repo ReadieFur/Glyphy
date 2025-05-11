@@ -13,7 +13,7 @@
 #if DEBUG && false
             MainPage = new Views.TestPage();
 #else
-            MainPage = new Views.MainPage();
+            MainPage = new NavigationPage(new Views.MainPage());
 #endif
         }
     }

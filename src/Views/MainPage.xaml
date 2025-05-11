@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:glyphs="clr-namespace:Glyphy.Controls.Glyphs;assembly=Glyphy"
              xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
-             x:Class="Glyphy.Views.MainPage"
-             Loaded="ContentPage_Loaded">
+             x:Class="Glyphy.Views.MainPage">
+    <NavigationPage.HasNavigationBar>False</NavigationPage.HasNavigationBar>
     <Grid>
         <ScrollView Padding="30,0">
             <VerticalStackLayout Spacing="25" VerticalOptions="Start">
