@@ -36,6 +36,7 @@
     <MauiFont Include="Resources\Fonts\*" />
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Remove="Platforms\Android\Resources\values\styles.xml" />
     <Folder Include="Resources\mipmap-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('android'))">
@@ -51,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <MauiXaml Update="Controls\Glyph.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\NewPage1.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>

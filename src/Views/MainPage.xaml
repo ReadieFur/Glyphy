@@ -5,7 +5,7 @@
              x:Class="Glyphy.Views.MainPage"
              Loaded="ContentPage_Loaded">
     <NavigationPage.HasNavigationBar>
-        <x:Boolean>false</x:Boolean>
+        <x:Boolean>False</x:Boolean>
     </NavigationPage.HasNavigationBar>
     <Grid>
         <ScrollView Padding="30,0">
