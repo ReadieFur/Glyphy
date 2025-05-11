@@ -9,9 +9,9 @@ namespace Glyphy.Animation
 #endif
     public enum EInterpolationType
     {
-        NONE,
-        LINEAR,
-        SMOOTH_STEP,
-        SMOOTHER_STEP
+        None, //Instant
+        Linear,
+        Smooth,
+        Bezier
     }
 }

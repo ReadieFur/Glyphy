@@ -16,7 +16,7 @@ namespace Glyphy.Animation
         public static int GetQueuedInterrupts => interruptQueue.Count;
 
         public static event Action<SAnimation?>? OnStateChanged;
-        public static event Action<IReadOnlyList<SLEDValue>>? OnRunFrame;
+        //public static event Action<IReadOnlyList<SLEDValue>>? OnRunFrame;
 
         private static readonly object _lock = new();
         private static CancellationTokenSource cancellationTokenSource = null!;

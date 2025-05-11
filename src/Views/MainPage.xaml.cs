@@ -32,10 +32,6 @@ public partial class MainPage : ContentPage
     {
     }
 
-    private void AnimationRunner_OnRunFrame(IReadOnlyList<SLEDValue> ledValues)
-    {
-    }
-
     private async void NewConfigurationButton_Clicked(object sender, EventArgs e)
     {
     }

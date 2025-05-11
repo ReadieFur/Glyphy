@@ -8,6 +8,6 @@
         PhoneTwoA = 23111,
         PhoneTwoAPlus = 23113,
         PhoneThreeA = 24111,
-        PhoneThreeAPro = 24111
+        PhoneThreeAPlus = 24111
     }
 }
