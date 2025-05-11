@@ -89,7 +89,7 @@ namespace Glyphy.Controls
             base.OnChildRemoved(child, oldLogicalIndex);
         }
 
-        private void ViewPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (!(sender is View view))
                 return;
