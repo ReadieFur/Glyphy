@@ -16,8 +16,13 @@ namespace Glyphy
                 && bindingEntries.GetValue(properties, [property]) is object bindingEntry
                 && bindingEntry.GetType().GetField("Bindings", BindingFlags.Instance | BindingFlags.Public) is FieldInfo bindingsFieldInfo
                 && bindingsFieldInfo.GetValue(bindingEntry) is object bindings
+#if NET8_0
+                && bindings.GetType().GetMethod("GetValueAtIndex", BindingFlags.Instance | BindingFlags.Public) is MethodInfo bindingMethodInfo
+                && bindingMethodInfo.Invoke(bindings, [0]) is Binding binding
+#elif NET9_0
                 && bindings.GetType().GetMethod("GetValue", BindingFlags.Instance | BindingFlags.Public) is MethodInfo bindingMethodInfo
                 && bindingMethodInfo.Invoke(bindings, []) is Binding binding
+#endif
                 && element.BindingContext.GetType().GetProperty(binding.Path) is PropertyInfo propertyInfo) //Binding context dosen't need to be passed as it is automatically inherited/set on the object.
                 return propertyInfo;
             return null;
@@ -29,6 +34,8 @@ namespace Glyphy
             Rect rel = relativeTo.Bounds;
             return new(abs.X - rel.X, abs.Y - rel.Y);
         }
+
+        public static bool IsValid(this double self) => !double.IsNaN(self) && !double.IsInfinity(self);
 
         public static double BezierSolveYGivenX(Point p0, Point p1, Point p2, Point p3, double xTarget)
         {

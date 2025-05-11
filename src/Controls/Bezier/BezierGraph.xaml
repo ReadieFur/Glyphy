@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:Glyphy.Controls.AbsoluteLayoutExtensions"
+             xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier"
+             x:Class="Glyphy.Controls.Bezier.BezierGraph"
+             x:DataType="bezier:BezierGraphViewModel">
+
+    <ContentView.Resources>
+        <Style x:Key="VertcalMarker" TargetType="Line">
+            <Setter Property="Stroke" Value="DimGray"/>
+            <Setter Property="InputTransparent" Value="True"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="StrokeDashArray" Value="4 2"/>
+            <Setter Property="ext:AbsoluteLayoutNormalizerLine.Y1" Value="1"/>
+            <Setter Property="ext:AbsoluteLayoutNormalizerLine.Y2" Value="-1"/>
+        </Style>
+        <Style x:Key="VerticalMarkerText" TargetType="Label">
+            <Setter Property="TextColor" Value="DimGray"/>
+            <Setter Property="InputTransparent" Value="True"/>
+            <Setter Property="FontSize" Value="10"/>
+        </Style>
+    </ContentView.Resources>
+
+    <Grid Margin="20,0">
+        <AbsoluteLayout>
+            <!-- Labels -->
+            <Label Style="{StaticResource VerticalMarkerText}"
+               ext:AbsoluteLayoutNormalizer.X="{Binding PreviousX}"
+               Text="{Binding PreviousTimestampText}"/>
+            <Label Style="{StaticResource VerticalMarkerText}"
+               ext:AbsoluteLayoutNormalizer.X="{Binding CurrentX}"
+               Text="{Binding CurrentTimestampText}"/>
+            <Label Style="{StaticResource VerticalMarkerText}"
+               ext:AbsoluteLayoutNormalizer.X="{Binding NextX}"
+               Text="{Binding NextTimestampText}"/>
+        </AbsoluteLayout>
+
+        <!-- TODO: Bind to text height. -->
+        <AbsoluteLayout Margin="0,15,0,0">
+            <!-- Keyframe Vertical Lines -->
+            <Line Style="{StaticResource VertcalMarker}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding PreviousX}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding PreviousX}"/>
+            <Line Style="{StaticResource VertcalMarker}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding CurrentX}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding CurrentX}"/>
+            <Line Style="{StaticResource VertcalMarker}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding NextX}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding NextX}"/>
+
+            <!-- Bezier Curves -->
+            <Path StrokeThickness="{Binding BezierThickness}"
+              InputTransparent="True"
+              ext:AbsoluteLayoutNormalizerBezier.P1="{Binding PreviousPoint}"
+              ext:AbsoluteLayoutNormalizerBezier.P2="{Binding PreviousOutTangent}"
+              ext:AbsoluteLayoutNormalizerBezier.P3="{Binding CurrentInTangent}"
+              ext:AbsoluteLayoutNormalizerBezier.P4="{Binding CurrentPoint}">
+                <Path.Stroke>
+                    <!-- Complex brushes like LinearGradientBrush are not yet supported in MAUI :/ -->
+                    <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="DimGray" Offset="0" />
+                    <GradientStop Color="Cyan" Offset="1" />
+                </LinearGradientBrush>-->
+                    <SolidColorBrush Color="DarkCyan"/>
+                </Path.Stroke>
+            </Path>
+            <Path StrokeThickness="{Binding BezierThickness}"
+              InputTransparent="True"
+              ext:AbsoluteLayoutNormalizerBezier.P1="{Binding CurrentPoint}"
+              ext:AbsoluteLayoutNormalizerBezier.P2="{Binding CurrentOutTangent}"
+              ext:AbsoluteLayoutNormalizerBezier.P3="{Binding NextInTangent}"
+              ext:AbsoluteLayoutNormalizerBezier.P4="{Binding NextPoint}">
+                <Path.Stroke>
+                    <!--<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="Cyan" Offset="0" />
+                    <GradientStop Color="DimGray" Offset="1" />
+                </LinearGradientBrush>-->
+                    <SolidColorBrush Color="DarkCyan"/>
+                </Path.Stroke>
+            </Path>
+
+            <!-- Lines to Tangent Points -->
+            <Line Stroke="DimGray"
+              InputTransparent="True"
+              StrokeThickness="{Binding TangentThickness}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding PreviousX}"
+              ext:AbsoluteLayoutNormalizerLine.Y1="{Binding PreviousY}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding PreviousOutX}"
+              ext:AbsoluteLayoutNormalizerLine.Y2="{Binding PreviousOutY}"/>
+            <Line Stroke="DarkCyan"
+              InputTransparent="True"
+              StrokeThickness="{Binding TangentThickness}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding CurrentX}"
+              ext:AbsoluteLayoutNormalizerLine.Y1="{Binding CurrentY}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding CurrentInX}"
+              ext:AbsoluteLayoutNormalizerLine.Y2="{Binding CurrentInY}"/>
+            <Line Stroke="DarkCyan"
+              InputTransparent="True"
+              StrokeThickness="{Binding TangentThickness}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding CurrentX}"
+              ext:AbsoluteLayoutNormalizerLine.Y1="{Binding CurrentY}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding CurrentOutX}"
+              ext:AbsoluteLayoutNormalizerLine.Y2="{Binding CurrentOutY}"/>
+            <Line Stroke="DimGray"
+              InputTransparent="True"
+              StrokeThickness="{Binding TangentThickness}"
+              ext:AbsoluteLayoutNormalizerLine.X1="{Binding NextX}"
+              ext:AbsoluteLayoutNormalizerLine.Y1="{Binding NextY}"
+              ext:AbsoluteLayoutNormalizerLine.X2="{Binding NextInX}"
+              ext:AbsoluteLayoutNormalizerLine.Y2="{Binding NextInY}"/>
+
+            <!-- Keyframe Points -->
+            <Ellipse Fill="Gray"
+                 InputTransparent="True"
+                 WidthRequest="{Binding KeyframeDiameter}"
+                 HeightRequest="{Binding KeyframeDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding PreviousX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding PreviousY}"/>
+            <Ellipse Fill="Cyan"
+                 WidthRequest="{Binding KeyframeDiameter}"
+                 HeightRequest="{Binding KeyframeDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding CurrentX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding CurrentY}">
+                <Ellipse.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="DraggableElementNormalized_OnPanUpdated"/>
+                </Ellipse.GestureRecognizers>
+            </Ellipse>
+            <Ellipse Fill="Gray"
+                 InputTransparent="True"
+                 WidthRequest="{Binding KeyframeDiameter}"
+                 HeightRequest="{Binding KeyframeDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding NextX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding NextY}"/>
+
+            <!-- Tangent Points -->
+            <Ellipse Fill="DimGray"
+                 InputTransparent="True"
+                 WidthRequest="{Binding TangentDiameter}"
+                 HeightRequest="{Binding TangentDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding PreviousOutX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding PreviousOutY}"/>
+            <Ellipse Fill="Cyan"
+                 WidthRequest="{Binding TangentDiameter}"
+                 HeightRequest="{Binding TangentDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding CurrentInX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding CurrentInY}">
+                <Ellipse.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="DraggableElementNormalized_OnPanUpdated"/>
+                </Ellipse.GestureRecognizers>
+            </Ellipse>
+            <Ellipse Fill="Cyan"
+                 WidthRequest="{Binding TangentDiameter}"
+                 HeightRequest="{Binding TangentDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding CurrentOutX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding CurrentOutY}">
+                <Ellipse.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="DraggableElementNormalized_OnPanUpdated"/>
+                </Ellipse.GestureRecognizers>
+            </Ellipse>
+            <Ellipse Fill="DimGray"
+                 InputTransparent="True"
+                 WidthRequest="{Binding TangentDiameter}"
+                 HeightRequest="{Binding TangentDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding NextInX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding NextInY}"/>
+
+            <!-- Playhead -->
+            <Ellipse Fill="Orange"
+                 WidthRequest="{Binding TangentDiameter}"
+                 HeightRequest="{Binding TangentDiameter}"
+                 ext:AbsoluteLayoutNormalizer.X="{Binding PlayheadX}"
+                 ext:AbsoluteLayoutNormalizer.Y="{Binding PlayheadY}"/>
+        </AbsoluteLayout>
+    </Grid>
+</ContentView>

@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
              x:Class="Glyphy.Views.TestPage"
              Title="TestPage">
-    <Grid>
+    <Grid Margin="20">
         <local:BezierGraph/>
     </Grid>
 </ContentPage>

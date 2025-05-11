@@ -42,7 +42,7 @@ namespace Glyphy.WinUI
 
                 if (appWindow.Presenter is OverlappedPresenter p)
                 {
-                    p.IsResizable = false;
+                    p.IsResizable = true;
 
                     //These only have effect if XAML isn't responsible for drawing the titlebar.
                     p.IsMaximizable = false;
