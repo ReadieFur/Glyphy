@@ -1,8 +1,5 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Glyphy.Animation
+﻿namespace Glyphy.Animation
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EInterpolationType
     {
         None, //Instant

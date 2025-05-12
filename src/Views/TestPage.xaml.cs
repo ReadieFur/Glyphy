@@ -1,5 +1,8 @@
+using Glyphy.Animation;
 using Glyphy.Glyph;
 using Glyphy.Glyph.Indexes;
+using Newtonsoft.Json;
+using System.Diagnostics;
 using Timer = System.Timers.Timer;
 
 namespace Glyphy.Views;
@@ -20,11 +23,36 @@ public partial class TestPage : ContentPage
 
         TestButton.Text = "Enable (Not Running)";
 
-        SPhoneIndex i = EPhoneOne.A1;
+        TestJson();
     }
 
     private async void TestButton_Clicked(object sender, EventArgs e)
 	{
+        await TestLed();
+    }
+
+    private void TestJson()
+    {
+        SAnimation animation = new();
+        animation.PhoneType = EPhoneType.PhoneOne;
+        animation.Keyframes.Add(new SKeyframe
+        {
+            Led = EPhoneOne.A1,
+            Timestamp = 300,
+            Brightness = 0.6,
+            Interpolation = EInterpolationType.Bezier,
+            InTangent = new(0.5, 0.5)
+        });
+
+        string json = JsonConvert.SerializeObject(animation, Formatting.Indented);
+        //Debugger.Break();
+
+        SAnimation animation2 = JsonConvert.DeserializeObject<SAnimation>(json);
+        //Debugger.Break();
+    }
+
+    private async Task TestLed()
+    {
         //Start the API.
         if (!await GlyphAPI.Instance.WaitForReadyAsync())
             throw new Exception();

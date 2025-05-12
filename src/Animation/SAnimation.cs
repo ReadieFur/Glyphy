@@ -1,5 +1,6 @@
 ﻿using Glyphy.Glyph;
 using Newtonsoft.Json;
+using StringEnumConverter = Newtonsoft.Json.Converters.StringEnumConverter;
 
 namespace Glyphy.Animation
 {
@@ -7,7 +8,7 @@ namespace Glyphy.Animation
     {
         [JsonProperty("id")] public Guid Id { get; set; } = Guid.NewGuid();
         [JsonProperty("name")] public string Name { get; set; } = "Untitled";
-        [JsonProperty("device")] public EPhoneType PhoneType { get; set; } = EPhoneType.Unknown;
+        [JsonProperty("device")] [JsonConverter(typeof(StringEnumConverter))] public EPhoneType PhoneType { get; set; } = EPhoneType.Unknown;
         [JsonProperty("keyframes")] public List<SKeyframe> Keyframes { get; set; } = new();
 
         public SAnimation() { }
