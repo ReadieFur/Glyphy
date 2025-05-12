@@ -18,7 +18,7 @@
         private SPhoneIndex(EPhoneType phoneType, ushort idx)
         {
             PhoneType = phoneType;
-            Key = IndexMapper.GetMapping(phoneType).IdxToKey[idx]; //Should never fail.
+            Key = IndexMapper.GetMapping(phoneType).IdxToKey[idx]; //Should never fail in this context.
             Idx = idx;
         }
 
