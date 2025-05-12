@@ -1,5 +1,5 @@
 using Glyphy.Glyph;
-using Glyphy.Glyph.Zones;
+using Glyphy.Glyph.Indexes;
 using Timer = System.Timers.Timer;
 
 namespace Glyphy.Views;
@@ -36,7 +36,7 @@ public partial class TestPage : ContentPage
             _loopTask.Stop();
             i = 0;
 
-            GlyphAPI.Instance.DrawFrame(new Dictionary<EPhoneOne, double>()); //Turn off all lights.
+            GlyphAPI.Instance.DrawFrame(new Dictionary<ushort, double>()); //Turn off all lights.
 
             TestButton.Text = "Enable (Not Running)";
 
@@ -54,9 +54,9 @@ public partial class TestPage : ContentPage
         if (i > 1)
             i = 0;
 
-        GlyphAPI.Instance.DrawFrame(new Dictionary<EPhoneOne, double>
+        GlyphAPI.Instance.DrawFrame(new Dictionary<ushort, double>
         {
-            { EPhoneOne.A1, i }
+            { (ushort)EPhoneOne.A1, i }
         });
     }
 }

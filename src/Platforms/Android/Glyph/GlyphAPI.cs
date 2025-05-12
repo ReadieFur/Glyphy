@@ -4,6 +4,7 @@ using KetchumGlyph = Com.Nothing.Ketchum.Glyph;
 using Application = Android.App.Application;
 using Android.Content.PM;
 using Android.Provider;
+using Glyphy.Glyph.Indexes;
 
 namespace Glyphy.Glyph;
 
@@ -17,7 +18,6 @@ public partial class GlyphAPI : Java.Lang.Object, IGlyphAPI, GlyphManager.ICallb
     private TaskCompletionSource<bool>? _readyEvent = null;
     private EPhoneType _phoneType = EPhoneType.Unknown;
     private string _codename = string.Empty;
-    private Type? _activeZoneMappingType;
 
     public GlyphAPI()
     {
@@ -79,7 +79,8 @@ public partial class GlyphAPI : Java.Lang.Object, IGlyphAPI, GlyphManager.ICallb
             else
                 throw new IndexOutOfRangeException("Unknown device type.");
 
-            _activeZoneMappingType = Zones.ZoneMapper.GetZoneTypeForDevice(_phoneType);
+            //Pre-generate the Glyph mapping.
+            IndexMapper.GetMapping(_phoneType);
 
             //The docs would make it seem like the string to pass is "DEVICE_<ID>" but this is not true and rather the device codename is retrived by using the constant DEVICE_<ID>.
             //TODO: Tidy up this mess.
@@ -168,34 +169,38 @@ public partial class GlyphAPI : Java.Lang.Object, IGlyphAPI, GlyphManager.ICallb
         _glyphManager.Init(this);
     }
 
-    private void PreCheck<TZone>() where TZone : struct, Enum
+    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<ushort, double> source)
     {
-        if (!((IGlyphAPI)this).IsReady)
-            throw new InvalidOperationException("The API is not in a ready state.");
-
-        if (typeof(TZone) != _activeZoneMappingType)
-            throw new ArgumentException("Unsupported zone mapping type for this device.");
+        int[] ledArray = IndexMapper.IndexesToFrame(_phoneType, source);
+        _glyphManager.SetFrameColors(ledArray);
     }
 
-    void IGlyphAPI.DrawFrame<TZone>(IReadOnlyDictionary<TZone, double> source)
+    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<string, double> source)
     {
-        PreCheck<TZone>();
-
-        int[] ledArray = Zones.ZoneMapper.ZoneToArray(source);
-
+        int[] ledArray = IndexMapper.IndexesToFrame(_phoneType, source);
         _glyphManager.SetFrameColors(ledArray);
     }
 
     //TODO: Fix this not working?
-    void IGlyphAPI.SetZone<TZone>(TZone zone, double brightness)
+    void IGlyphAPI.SetIndex(ushort idx, double brightness)
     {
-        PreCheck<TZone>();
-
-        int zoneId = Zones.ZoneMapper.ZoneToID(zone);
-        int externalBrightness = GlyphHelpers.InternalToExternalBrightness(brightness);
+        if (!IndexMapper.GetMapping(_phoneType).IdxToKey.ContainsKey(idx))
+            throw new ArgumentException($"'{idx}' is not a valid index for this phone.");
 
         GlyphFrame frame = _glyphManager.GlyphFrameBuilder!
-            .BuildChannel(zoneId, 255)!
+            .BuildChannel(idx, GlyphHelpers.InternalToExternalBrightness(brightness))!
+            .Build()!;
+
+        _glyphManager.Toggle(frame);
+    }
+
+    void IGlyphAPI.SetIndex(string key, double brightness)
+    {
+        if (!IndexMapper.GetMapping(_phoneType).KeyToIdx.TryGetValue(key, out ushort idx))
+            throw new ArgumentException($"'{key}' is not a valid key for this phone.");
+
+        GlyphFrame frame = _glyphManager.GlyphFrameBuilder!
+            .BuildChannel(idx, GlyphHelpers.InternalToExternalBrightness(brightness))!
             .Build()!;
 
         _glyphManager.Toggle(frame);

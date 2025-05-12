@@ -6,9 +6,11 @@ public partial class GlyphAPI : IGlyphAPI
 
     EPhoneType IGlyphAPI.PhoneType => EPhoneType.Unknown;
 
-    Task IGlyphAPI.WaitForReadyAsync() => Task.CompletedTask;
+    Task<bool> IGlyphAPI.WaitForReadyAsync(CancellationToken cancellationToken) => Task.FromResult(true);
 
-    void IGlyphAPI.DrawFrame<TZone>(IReadOnlyDictionary<TZone, double> source) { }
+    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<ushort, double> source) { }
+    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<string, double> source) { }
 
-    void IGlyphAPI.SetZone<TZone>(TZone zone, double brightness) { }
+    void IGlyphAPI.SetIndex(ushort id, double brightness) { }
+    void IGlyphAPI.SetIndex(string key, double brightness) { }
 }

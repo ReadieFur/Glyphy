@@ -8,7 +8,9 @@ public interface IGlyphAPI
 
     Task<bool> WaitForReadyAsync(CancellationToken cancellationToken = default);
 
-    void DrawFrame<TZone>(IReadOnlyDictionary<TZone, double> source) where TZone : struct, Enum;
+    void DrawFrame(IReadOnlyDictionary<ushort, double> source);
+    void DrawFrame(IReadOnlyDictionary<string, double> source);
 
-    void SetZone<TZone>(TZone zone, double brightness) where TZone : struct, Enum;
+    void SetIndex(ushort id, double brightness);
+    void SetIndex(string key, double brightness);
 }

@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Glyphy.Glyph.Zones
+﻿namespace Glyphy.Glyph.Indexes
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum EPhoneOne : ushort
+    internal enum EPhoneOne : ushort
     {
         A1 = 0,
         B1 = 1,
