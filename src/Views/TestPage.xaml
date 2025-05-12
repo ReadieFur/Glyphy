@@ -4,10 +4,11 @@
              x:Class="Glyphy.Views.TestPage"
              Title="TestPage">
     <Grid Margin="20">
-        <Button HorizontalOptions="Center"
+        <Button x:Name="TestButton"
+                HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Background="{AppThemeBinding Light={StaticResource Intermediary}, Dark={StaticResource IntermediaryDark}}"
-                Clicked="Button_Clicked"
+                Clicked="TestButton_Clicked"
                 Text="Button"/>
     </Grid>
 </ContentPage>

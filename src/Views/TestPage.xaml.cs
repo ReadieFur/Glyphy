@@ -17,9 +17,11 @@ public partial class TestPage : ContentPage
 
         _loopTask.Elapsed += _loopTask_Elapsed;
         _loopTask.Interval = 1000 / _FRAME_RATE;
+
+        TestButton.Text = "Enable (Not Running)";
     }
 
-    private async void Button_Clicked(object sender, EventArgs e)
+    private async void TestButton_Clicked(object sender, EventArgs e)
 	{
         //Start the API.
         if (!await GlyphAPI.Instance.WaitForReadyAsync())
@@ -32,10 +34,16 @@ public partial class TestPage : ContentPage
         if (_loopTask.Enabled)
         {
             _loopTask.Stop();
-            GlyphAPI.Instance.DrawFrame(new Dictionary<EPhoneOne, double>()); //Turn off all lights.
             i = 0;
+
+            GlyphAPI.Instance.DrawFrame(new Dictionary<EPhoneOne, double>()); //Turn off all lights.
+
+            TestButton.Text = "Enable (Not Running)";
+
             return;
         }
+
+        TestButton.Text = "Disable (Running...)";
 
         _loopTask.Start();
     }
