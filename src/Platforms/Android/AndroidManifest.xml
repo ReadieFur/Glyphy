@@ -3,9 +3,9 @@
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Glyphy">
 		<meta-data android:name="NothingKey" android:value="test" />
 	</application>
-  <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
-  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-  <uses-permission android:name="android.permission.BIND_QUICK_SETTINGS_TILE" />
-  <uses-permission android:name="com.nothing.ketchum.permission.ENABLE" />
-  <uses-sdk android:minSdkVersion="34"/>
+	<uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
+	<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+	<uses-permission android:name="android.permission.BIND_QUICK_SETTINGS_TILE" />
+	<uses-permission android:name="com.nothing.ketchum.permission.ENABLE" />
+	<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 </manifest>
