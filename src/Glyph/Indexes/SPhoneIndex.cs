@@ -2,9 +2,9 @@
 {
     public readonly struct SPhoneIndex
     {
-        public EPhoneType PhoneType { get; init; } = EPhoneType.Unknown;
-        public string Key { get; init; } = string.Empty;
-        public ushort Idx { get; init; } = 0;
+        public EPhoneType PhoneType { get; private init; } = EPhoneType.Unknown;
+        public string Key { get; private init; } = string.Empty;
+        public ushort Idx { get; private init; } = 0;
 
         public SPhoneIndex(EPhoneType phoneType, string key)
         {
