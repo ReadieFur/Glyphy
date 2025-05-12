@@ -1,6 +1,6 @@
 ﻿namespace Glyphy.Glyph.Indexes
 {
-    internal enum EPhoneTwoA : ushort
+    public enum EPhoneTwoA : ushort
     {
         A1 = 25,
         B1 = 24,

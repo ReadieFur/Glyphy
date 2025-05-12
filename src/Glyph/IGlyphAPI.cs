@@ -1,4 +1,6 @@
-﻿namespace Glyphy.Glyph;
+﻿using Glyphy.Glyph.Indexes;
+
+namespace Glyphy.Glyph;
 
 public interface IGlyphAPI
 {
@@ -8,9 +10,7 @@ public interface IGlyphAPI
 
     Task<bool> WaitForReadyAsync(CancellationToken cancellationToken = default);
 
-    void DrawFrame(IReadOnlyDictionary<ushort, double> source);
-    void DrawFrame(IReadOnlyDictionary<string, double> source);
+    void DrawFrame(IReadOnlyDictionary<SPhoneIndex, double> indexes);
 
-    void SetIndex(ushort id, double brightness);
-    void SetIndex(string key, double brightness);
+    void SetIndex(SPhoneIndex index, double brightness);
 }

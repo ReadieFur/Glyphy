@@ -169,38 +169,20 @@ public partial class GlyphAPI : Java.Lang.Object, IGlyphAPI, GlyphManager.ICallb
         _glyphManager.Init(this);
     }
 
-    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<ushort, double> source)
+    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<SPhoneIndex, double> indexes)
     {
-        int[] ledArray = IndexMapper.IndexesToFrame(_phoneType, source);
-        _glyphManager.SetFrameColors(ledArray);
-    }
-
-    void IGlyphAPI.DrawFrame(IReadOnlyDictionary<string, double> source)
-    {
-        int[] ledArray = IndexMapper.IndexesToFrame(_phoneType, source);
+        int[] ledArray = CreateFrame(_phoneType, indexes);
         _glyphManager.SetFrameColors(ledArray);
     }
 
     //TODO: Fix this not working?
-    void IGlyphAPI.SetIndex(ushort idx, double brightness)
+    void IGlyphAPI.SetIndex(SPhoneIndex index, double brightness)
     {
-        if (!IndexMapper.GetMapping(_phoneType).IdxToKey.ContainsKey(idx))
-            throw new ArgumentException($"'{idx}' is not a valid index for this phone.");
+        if (index.PhoneType != _phoneType)
+            throw new ArgumentException($"'{index.Key}' is not a valid index for this phone.");
 
         GlyphFrame frame = _glyphManager.GlyphFrameBuilder!
-            .BuildChannel(idx, GlyphHelpers.InternalToExternalBrightness(brightness))!
-            .Build()!;
-
-        _glyphManager.Toggle(frame);
-    }
-
-    void IGlyphAPI.SetIndex(string key, double brightness)
-    {
-        if (!IndexMapper.GetMapping(_phoneType).KeyToIdx.TryGetValue(key, out ushort idx))
-            throw new ArgumentException($"'{key}' is not a valid key for this phone.");
-
-        GlyphFrame frame = _glyphManager.GlyphFrameBuilder!
-            .BuildChannel(idx, GlyphHelpers.InternalToExternalBrightness(brightness))!
+            .BuildChannel(index, GlyphToKetchumBrightness(brightness))!
             .Build()!;
 
         _glyphManager.Toggle(frame);

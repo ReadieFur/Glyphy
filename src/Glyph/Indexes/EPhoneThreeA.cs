@@ -3,7 +3,7 @@
     /// <summary>
     /// The (3a) Pro uses this mapping set too.
     /// </summary>
-    internal enum EPhoneThreeA : ushort
+    public enum EPhoneThreeA : ushort
     {
         A1 = 20,
         A2 = 21,

@@ -1,6 +1,6 @@
 ﻿namespace Glyphy.Glyph.Indexes
 {
-    public static class IndexMapper
+    internal static class IndexMapper
     {
         public record ReadonlyBiMap<T1, T2>(
             IReadOnlyDictionary<T1, T2> KeyToIdx,
@@ -34,50 +34,6 @@
 
             return _mappingsCache[phoneType];
         }
-
-        private static int[] IndexesToFrameInternal<T>(EPhoneType phoneType, IReadOnlyDictionary<T, double> values)
-        {
-            Dictionary<ushort, double> indexMap = new();
-
-            if (values is IReadOnlyDictionary<ushort, double> uValues)
-            {
-                foreach (ushort idx in GetMapping(phoneType).IdxToKey.Keys)
-                {
-                    double value = 0; //TODO: Test if -1 leaves a Glyph unchanged.
-                    uValues.TryGetValue(idx, out value);
-                    indexMap[idx] = value;
-                }
-            }
-            else if (values is IReadOnlyDictionary<string, double> sValues)
-            {
-                foreach (var kvp in GetMapping(phoneType).KeyToIdx)
-                {
-                    double value = 0;
-                    sValues.TryGetValue(kvp.Key, out value);
-                    indexMap[kvp.Value] = value;
-                }
-            }
-            else
-            {
-                //Shouldn't happen.
-                throw new InvalidDataException();
-            }
-
-            //TODO: Check if there is an invalid mapping? (May be a waste of CPU time).
-
-            return indexMap
-                .OrderBy(kvp => kvp.Key) //Order by light ID.
-                .Select(kvp => GlyphHelpers.InternalToExternalBrightness(kvp.Value))
-                .ToArray();
-        }
-        /// <summary>
-        /// Converts a collection of indexes (by id) and brightness values to an LED array.
-        /// </summary>
-        internal static int[] IndexesToFrame(EPhoneType phoneType, IReadOnlyDictionary<ushort, double> values) => IndexesToFrameInternal(phoneType, values);
-        /// <summary>
-        /// Converts a collection of indexes (by name) and brightness values to an LED array.
-        /// </summary>
-        internal static int[] IndexesToFrame(EPhoneType phoneType, IReadOnlyDictionary<string, double> values) => IndexesToFrameInternal(phoneType, values);
 
         /// <summary>
         /// Gets the indexing type for a given device.
