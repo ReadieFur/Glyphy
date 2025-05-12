@@ -2,7 +2,6 @@ using Glyphy.Animation;
 using Glyphy.Glyph;
 using Glyphy.Glyph.Indexes;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using Timer = System.Timers.Timer;
 
 namespace Glyphy.Views;
@@ -45,10 +44,8 @@ public partial class TestPage : ContentPage
         });
 
         string json = JsonConvert.SerializeObject(animation, Formatting.Indented);
-        //Debugger.Break();
 
         SAnimation animation2 = JsonConvert.DeserializeObject<SAnimation>(json);
-        //Debugger.Break();
     }
 
     private async Task TestLed()
