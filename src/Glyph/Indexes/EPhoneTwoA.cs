@@ -1,5 +1,8 @@
-﻿namespace Glyphy.Glyph.Indexes
+﻿using System.Text.Json.Serialization;
+
+namespace Glyphy.Glyph.Indexes
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EPhoneTwoA : ushort
     {
         A1 = 25,

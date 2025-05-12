@@ -1,5 +1,8 @@
-﻿namespace Glyphy.Glyph
+﻿using System.Text.Json.Serialization;
+
+namespace Glyphy.Glyph
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EPhoneType : uint
     {
         Unknown = 0,

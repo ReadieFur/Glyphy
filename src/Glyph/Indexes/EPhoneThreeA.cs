@@ -1,8 +1,11 @@
-﻿namespace Glyphy.Glyph.Indexes
+﻿using System.Text.Json.Serialization;
+
+namespace Glyphy.Glyph.Indexes
 {
     /// <summary>
     /// The (3a) Pro uses this mapping set too.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EPhoneThreeA : ushort
     {
         A1 = 20,
