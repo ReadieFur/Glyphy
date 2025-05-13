@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Glyphy.Views"
              x:Class="Glyphy.Views.SettingsPage"
-             x:DataType="vm:SettingsPageViewModel"
-             Loaded="ContentPage_Loaded">
+             x:DataType="vm:SettingsPageViewModel">
     <NavigationPage.HasNavigationBar>False</NavigationPage.HasNavigationBar>
     <Grid>
         <Grid.RowDefinitions>
@@ -199,13 +198,11 @@
                     <Label Text="Click the button below to go to the developer options and scroll down to where it says 'Background process limit', then change your background process limit to something like 4."/>
                     <Button x:Name="DeveloperProcessOptionsButton"
                             Text="Go to 'Developer Options'"
-                            Margin="10,10,10,0"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Label x:Name="StoragePathLabel"
-                           Text="Storage Path:"
-                           FontSize="Micro"
-                           TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+                            Margin="10"/>
+                    <Label x:Name="StoragePath"
+                        Text="Glyph Storage Path: "
+                        FontSize="Micro"
+                        TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>

@@ -10,9 +10,12 @@ namespace Glyphy.Views
 {
     public partial class NotificationsPage : ContentPage
     {
+        private bool _isDisappearing = false;
+
         private void Android_Constructor()
         {
             Loaded += Android_NotificationsPage_Loaded;
+            Disappearing += NotificationsPage_Disappearing;
         }
 
         private async void Android_NotificationsPage_Loaded(object? sender, EventArgs e)
@@ -39,6 +42,11 @@ namespace Glyphy.Views
             }
         }
 
+        private void NotificationsPage_Disappearing(object? sender, EventArgs e)
+        {
+            _isDisappearing = true;
+        }
+
         private Task LoadNotifications()
         {
             return Task.Run(() =>
@@ -53,6 +61,9 @@ namespace Glyphy.Views
                 {
                     try
                     {
+                        if (_isDisappearing)
+                            return;
+
                         if (appInfo.PackageName is null)
                             continue;
 
@@ -80,7 +91,7 @@ namespace Glyphy.Views
                             }
                             else
                             {
-                                bitmap = Bitmap.CreateBitmap(icon.IntrinsicWidth <= 0 ? 1 : icon.IntrinsicWidth, icon.IntrinsicHeight <= 0 ? 1 : icon.IntrinsicHeight, Bitmap.Config.Argb8888);
+                                bitmap = Bitmap.CreateBitmap(icon.IntrinsicWidth <= 0 ? 1 : icon.IntrinsicWidth, icon.IntrinsicHeight <= 0 ? 1 : icon.IntrinsicHeight, Bitmap.Config.Argb8888!);
 
                                 if (bitmap is not null)
                                 {
@@ -95,7 +106,7 @@ namespace Glyphy.Views
                                 byte[] bitmapData = [];
                                 using (MemoryStream stream = new())
                                 {
-                                    bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
+                                    bitmap.Compress(Bitmap.CompressFormat.Png!, 100, stream);
                                     bitmapData = stream.ToArray();
                                 }
 

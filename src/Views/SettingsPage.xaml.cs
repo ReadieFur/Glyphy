@@ -1,4 +1,4 @@
-using System.ComponentModel;
+using Glyphy.Storage;
 
 namespace Glyphy.Views
 {
@@ -10,16 +10,14 @@ namespace Glyphy.Views
 
             BindingContext = new SettingsPageViewModel();
 
+            StoragePath.Text += StorageManager.Instance.ExternalStoragePath;
+
 #if ANDROID
             Android_Constructor();
 #endif
         }
 
-        private void ContentPage_Loaded(object sender, EventArgs e)
-        {
-        }
-
-        private async void BackButton_Clicked(object sender, EventArgs e)
+        private async void BackButton_Clicked(object? sender, EventArgs e)
         {
             await Navigation.PopAsync();
         }
