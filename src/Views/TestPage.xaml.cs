@@ -1,6 +1,7 @@
 using Glyphy.Animation;
 using Glyphy.Glyph;
 using Glyphy.Glyph.Indexes;
+using Glyphy.Storage;
 using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 
@@ -34,18 +35,26 @@ public partial class TestPage : ContentPage
     {
         SAnimation animation = new();
         animation.PhoneType = EPhoneType.PhoneOne;
-        animation.Keyframes.Add(new SKeyframe
-        {
-            Led = EPhoneOne.A1,
-            Timestamp = 300,
-            Brightness = 0.6,
-            Interpolation = EInterpolationType.Bezier,
-            InTangent = new(0.5, 0.5)
-        });
+        animation.Keyframes[EPhoneOne.A1].AddRange([
+            new SKeyframe
+            {
+                Timestamp = 500,
+                Brightness = 0.9,
+                Interpolation = EInterpolationType.Bezier,
+                InTangent = new(0.5, 0.5)
+            },
+            new SKeyframe
+            {
+                Timestamp = 300,
+                Brightness = 0.6,
+                Interpolation = EInterpolationType.Bezier,
+                OutTangent = new(0.5, 0.5)
+            },
+        ]);
 
-        string json = JsonConvert.SerializeObject(animation, Formatting.Indented);
+        string json = JsonConvert.SerializeObject(animation, Formatting.Indented, new AnimationJsonConverter());
 
-        SAnimation animation2 = JsonConvert.DeserializeObject<SAnimation>(json);
+        SAnimation animation2 = JsonConvert.DeserializeObject<SAnimation>(json, new AnimationJsonConverter());
     }
 
     private async Task TestLed()
