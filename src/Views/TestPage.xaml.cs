@@ -102,6 +102,12 @@ public partial class TestPage : ContentPage
 
     private void TestAnimation()
     {
+        if (AnimationRunner.Instance.IsPlaying)
+        {
+            AnimationRunner.Instance.StopAnimation();
+            return;
+        }
+
         SAnimation animation = new();
         animation.PhoneType = EPhoneType.PhoneOne;
         animation.Keyframes[EPhoneOne.A1].AddRange([
@@ -124,12 +130,6 @@ public partial class TestPage : ContentPage
                 Interpolation = EInterpolationType.Smooth
             },
         ]);
-
-        if (AnimationRunner.Instance.IsPlaying)
-        {
-            AnimationRunner.Instance.StopAnimation();
-            return;
-        }
 
         AnimationRunner.Instance.PlayAnimation(animation);
     }
