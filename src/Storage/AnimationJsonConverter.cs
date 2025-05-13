@@ -44,26 +44,26 @@ namespace Glyphy.Storage
 
         public override void WriteJson(JsonWriter writer, SAnimation value, JsonSerializer serializer)
         {
-            //Pre-sort the keyframes for an organised output.
-            foreach (var keyframes in value.Keyframes.Values)
-                keyframes.Sort();
-
             SSerializableAnimation intermediate = new SSerializableAnimation
             {
                 Id = value.Id,
                 Name = value.Name,
                 PhoneType = value.PhoneType, //Uses EnumString converter.
-                Keyframes = value.Keyframes.ToDictionary(
-                    kvp => (string)kvp.Key,
-                    kvp => kvp.Value.Select(kf => new SSerializableKeyframe
-                    {
-                        Timestamp = kf.Timestamp,
-                        Brightness = kf.Brightness,
-                        Interpolation = kf.Interpolation,
-                        InTangent = kf.InTangent is Point inT ? [inT.X, inT.Y] : null,
-                        OutTangent = kf.OutTangent is Point outT ? [outT.X, outT.Y] : null,
-                    }).ToList()
-                )
+                Keyframes = value.Keyframes
+                    .Where(kvp => kvp.Value.Count > 0) //To minimise JSON output, only add entries that contain data.
+                    .ToDictionary(
+                        kvp => (string)kvp.Key,
+                        kvp => kvp.Value
+                        .OrderBy(kf => kf) //Sort the keyframes for an organised output (Uses the IComparable on the SKeyframe class).
+                        .Select(kf => new SSerializableKeyframe
+                        {
+                            Timestamp = kf.Timestamp,
+                            Brightness = kf.Brightness,
+                            Interpolation = kf.Interpolation,
+                            InTangent = kf.InTangent is Point inT ? [inT.X, inT.Y] : null,
+                            OutTangent = kf.OutTangent is Point outT ? [outT.X, outT.Y] : null,
+                        }).ToList()
+                    )
             };
 
             serializer.Serialize(writer, intermediate);
