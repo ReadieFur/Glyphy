@@ -96,15 +96,7 @@ namespace Glyphy.Animation
                     && !animationCancellationToken.IsCancellationRequested
                     && t <= durationMs) //<= to include one extra frame for the final timepoint.
                 {
-                    /*TODO: For future playback seeking.
-                    if (t > durationMs)
-                    {
-                        //Pause here.
-                    }
-                    else if (t < 0)
-                    {
-                    }*/
-
+                    //This should be efficent enough that I don't need to use a timer to subtract the processing time from the frame interval.
                     TimeSpan frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
 
                     self.DisplayFrameAtTimestamp(t, sortedKeyframes);
