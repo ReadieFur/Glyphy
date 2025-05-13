@@ -1,5 +1,6 @@
 ﻿using Android.Content;
 using Android.Provider;
+using Glyphy.Storage;
 
 namespace Glyphy.Views
 {
@@ -40,9 +41,12 @@ namespace Glyphy.Views
 
         private void StoragePathLabel_Tapped(object? sender, TappedEventArgs e)
         {
+            if (!Directory.Exists(StorageManager.Instance.ExternalStoragePath))
+                Directory.CreateDirectory(StorageManager.Instance.ExternalStoragePath);
+
             //https://stackoverflow.com/questions/17165972/android-how-to-open-a-specific-folder-via-intent-and-show-its-content-in-a-file
             Intent intent = new(Intent.ActionView);
-            intent.SetDataAndType(Android.Net.Uri.Parse(Storage.StorageManager.Instance.ExternalStoragePath), "resource/folder");
+            intent.SetDataAndType(Android.Net.Uri.Parse(StorageManager.Instance.ExternalStoragePath), "resource/folder");
             Platform.CurrentActivity?.StartActivity(intent);
         }
     }
