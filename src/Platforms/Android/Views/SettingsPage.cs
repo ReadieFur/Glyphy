@@ -12,7 +12,7 @@ namespace Glyphy.Views
             try
             {
                 //https://developer.android.com/reference/android/provider/Settings.Global
-                bool developerModeEnabled = Settings.Global.GetInt(Android.App.Application.Context.ContentResolver, Settings.Global.DevelopmentSettingsEnabled, 0) == 1;
+                bool developerModeEnabled = Android.Provider.Settings.Global.GetInt(Android.App.Application.Context.ContentResolver, Android.Provider.Settings.Global.DevelopmentSettingsEnabled, 0) == 1;
                 if (developerModeEnabled)
                     AboutDeviceSection.IsVisible = false;
             }
@@ -27,14 +27,14 @@ namespace Glyphy.Views
 
         private void AboutDeviceButton_Clicked(object? sender, EventArgs e)
         {
-            Intent intent = new(Settings.ActionDeviceInfoSettings);
+            Intent intent = new(Android.Provider.Settings.ActionDeviceInfoSettings);
             //TODO: See if I can navigate directly to the "Software information" page.
             Platform.CurrentActivity?.StartActivity(intent);
         }
 
         private void DeveloperProcessOptionsButton_Clicked(object? sender, EventArgs e)
         {
-            Intent intent = new(Settings.ActionApplicationDevelopmentSettings);
+            Intent intent = new(Android.Provider.Settings.ActionApplicationDevelopmentSettings);
             //TODO: See if I can have this scroll down to the "Background process limit" option.
             Platform.CurrentActivity?.StartActivity(intent);
         }

@@ -24,11 +24,10 @@ namespace Glyphy.Storage
         }
         #endregion
 
-        //This points to a sandboxed directory, the user cannot access this via the UI unless rooted (or using ADB).
-        //TODO: Change this to a public directory?
-        private static readonly AnimationJsonConverter _animationJsonConverter = new();
-
         public string InternalStoragePath => FileSystem.Current.AppDataDirectory;
+
+        #region Animation
+        private static readonly AnimationJsonConverter _animationJsonConverter = new();
 
         public async Task SaveAnimation(SAnimation animation)
         {
@@ -73,5 +72,40 @@ namespace Glyphy.Storage
                     && Guid.TryParse(Path.GetFileNameWithoutExtension(path), out Guid id))
                     yield return id;
         }
+        #endregion
+
+        #region Settings
+        private readonly object _SETTINGS_INSTANCE_LOCK = new();
+
+        private Settings? _settings = null;
+        //I am using this to make the API only initalize when called (as opposed to a static constructor).
+        public Settings Settings
+        {
+            get
+            {
+                if (_settings is null)
+                {
+                    lock (_SETTINGS_INSTANCE_LOCK)
+                    {
+                        string path = Path.Combine(InternalStoragePath, "settings") + ".json";
+                        try { _settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(path)); }
+                        catch { }
+
+                        if (_settings is null)
+                            _settings = new();
+                    }
+                }
+                return _settings;
+            }
+        }
+
+        public async Task SaveSettings()
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(Path.Combine(InternalStoragePath, "settings") + ".json"),
+                JsonConvert.SerializeObject(Settings, Formatting.Indented)
+            );
+        }
+        #endregion
     }
 }
