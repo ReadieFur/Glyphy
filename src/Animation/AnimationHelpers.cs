@@ -20,8 +20,9 @@ namespace Glyphy.Animation
                     return prev.Brightness + t * (next.Brightness - prev.Brightness);
                 case EInterpolationType.Smooth:
                     {
-                        double u = Math.Clamp((t - prev.Brightness) / (next.Brightness - prev.Brightness), 0, 1);
-                        return t * t * t * (3.0f * t * (2.0f * t - 5.0f) + 10.0f);
+                        //float eased = t * t * (3f - 2f * t); //Smooth step.
+                        double eased = t * t * t * (t * (6f * t - 15f) + 10f); //Smoother step.
+                        return prev.Brightness + eased * (next.Brightness - prev.Brightness);
                     }
                 case EInterpolationType.Bezier:
                     {
@@ -36,7 +37,7 @@ namespace Glyphy.Animation
                         Point rawOut = prev.OutTangent ?? new Point(0, 0);
                         Point rawIn = next.InTangent ?? new Point(0, 0);
 
-                        // Map normalized tangents to actual Bezier control points
+                        //Map normalized tangents to actual Bezier control points relative to the previous and next timestamps.
                         Point p1 = new(x0 + rawOut.X * (x3 - x0), y0 + rawOut.Y * (y3 - y0));
                         Point p2 = new(x0 + rawIn.X * (x3 - x0), y0 + rawIn.Y * (y3 - y0));
 
