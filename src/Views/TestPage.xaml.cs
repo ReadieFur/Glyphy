@@ -110,7 +110,8 @@ public partial class TestPage : ContentPage
 
         SAnimation animation = new();
         animation.PhoneType = EPhoneType.PhoneOne;
-        animation.Keyframes[EPhoneOne.A1].AddRange([
+
+        List<SKeyframe> frameBuffer = [
             new SKeyframe
             {
                 Timestamp = 0,
@@ -119,17 +120,47 @@ public partial class TestPage : ContentPage
             },
             new SKeyframe
             {
-                Timestamp = 1000,
+                Timestamp = 900,
                 Brightness = 1,
                 Interpolation = EInterpolationType.Smooth
             },
             new SKeyframe
             {
-                Timestamp = 2000,
+                Timestamp = 1800,
                 Brightness = 0,
                 Interpolation = EInterpolationType.Smooth
-            },
-        ]);
+            }
+        ];
+
+        List<SPhoneIndex> leds =
+        [
+            EPhoneOne.E1,
+            EPhoneOne.D1_1,
+            EPhoneOne.D1_2,
+            EPhoneOne.D1_3,
+            EPhoneOne.D1_4,
+            EPhoneOne.D1_5,
+            EPhoneOne.D1_6,
+            EPhoneOne.D1_7,
+            EPhoneOne.D1_8,
+            EPhoneOne.C2,
+            EPhoneOne.C1,
+            EPhoneOne.C4,
+            EPhoneOne.C3,
+            EPhoneOne.A1,
+            EPhoneOne.B1,
+        ];
+
+        foreach (SPhoneIndex led in leds)
+        {
+            animation.Keyframes[led].AddRange(frameBuffer);
+
+            //Offset the led times a little (making copies of the data).
+            List<SKeyframe> newFrameBuffer = new();
+            for (int i = 0; i < frameBuffer.Count; i++)
+                newFrameBuffer.Add(frameBuffer[i] with { Timestamp = frameBuffer[i].Timestamp + 75 });
+            frameBuffer = newFrameBuffer;
+        }
 
         AnimationRunner.Instance.PlayAnimation(animation);
     }
