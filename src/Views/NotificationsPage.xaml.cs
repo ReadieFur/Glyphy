@@ -6,6 +6,8 @@ public partial class NotificationsPage : ContentPage
 	{
 		InitializeComponent();
 
+        BindingContext = new NotificationsPageViewModel();
+
 #if ANDROID
         Android_Constructor();
 #endif
