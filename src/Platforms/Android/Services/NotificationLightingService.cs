@@ -5,7 +5,6 @@ using Android;
 using FlagFilterType = Android.Service.Notification.FlagFilterType;
 using Android.Runtime;
 using Android.OS;
-using System.Diagnostics;
 using Glyphy.Animation;
 
 namespace Glyphy.Platforms.Android.Services
@@ -52,8 +51,7 @@ namespace Glyphy.Platforms.Android.Services
         {
             //Stopwatch stopwatch = Stopwatch.StartNew();
 
-            if (sbn is null
-                || (sbn.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.
+            if ((sbn!.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.
                 return;
 
             /** Notification Glyph delay:

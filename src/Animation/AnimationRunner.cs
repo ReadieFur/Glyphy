@@ -139,7 +139,7 @@ namespace Glyphy.Animation
         private static void AnimationWorker(object? param)
         {
             if (param is not AnimationRunner self)
-                throw new ArgumentException(nameof(param));
+                throw new NullReferenceException();
 
             GlyphAPI.Instance.WaitForReadyAsync().GetAwaiter().GetResult(); //Run synchronously since we can't await here.
 
