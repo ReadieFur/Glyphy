@@ -89,6 +89,8 @@ namespace Glyphy.Animation
                     }
                 }
 
+                //TODO: Insert a frame at the start where all lights are off?
+
                 double t = 0;
                 while (!self._exitSignal.IsCancellationRequested
                     && !animationCancellationToken.IsCancellationRequested
@@ -112,6 +114,8 @@ namespace Glyphy.Animation
                     //Wait for any of the cancellation tokens or the timeout (whichever comes first) before continuing to the next iteration.
                     WaitHandle.WaitAny([self._exitSignal.Token.WaitHandle, animationCancellationToken.WaitHandle], frameInterval);
                 }
+
+                //TODO: Turn off all lights when done?
 
                 self.StateChanged?.Invoke(false);
                 self.ActiveAnimationId = null;
