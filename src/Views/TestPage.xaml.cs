@@ -104,7 +104,7 @@ public partial class TestPage : ContentPage
     {
         if (AnimationRunner.Instance.IsPlaying)
         {
-            AnimationRunner.Instance.StopAnimation();
+            AnimationRunner.Instance.UnloadAnimation();
             return;
         }
 

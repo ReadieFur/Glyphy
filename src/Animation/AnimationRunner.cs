@@ -24,22 +24,24 @@ namespace Glyphy.Animation
         }
         #endregion
 
-        public bool IsPlaying => ActiveAnimationId is not null;
+        public bool IsPlaying => LoadedAnimationId is not null;
         public int FrameRate
         {
             get => _frameRate;
             set => _frameRate = Math.Clamp(value, 5, 60);
         }
-        public Guid? ActiveAnimationId { get; private set; }
-        public event Action<bool> StateChanged; //True if started, False if stopped.
+        public Guid? LoadedAnimationId { get; private set; }
+        public event Action<bool>? StateChanged; //True if started, False if stopped.
 
         private readonly CancellationTokenSource _exitSignal = new();
         private readonly Thread _animationThread = new(AnimationWorker);
-        private readonly AutoResetEvent _processAnimationEvent = new(false);
+        private readonly AutoResetEvent _loadAnimationEvent = new(false);
+        private readonly ManualResetEventSlim _playAnimationEvent = new(false);
         private readonly object _threadLock = new();
         private CancellationTokenSource? _stopAnimationCts = null;
         private int _frameRate = 60;
         private SAnimation? _animation = null;
+        private double _playheadTime = 0;
 
         private AnimationRunner()
         {
@@ -52,6 +54,88 @@ namespace Glyphy.Animation
             _animationThread.Join();
         }
 
+        /// <summary>
+        /// Loads a new animation.
+        /// </summary>
+        /// <param name="animation">The animation to load.</param>
+        /// <param name="forceReload">Force the animation to be re-parsed even if the ID matches the currently loaded one.</param>
+        public void LoadAnimation(SAnimation animation, bool forceReload = false)
+        {
+            lock (_threadLock)
+            {
+                //Check if the target animation is already loaded.
+                if (!forceReload && _animation?.Id == animation.Id)
+                    return;
+                //Otherwise signal to the animation thread to cancel any current animation and load the new one.
+
+                _stopAnimationCts?.Cancel();
+                //No need to wait here as the animation thread will return to it's idle state when the active frame (if any) is complete.
+                _stopAnimationCts = new();
+
+                _animation = animation;
+
+                _loadAnimationEvent.Set();
+            }
+        }
+
+        /// <summary>
+        /// Stops any active animation and unloads it.
+        /// </summary>
+        public void UnloadAnimation()
+        {
+            lock (_threadLock)
+                _stopAnimationCts?.Cancel();
+        }
+
+        /// <summary>
+        /// Resumes the current active animation.
+        /// </summary>
+        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        public void PlayAnimation()
+        {
+            if (_animation is null)
+                throw new NullReferenceException("No animation is loaded.");
+            _playAnimationEvent.Set();
+        }
+
+        /// <summary>
+        /// Loads a new animation and immediately plays it.
+        /// </summary>
+        /// <param name="animation">The animation to load.</param>
+        /// <param name="forceReload">Force the animation to be re-parsed even if the ID matches the currently loaded one.</param>
+        public void PlayAnimation(SAnimation animation, bool forceReload = false)
+        {
+            LoadAnimation(animation, forceReload);
+            _playAnimationEvent.Set();
+        }
+
+        /// <summary>
+        /// Pauses the current animation.
+        /// </summary>
+        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        public void PauseAnimation()
+        {
+            if (_animation is null)
+                throw new NullReferenceException("No animation is loaded.");
+            _playAnimationEvent.Set();
+        }
+
+        /// <summary>
+        /// Moves the playhead to the given timestamp.
+        /// </summary>
+        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Timestamp is invalid.</exception>
+        public void SeekTo(long timestamp)
+        {
+            if (_animation is null)
+                throw new NullReferenceException("No animation is loaded.");
+            else if (timestamp < 0)
+                throw new ArgumentOutOfRangeException("Timestamp is invalid.");
+
+            //TODO: Display the frame that the playhead was moved to even if the animation is paused?
+            _playheadTime = timestamp;
+        }
+
         private static void AnimationWorker(object? param)
         {
             if (param is not AnimationRunner self)
@@ -61,7 +145,7 @@ namespace Glyphy.Animation
 
             while (!self._exitSignal.IsCancellationRequested)
             {
-                self._processAnimationEvent.WaitOne();
+                self._loadAnimationEvent.WaitOne();
 
                 long durationMs = 0;
                 Dictionary<SPhoneIndex, List<SKeyframe>> sortedKeyframes;
@@ -74,7 +158,7 @@ namespace Glyphy.Animation
 
                     animationCancellationToken = self._stopAnimationCts.Token;
 
-                    self.ActiveAnimationId = animation.Id;
+                    self.LoadedAnimationId = animation.Id;
                     self.StateChanged?.Invoke(true);
 
                     sortedKeyframes = animation.Keyframes;
@@ -91,17 +175,35 @@ namespace Glyphy.Animation
 
                 //TODO: Insert a frame at the start where all lights are off?
 
-                double t = 0;
                 while (!self._exitSignal.IsCancellationRequested
-                    && !animationCancellationToken.IsCancellationRequested
-                    && t <= durationMs) //<= to include one extra frame for the final timepoint.
+                    && !animationCancellationToken.IsCancellationRequested)
                 {
                     //This should be efficent enough that I don't need to use a timer to subtract the processing time from the frame interval.
                     TimeSpan frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
 
-                    self.DisplayFrameAtTimestamp(t, sortedKeyframes);
+                    if (self._playheadTime > durationMs + frameInterval.TotalMilliseconds //+frameInterval to include one extra frame for the final timepoint.
+                        || !self._playAnimationEvent.IsSet)
+                    {
+                        //Wait.
+                        int releasedBy = WaitHandle.WaitAny([
+                            self._exitSignal.Token.WaitHandle,
+                            animationCancellationToken.WaitHandle,
+                            self._playAnimationEvent.WaitHandle
+                        ]);
 
-                    t += frameInterval.TotalMilliseconds;
+                        if (releasedBy < 2)
+                            break; //Released by a cancellation signal.
+
+                        //Frame interval may have changed by now so recalculate it.
+                        frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
+
+                        if (self._playheadTime > durationMs + frameInterval.TotalMilliseconds)
+                            self._playheadTime = 0; //Reset to the beginning of the animation.
+                    }
+
+                    self.DisplayFrameAtTimestamp(self._playheadTime, sortedKeyframes);
+
+                    self._playheadTime += frameInterval.TotalMilliseconds;
 
                     //Wait for any of the cancellation tokens or the timeout (whichever comes first) before continuing to the next iteration.
                     WaitHandle.WaitAny([self._exitSignal.Token.WaitHandle, animationCancellationToken.WaitHandle], frameInterval);
@@ -109,9 +211,9 @@ namespace Glyphy.Animation
 
                 //TODO: Turn off all lights when done?
 
+                self._playheadTime = 0;
+                self._playAnimationEvent.Reset();
                 self.StateChanged?.Invoke(false);
-                self.ActiveAnimationId = null;
-                self._animation = null;
             }
         }
 
@@ -155,26 +257,6 @@ namespace Glyphy.Animation
             }
 
             GlyphAPI.Instance.DrawFrame(frameValues);
-        }
-
-        public void PlayAnimation(SAnimation animation)
-        {
-            lock (_threadLock)
-            {
-                _stopAnimationCts?.Cancel();
-                //No need to wait here as the animation thread will return to it's idle state when the active frame (if any) is complete.
-                _stopAnimationCts = new();
-
-                _animation = animation;
-
-                _processAnimationEvent.Set();
-            }
-        }
-
-        public void StopAnimation()
-        {
-            lock (_threadLock)
-                _stopAnimationCts?.Cancel();
         }
     }
 }
