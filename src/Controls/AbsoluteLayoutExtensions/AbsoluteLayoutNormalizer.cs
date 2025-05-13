@@ -1,4 +1,6 @@
-﻿namespace Glyphy.Controls.AbsoluteLayoutExtensions
+﻿using Glyphy.Misc;
+
+namespace Glyphy.Controls.AbsoluteLayoutExtensions
 {
     public static class AbsoluteLayoutNormalizer
     {

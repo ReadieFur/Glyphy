@@ -1,6 +1,7 @@
 using Glyphy.Animation;
 using Glyphy.Glyph;
 using Glyphy.Glyph.Indexes;
+using Glyphy.Misc;
 using Glyphy.Storage;
 using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
@@ -10,7 +11,7 @@ namespace Glyphy.Views;
 public partial class TestPage : ContentPage
 {
     private const int _FRAME_RATE = 60;
-    private readonly double increment = Helpers.ConvertNumberRange(1000 / _FRAME_RATE, 0, 1000, 0, 1);
+    private readonly double increment = MathHelpers.ConvertNumberRange(1000 / _FRAME_RATE, 0, 1000, 0, 1);
     private Timer _loopTask = new();
     private double i = 0;
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Glyphy.Misc;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Glyphy.Controls.Bezier
@@ -74,7 +75,7 @@ namespace Glyphy.Controls.Bezier
         private double _previousTimestamp = 0;
         public string PreviousTimestampText => $"{Math.Floor(PreviousTimestamp)}ms";
         //public double CurrentTimestamp { get => _currentTimestamp; set => SetProperty(ref _currentTimestamp, value, [nameof(CurrentTimestampText)]); } private double _currentTimestamp = 500;
-        public double CurrentTimestamp => Helpers.ConvertNumberRange(CurrentX, -1, 1, PreviousTimestamp, NextTimestamp);
+        public double CurrentTimestamp => MathHelpers.ConvertNumberRange(CurrentX, -1, 1, PreviousTimestamp, NextTimestamp);
         public string CurrentTimestampText => $"{Math.Floor(CurrentTimestamp)}ms";
         public double NextTimestamp { get => _nextTimestamp; set => SetProperty(ref _nextTimestamp, value, [nameof(NextTimestampText)]); }
         private double _nextTimestamp = 1000;

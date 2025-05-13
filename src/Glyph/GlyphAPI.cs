@@ -1,4 +1,5 @@
 ﻿using Glyphy.Glyph.Indexes;
+using Glyphy.Misc;
 
 namespace Glyphy.Glyph;
 
@@ -37,7 +38,7 @@ public partial class GlyphAPI : IGlyphAPI
     protected static int GlyphToKetchumBrightness(double brightness)
     {
         return (int)Math.Clamp(
-            Helpers.ConvertNumberRange(brightness, GLYPH_MIN_BRIGHTNESS, GLYPH_MAX_BRIGHTNESS, KETCHUM_MIN_BRIGHTNESS, KETCHUM_MAX_BRIGHTNESS),
+            MathHelpers.ConvertNumberRange(brightness, GLYPH_MIN_BRIGHTNESS, GLYPH_MAX_BRIGHTNESS, KETCHUM_MIN_BRIGHTNESS, KETCHUM_MAX_BRIGHTNESS),
             KETCHUM_MIN_BRIGHTNESS,
             KETCHUM_MAX_BRIGHTNESS);
     }

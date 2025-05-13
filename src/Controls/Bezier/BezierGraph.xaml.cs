@@ -1,5 +1,6 @@
 using System.Reflection;
 using Glyphy.Controls.AbsoluteLayoutExtensions;
+using Glyphy.Misc;
 using Timer = System.Timers.Timer;
 
 namespace Glyphy.Controls.Bezier;
@@ -103,8 +104,8 @@ public partial class BezierGraph : ContentView
             p4 = viewModel.NextPoint;
         }
 
-        double x = Helpers.ConvertNumberRange(_playbackT, t1, t2, x1, x2);
-        double y = Helpers.BezierSolveYGivenX(p1, p2, p3, p4, x);
+        double x = MathHelpers.ConvertNumberRange(_playbackT, t1, t2, x1, x2);
+        double y = MathHelpers.BezierSolveYGivenX(p1, p2, p3, p4, x);
 
         try
         {
