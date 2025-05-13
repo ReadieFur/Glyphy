@@ -9,13 +9,14 @@ using MauiColor = Microsoft.Maui.Graphics.Color;
 using AndroidColor = Android.Graphics.Color;
 using Glyphy.Platforms.Android;
 using Glyphy.Platforms.Android.Services;
+using Glyphy.Storage;
 
 namespace Glyphy
 {
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
-        internal const bool AMBIENT_SERVICE_IS_FOREGROUND = false;
+        internal const bool GLYPH_SERVICES_ARE_FOREGROUND = false;
 
         internal delegate void ActivityResultEventHandler(int requestCode, Result resultCode, Intent? data);
 
@@ -38,6 +39,14 @@ namespace Glyphy
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            //Register services.
+            AndroidHelpers.RegisterService<NotificationLightingService>();
+            /** AmbientLightingService remark:
+             * I don't think I need to do this for this service as the code I use within this method might only be relevant for "bound" services
+             * i.e. services that are managed by the system.
+             */
+            //AndroidHelpers.RegisterService<AmbientLightingService>(); 
 
             if (Window is null)
                 return;
@@ -66,16 +75,18 @@ namespace Glyphy
         {
             base.OnPause();
 
-            AndroidHelpers.StartService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
+            if (StorageManager.Instance.Settings.AmbientServiceEnabled)
+                AndroidHelpers.StartService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
         }
 
         protected override void OnResume()
         {
             base.OnResume();
 
-            //Possibly refresh the UI theme here? (Although better to do from the UI context).
+            //Possibly refresh the system UI theme here? (Although better to do from the UI context).
 
-            AndroidHelpers.StopService<AmbientLightingService>(AMBIENT_SERVICE_IS_FOREGROUND);
+            if (AndroidHelpers.IsServiceRunning<AmbientLightingService>())
+                AndroidHelpers.StopService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
         }
     }
 }
