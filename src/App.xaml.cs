@@ -10,7 +10,7 @@
             Current!.RequestedThemeChanged += Current_RequestedThemeChanged;
 #endif
 
-#if DEBUG && false
+#if DEBUG && true
             MainPage = new Views.TestPage();
 #else
             MainPage = new NavigationPage(new Views.MainPage());

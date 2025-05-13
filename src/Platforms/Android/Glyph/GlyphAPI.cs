@@ -40,8 +40,7 @@ public partial class GlyphAPI : Java.Lang.Object, IGlyphAPI, GlyphManager.ICallb
         if (_readyEvent is not TaskCompletionSource<bool> tcs)
             return false;
 
-        try { await tcs.Task.WaitAsync(cancellationToken); }
-        catch (TaskCanceledException) { return false; }
+        await tcs.Task.WaitAsync(cancellationToken);
 
         return tcs.Task.IsCompletedSuccessfully && tcs.Task.Result;
     }

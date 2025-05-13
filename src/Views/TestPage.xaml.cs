@@ -24,12 +24,15 @@ public partial class TestPage : ContentPage
 
         TestButton.Text = "Enable (Not Running)";
 
-        TestJson();
+        AnimationRunner.Instance.StateChanged += isRunning => Dispatcher.Dispatch(() => TestButton.Text = isRunning ? "Disable (Running...)" : "Enable (Not Running)");
+
+        //TestJson();
     }
 
-    private async void TestButton_Clicked(object sender, EventArgs e)
+    private void TestButton_Clicked(object sender, EventArgs e)
 	{
-        await TestLed();
+        //TestLed();
+        TestAnimation();
     }
 
     private void TestJson()
@@ -95,5 +98,39 @@ public partial class TestPage : ContentPage
         {
             { EPhoneOne.A1, i }
         });
+    }
+
+    private void TestAnimation()
+    {
+        SAnimation animation = new();
+        animation.PhoneType = EPhoneType.PhoneOne;
+        animation.Keyframes[EPhoneOne.A1].AddRange([
+            new SKeyframe
+            {
+                Timestamp = 0,
+                Brightness = 0,
+                Interpolation = EInterpolationType.Smooth
+            },
+            new SKeyframe
+            {
+                Timestamp = 1000,
+                Brightness = 1,
+                Interpolation = EInterpolationType.Smooth
+            },
+            new SKeyframe
+            {
+                Timestamp = 2000,
+                Brightness = 0,
+                Interpolation = EInterpolationType.Smooth
+            },
+        ]);
+
+        if (AnimationRunner.Instance.IsPlaying)
+        {
+            AnimationRunner.Instance.StopAnimation();
+            return;
+        }
+
+        AnimationRunner.Instance.PlayAnimation(animation);
     }
 }
