@@ -1,12 +1,17 @@
+using Glyphy.Storage;
+
 namespace Glyphy.Views;
 
 public partial class NotificationsPage : ContentPage
 {
-	public NotificationsPage()
+    private readonly NotificationsPageViewModel _viewModel = new();
+
+    public NotificationsPage()
 	{
 		InitializeComponent();
 
-        BindingContext = new NotificationsPageViewModel();
+        BindingContext = _viewModel;
+        _viewModel.Enabled = StorageManager.Instance.Settings.NotificationServiceEnabled;
 
 #if ANDROID
         Android_Constructor();
@@ -15,6 +20,9 @@ public partial class NotificationsPage : ContentPage
 
     private async void BackButton_Clicked(object sender, System.EventArgs e)
     {
+        StorageManager.Instance.Settings.NotificationServiceEnabled = _viewModel.Enabled;
+        await StorageManager.Instance.SaveSettings();
+
         await Navigation.PopAsync();
     }
 }

@@ -24,7 +24,7 @@ namespace Glyphy.Views
 
         //General.
         public double BrightnessMultiplier { get => _brightnessMultiplier; set => SetProperty(ref _brightnessMultiplier, Math.Clamp(Math.Round(value, 2), 0, 1)); }
-        private double _brightnessMultiplier = 0.5;
+        private double _brightnessMultiplier = 1;
 
         //Notification Service.
         public bool IgnorePowerSavings { get => _ignorePowerSavings; set => SetProperty(ref _ignorePowerSavings, value); }
