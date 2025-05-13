@@ -2,6 +2,6 @@
 {
     internal partial class StorageManager : IStorageManager
     {
-        string IStorageManager.ExternalStoragePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Glyphy");
+        public string ExternalStoragePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Glyphy");
     }
 }

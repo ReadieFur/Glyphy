@@ -8,9 +8,9 @@ namespace Glyphy.Storage
         #region Instance
         private static readonly object _INSTANCE_LOCK = new();
 
-        private static IStorageManager? _instance = null;
+        private static StorageManager? _instance = null;
         //I am using this to make the API only initalize when called (as opposed to a static constructor).
-        public static IStorageManager Instance
+        public static StorageManager Instance
         {
             get
             {

@@ -5,7 +5,7 @@ namespace Glyphy.Storage
 {
     internal partial class StorageManager : IStorageManager
     {
-        string IStorageManager.ExternalStoragePath => _externalStoragePath;
+        public string ExternalStoragePath => _externalStoragePath;
 
         private readonly string _externalStoragePath;
 

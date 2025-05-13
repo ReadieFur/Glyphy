@@ -27,7 +27,7 @@ namespace Glyphy.Storage
         [JsonProperty("brightness_multiplier")] private double _brightnessMultiplier = 1;
 
         [JsonIgnore] public bool NotificationServiceEnabled { get => _notificationServiceEnabled; set => SetProperty(ref _notificationServiceEnabled, value); }
-        [JsonProperty("brightness_multiplier")] private bool _notificationServiceEnabled = false;
+        [JsonProperty("notification_service_enabled")] private bool _notificationServiceEnabled = false;
         [JsonIgnore] public bool IgnorePowerSavingMode { get => _ignorePowerSavingMode; set => SetProperty(ref _ignorePowerSavingMode, value); }
         [JsonProperty("ignore_power_saving_mode")] private bool _ignorePowerSavingMode = false;
         [JsonIgnore] public bool IgnoreDoNotDisturb { get => _ignoreDoNotDisturb; set => SetProperty(ref _ignoreDoNotDisturb, value); }
