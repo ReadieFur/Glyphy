@@ -11,9 +11,10 @@ namespace Glyphy.Views;
 public partial class TestPage : ContentPage
 {
     private const int _FRAME_RATE = 60;
-    private readonly double increment = MathHelpers.ConvertNumberRange(1000 / _FRAME_RATE, 0, 1000, 0, 1);
+    private readonly double _increment = MathHelpers.ConvertNumberRange(1000 / _FRAME_RATE, 0, 1000, 0, 1);
     private Timer _loopTask = new();
-    private double i = 0;
+    private double _i = 0;
+    private SAnimation animation = new() { PhoneType = EPhoneType.PhoneOne };
 
     public TestPage()
 	{
@@ -27,6 +28,7 @@ public partial class TestPage : ContentPage
         AnimationRunner.Instance.StateChanged += isRunning => Dispatcher.Dispatch(() => TestButton.Text = isRunning ? "Disable (Running...)" : "Enable (Not Running)");
 
         //TestJson();
+        BuildAnimation();
     }
 
     private void TestButton_Clicked(object sender, EventArgs e)
@@ -74,7 +76,7 @@ public partial class TestPage : ContentPage
         if (_loopTask.Enabled)
         {
             _loopTask.Stop();
-            i = 0;
+            _i = 0;
 
             GlyphAPI.Instance.DrawFrame(new Dictionary<SPhoneIndex, double>()); //Turn off all lights.
 
@@ -90,27 +92,18 @@ public partial class TestPage : ContentPage
 
     private void _loopTask_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
-        i += increment;
-        if (i > 1)
-            i = 0;
+        _i += _increment;
+        if (_i > 1)
+            _i = 0;
 
         GlyphAPI.Instance.DrawFrame(new Dictionary<SPhoneIndex, double>
         {
-            { EPhoneOne.A1, i }
+            { EPhoneOne.A1, _i }
         });
     }
 
-    private void TestAnimation()
+    private void BuildAnimation()
     {
-        if (AnimationRunner.Instance.IsPlaying)
-        {
-            AnimationRunner.Instance.UnloadAnimation();
-            return;
-        }
-
-        SAnimation animation = new();
-        animation.PhoneType = EPhoneType.PhoneOne;
-
         List<SKeyframe> frameBuffer = [
             new SKeyframe
             {
@@ -162,6 +155,20 @@ public partial class TestPage : ContentPage
             frameBuffer = newFrameBuffer;
         }
 
-        AnimationRunner.Instance.PlayAnimation(animation);
+        AnimationRunner.Instance.LoadAnimation(animation);
+    }
+
+    private void TestAnimation()
+    {
+        if (AnimationRunner.Instance.IsPlaying)
+        {
+            AnimationRunner.Instance.PauseAnimation();
+            //AnimationRunner.Instance.UnloadAnimation();
+        }
+        else
+        {
+            AnimationRunner.Instance.PlayAnimation();
+            //AnimationRunner.Instance.PlayAnimation(animation, true);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Glyphy.Animation
         }
         #endregion
 
-        public bool IsPlaying => LoadedAnimationId is not null;
+        public bool IsPlaying => _playAnimationEvent.IsSet;
         public int FrameRate
         {
             get => _frameRate;
@@ -84,7 +84,12 @@ namespace Glyphy.Animation
         public void UnloadAnimation()
         {
             lock (_threadLock)
+            {
+                LoadedAnimationId = null;
+                _animation = null;
                 _stopAnimationCts?.Cancel();
+                _playAnimationEvent.Reset();
+            }
         }
 
         /// <summary>
@@ -117,7 +122,7 @@ namespace Glyphy.Animation
         {
             if (_animation is null)
                 throw new NullReferenceException("No animation is loaded.");
-            _playAnimationEvent.Set();
+            _playAnimationEvent.Reset();
         }
 
         /// <summary>
@@ -147,6 +152,7 @@ namespace Glyphy.Animation
             {
                 self._loadAnimationEvent.WaitOne();
 
+                self._playheadTime = 0;
                 long durationMs = 0;
                 Dictionary<SPhoneIndex, List<SKeyframe>> sortedKeyframes;
                 CancellationToken animationCancellationToken;
@@ -178,12 +184,12 @@ namespace Glyphy.Animation
                 while (!self._exitSignal.IsCancellationRequested
                     && !animationCancellationToken.IsCancellationRequested)
                 {
-                    //This should be efficent enough that I don't need to use a timer to subtract the processing time from the frame interval.
-                    TimeSpan frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
-
-                    if (self._playheadTime > durationMs + frameInterval.TotalMilliseconds //+frameInterval to include one extra frame for the final timepoint.
+                    if (self._playheadTime > durationMs //> to include one extra frame for the final timepoint.
                         || !self._playAnimationEvent.IsSet)
                     {
+                        self._playAnimationEvent.Reset();
+                        self.StateChanged?.Invoke(false);
+
                         //Wait.
                         int releasedBy = WaitHandle.WaitAny([
                             self._exitSignal.Token.WaitHandle,
@@ -194,15 +200,16 @@ namespace Glyphy.Animation
                         if (releasedBy < 2)
                             break; //Released by a cancellation signal.
 
-                        //Frame interval may have changed by now so recalculate it.
-                        frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
+                        self.StateChanged?.Invoke(true);
 
-                        if (self._playheadTime > durationMs + frameInterval.TotalMilliseconds)
+                        if (self._playheadTime > durationMs)
                             self._playheadTime = 0; //Reset to the beginning of the animation.
                     }
 
                     self.DisplayFrameAtTimestamp(self._playheadTime, sortedKeyframes);
 
+                    //This should all be efficent enough that I don't need to use a timer to subtract the processing time from the frame interval.
+                    TimeSpan frameInterval = TimeSpan.FromMilliseconds(1000.0 / self.FrameRate);
                     self._playheadTime += frameInterval.TotalMilliseconds;
 
                     //Wait for any of the cancellation tokens or the timeout (whichever comes first) before continuing to the next iteration.
@@ -211,8 +218,6 @@ namespace Glyphy.Animation
 
                 //TODO: Turn off all lights when done?
 
-                self._playheadTime = 0;
-                self._playAnimationEvent.Reset();
                 self.StateChanged?.Invoke(false);
             }
         }
