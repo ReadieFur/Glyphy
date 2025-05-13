@@ -2,8 +2,8 @@
 {
     public enum EPhoneTwo : ushort
     {
-        A1 = 0,
-        A2 = 1,
+        A = 0,
+        B = 1,
         B1 = 2,
         C1_1 = 3,
         C1_2 = 4,
