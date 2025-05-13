@@ -75,8 +75,7 @@ namespace Glyphy
         {
             base.OnPause();
 
-            if (StorageManager.Instance.Settings.AmbientServiceEnabled)
-                AndroidHelpers.StartService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
+            AndroidHelpers.StartService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
         }
 
         protected override void OnResume()
@@ -85,8 +84,7 @@ namespace Glyphy
 
             //Possibly refresh the system UI theme here? (Although better to do from the UI context).
 
-            if (AndroidHelpers.IsServiceRunning<AmbientLightingService>())
-                AndroidHelpers.StopService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
+            AndroidHelpers.StopService<AmbientLightingService>(GLYPH_SERVICES_ARE_FOREGROUND);
         }
     }
 }
