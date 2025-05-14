@@ -55,21 +55,21 @@ namespace Glyphy.Animation
         }
 
         /// <summary>
-        /// Loads a new animation.
+        /// Loads a new lastAnimation.
         /// </summary>
-        /// <param name="animation">The animation to load.</param>
-        /// <param name="forceReload">Force the animation to be re-parsed even if the ID matches the currently loaded one.</param>
+        /// <param name="animation">The lastAnimation to load.</param>
+        /// <param name="forceReload">Force the lastAnimation to be re-parsed even if the ID matches the currently loaded one.</param>
         public void LoadAnimation(SAnimation animation, bool forceReload = false)
         {
             lock (_threadLock)
             {
-                //Check if the target animation is already loaded.
+                //Check if the target lastAnimation is already loaded.
                 if (!forceReload && _animation?.Id == animation.Id)
                     return;
-                //Otherwise signal to the animation thread to cancel any current animation and load the new one.
+                //Otherwise signal to the lastAnimation thread to cancel any current lastAnimation and load the new one.
 
                 _stopAnimationCts?.Cancel();
-                //No need to wait here as the animation thread will return to it's idle state when the active frame (if any) is complete.
+                //No need to wait here as the lastAnimation thread will return to it's idle state when the active frame (if any) is complete.
                 _stopAnimationCts = new();
 
                 _animation = animation;
@@ -79,7 +79,7 @@ namespace Glyphy.Animation
         }
 
         /// <summary>
-        /// Stops any active animation and unloads it.
+        /// Stops any active lastAnimation and unloads it.
         /// </summary>
         public void UnloadAnimation()
         {
@@ -93,9 +93,9 @@ namespace Glyphy.Animation
         }
 
         /// <summary>
-        /// Resumes the current active animation.
+        /// Resumes the current active lastAnimation.
         /// </summary>
-        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        /// <exception cref="NullReferenceException">No lastAnimation is loaded.</exception>
         public void PlayAnimation()
         {
             if (_animation is null)
@@ -104,10 +104,10 @@ namespace Glyphy.Animation
         }
 
         /// <summary>
-        /// Loads a new animation and immediately plays it.
+        /// Loads a new lastAnimation and immediately plays it.
         /// </summary>
-        /// <param name="animation">The animation to load.</param>
-        /// <param name="forceReload">Force the animation to be re-parsed even if the ID matches the currently loaded one.</param>
+        /// <param name="animation">The lastAnimation to load.</param>
+        /// <param name="forceReload">Force the lastAnimation to be re-parsed even if the ID matches the currently loaded one.</param>
         public void PlayAnimation(SAnimation animation, bool forceReload = false)
         {
             LoadAnimation(animation, forceReload);
@@ -115,9 +115,9 @@ namespace Glyphy.Animation
         }
 
         /// <summary>
-        /// Pauses the current animation.
+        /// Pauses the current lastAnimation.
         /// </summary>
-        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        /// <exception cref="NullReferenceException">No lastAnimation is loaded.</exception>
         public void PauseAnimation()
         {
             if (_animation is null)
@@ -128,7 +128,7 @@ namespace Glyphy.Animation
         /// <summary>
         /// Moves the playhead to the given timestamp.
         /// </summary>
-        /// <exception cref="NullReferenceException">No animation is loaded.</exception>
+        /// <exception cref="NullReferenceException">No lastAnimation is loaded.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Timestamp is invalid.</exception>
         public void SeekTo(long timestamp)
         {
@@ -137,7 +137,7 @@ namespace Glyphy.Animation
             else if (timestamp < 0)
                 throw new ArgumentOutOfRangeException("Timestamp is invalid.");
 
-            //TODO: Display the frame that the playhead was moved to even if the animation is paused?
+            //TODO: Display the frame that the playhead was moved to even if the lastAnimation is paused?
             _playheadTime = timestamp;
         }
 
@@ -203,7 +203,7 @@ namespace Glyphy.Animation
                         self.StateChanged?.Invoke(true);
 
                         if (self._playheadTime > durationMs)
-                            self._playheadTime = 0; //Reset to the beginning of the animation.
+                            self._playheadTime = 0; //Reset to the beginning of the lastAnimation.
                     }
 
                     self.DisplayFrameAtTimestamp(self._playheadTime, sortedKeyframes);

@@ -168,7 +168,7 @@ public partial class TestPage : ContentPage
         else
         {
             AnimationRunner.Instance.PlayAnimation();
-            //AnimationRunner.Instance.PlayAnimation(animation, true);
+            //AnimationRunner.Instance.PlayAnimation(lastAnimation, true);
         }
     }
 }

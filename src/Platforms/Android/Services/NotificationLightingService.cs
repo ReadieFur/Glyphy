@@ -6,6 +6,7 @@ using FlagFilterType = Android.Service.Notification.FlagFilterType;
 using Android.Runtime;
 using Android.OS;
 using Glyphy.Animation;
+using Glyphy.Storage;
 
 namespace Glyphy.Platforms.Android.Services
 {
@@ -23,6 +24,7 @@ namespace Glyphy.Platforms.Android.Services
         //These shouldn't be null during an active instance.
         private PowerManager? _powerManager = null;
         private NotificationManager? _notificationManager = null;
+        private SAnimation? lastAnimation = null;
 
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent? intent, [GeneratedEnum] StartCommandFlags flags, int startId)
@@ -51,7 +53,10 @@ namespace Glyphy.Platforms.Android.Services
         {
             //Stopwatch stopwatch = Stopwatch.StartNew();
 
-            if ((sbn!.Notification?.Flags & NotificationFlags.Insistent) != 0) //Is notification is set to be silent.
+            if (!StorageManager.Instance.Settings.NotificationServiceEnabled
+                || (_powerManager!.IsPowerSaveMode && !StorageManager.Instance.Settings.IgnorePowerSavingMode) //Power saving mode.
+                || (_notificationManager!.CurrentInterruptionFilter == InterruptionFilter.Priority && !StorageManager.Instance.Settings.IgnoreDoNotDisturb) //Do not disturb.
+                || ((sbn!.Notification?.Flags & NotificationFlags.Insistent) != 0)) //Is notification is set to be silent.
                 return;
 
             /** Notification Glyph delay:
@@ -63,7 +68,7 @@ namespace Glyphy.Platforms.Android.Services
             if (timeToWait > 0)
                 Task.Delay(timeToWait).GetAwaiter().GetResult();*/
 
-            //TODO: Get animation to be played.
+            //TODO: Get lastAnimation to be played.
             //AnimationRunner.Instance.PlayAnimation();
         }
     }

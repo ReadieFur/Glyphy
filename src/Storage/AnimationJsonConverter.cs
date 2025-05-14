@@ -14,7 +14,7 @@ namespace Glyphy.Storage
             AutoDictionaryInitializer<SPhoneIndex, List<SKeyframe>> keyframes = new();
             foreach (var kvp in intermediate.Keyframes)
             {
-                //TODO: Change this so that an animation can have values for a different phone and then during playback filter out for the active device only.
+                //TODO: Change this so that an lastAnimation can have values for a different phone and then during playback filter out for the active device only.
                 SPhoneIndex key = new(intermediate.PhoneType, kvp.Key);
 
                 List<SKeyframe> frames = kvp.Value.Select(skf => new SKeyframe

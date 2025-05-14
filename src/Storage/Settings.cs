@@ -37,7 +37,7 @@ namespace Glyphy.Storage
         [JsonProperty("ambient_service_enabled")] private bool _ambientServiceEnabled = false;
         [JsonIgnore] public double AmbientRestartInterval { get => _ambientRestartInterval; set => SetProperty(ref _ambientRestartInterval, value); }
         [JsonProperty("ambient_restart_interval")] private double _ambientRestartInterval = 0;
-        [JsonIgnore] public Guid? AmbientAnimation { get => _ambientAnimation; set => SetProperty(ref _ambientAnimation, value); }
+        [JsonIgnore] public Guid? AmbientAnimation { get => _ambientAnimation; set => SetProperty(ref _ambientAnimation, value); } //TODO: Force this to trigger an update even if the GUID matches.
         [JsonProperty("ambient_animation")] private Guid? _ambientAnimation = null;
     }
 }

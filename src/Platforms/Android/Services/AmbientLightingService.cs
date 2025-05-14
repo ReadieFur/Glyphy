@@ -2,6 +2,8 @@
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Glyphy.Animation;
+using Glyphy.Storage;
 using AIntentService = Android.App.IntentService;
 
 namespace Glyphy.Platforms.Android.Services
@@ -16,6 +18,7 @@ namespace Glyphy.Platforms.Android.Services
         private NotificationManager? _notificationManager = null;
         private CancellationTokenSource? _cancellationTokenSource = null;
         private Thread? _serviceThread = null;
+        private SAnimation? _animation = null;
 
         //Apparently this is set to be obsolete in the future? (And so OnStartCommand should be used instead), but it's not deprecated yet.
         protected override void OnHandleIntent(Intent? intent) { }
@@ -53,7 +56,11 @@ namespace Glyphy.Platforms.Android.Services
 
             while (ct.IsCancellationRequested)
             {
-                //TODO.
+                if ((self._powerManager?.IsPowerSaveMode ?? false) && !StorageManager.Instance.Settings.IgnorePowerSavingMode)
+                {
+                    //continue;
+                }
+
                 ct.WaitHandle.WaitOne(Timeout.Infinite);
             }
         }
