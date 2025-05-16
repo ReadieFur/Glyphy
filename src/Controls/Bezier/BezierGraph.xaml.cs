@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Glyphy.Controls.AbsoluteLayoutExtensions;
 using Glyphy.Misc;
 using Timer = System.Timers.Timer;
@@ -7,9 +8,54 @@ namespace Glyphy.Controls.Bezier;
 
 public partial class BezierGraph : ContentView
 {
-    public int FrameRate { get; set; } = 120;
+    private static BindableProperty CreateBinding<T>(BindingMode bindingMode, T? defaultValue = default, [CallerMemberName] string? name = null)
+    {
+        if (name is null || !name.EndsWith("Property"))
+            throw new ArgumentException(nameof(name));
+
+        string propertyName = name.Substring(0, name.Length - "Property".Length);
+
+        BindableProperty.BindingPropertyChangedDelegate onChanged = (bindable, oldValue, newValue) =>
+        {
+            if (bindable is not BezierGraph self)
+                return;
+            self.OnOuterPropertyChanged(propertyName, oldValue, newValue);
+        };
+
+        return BindableProperty.Create(propertyName, typeof(T), typeof(BezierGraph), defaultValue, bindingMode, propertyChanged: onChanged);
+    }
+
+    #region Outer bindings
+    public static readonly BindableProperty FrameRateProperty = CreateBinding(BindingMode.OneWay, 120);
+    public int FrameRate { get => (int)GetValue(FrameRateProperty); set => SetValue(FrameRateProperty, value); }
+
+    //Previous.
+    public static readonly BindableProperty PreviousProperty = CreateBinding<Point>(BindingMode.TwoWay, new(-1, -1));
+    public Point Previous { get => (Point)GetValue(PreviousProperty); set => SetValue(PreviousProperty, value); }
+
+    public static readonly BindableProperty PreviousOutProperty = CreateBinding<Point>(BindingMode.TwoWay, new(-0.5, -1));
+    public Point PreviousOut { get => (Point)GetValue(PreviousOutProperty); set => SetValue(PreviousOutProperty, value); }
+
+    //Current.
+    public static readonly BindableProperty CurrentInProperty = CreateBinding<Point>(BindingMode.TwoWay, new(-0.5, 0));
+    public Point CurrentIn { get => (Point)GetValue(CurrentInProperty); set => SetValue(CurrentInProperty, value); }
+
+    public static readonly BindableProperty CurrentProperty = CreateBinding<Point>(BindingMode.TwoWay, new(0, 0));
+    public Point Current { get => (Point)GetValue(CurrentProperty); set => SetValue(CurrentProperty, value); }
+
+    public static readonly BindableProperty CurrentOutProperty = CreateBinding<Point>(BindingMode.TwoWay, new(0.5, 0));
+    public Point CurrentOut { get => (Point)GetValue(CurrentOutProperty); set => SetValue(CurrentOutProperty, value); }
+
+    //Next.
+    public static readonly BindableProperty NextInProperty = CreateBinding<Point>(BindingMode.TwoWay, new(0.5, 1));
+    public Point NextIn { get => (Point)GetValue(NextInProperty); set => SetValue(NextInProperty, value); }
+
+    public static readonly BindableProperty NextProperty = CreateBinding<Point>(BindingMode.TwoWay, new(1, 1));
+    public Point Next { get => (Point)GetValue(NextProperty); set => SetValue(NextProperty, value); }
+    #endregion
 
     private record RDraggableElementNormalized(Point startPosition, PropertyInfo? xProp, PropertyInfo? yProp);
+    private readonly BezierGraphViewModel _viewModel = new();
     private readonly Dictionary<VisualElement, RDraggableElementNormalized> _draggableElements = new();
     private readonly Timer _playbackTimer = new();
     private double _playbackT;
@@ -18,49 +64,81 @@ public partial class BezierGraph : ContentView
     {
         InitializeComponent();
 
-        BezierGraphViewModel viewModel = new();
-        BindingContext = viewModel;
-        viewModel.PropertyChanged += BindingContext_PropertyChanged;
+        BindingContext = _viewModel;
 
-        _playbackT = viewModel.PreviousTimestamp;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+
+        _playbackT = _viewModel.PreviousTimestamp;
         _playbackTimer.Elapsed += PlaybackTimer_Elapsed;
         _playbackTimer.Interval = 1000.0 / FrameRate;
-        //Loaded += (_, _) => _playbackTimer.Start();
-        Unloaded += (_, _) => _playbackTimer.Stop();
+        Unloaded += (_, _) => _playbackTimer.Dispose();
     }
 
-    private void BindingContext_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnOuterPropertyChanged(string propertyName, object oldValue, object newValue)
     {
-        if (sender is not BezierGraphViewModel viewModel)
-            return;
-
-        if (e.PropertyName == nameof(viewModel.CurrentInX))
+        //typeof(BezierGraphViewModel).GetProperty(nameof(BezierGraphViewModel.CurrentPoint))!.SetValue(_viewModel, Current);
+        switch (propertyName)
         {
-            //I would think this would cause a stack overflow by recusrion but I think the event under the hood prevents the update from being called on itself during an event dispatch.
-            if (viewModel.CurrentInX > viewModel.CurrentX)
-                viewModel.CurrentInX = viewModel.CurrentX;
+            //I don't need to check if the values match (preventing a circular update) because this happens internally on the view model.
+            //Previous.
+            case nameof(Previous):
+                _viewModel.PreviousPoint = Previous;
+                break;
+            case nameof(PreviousOut):
+                _viewModel.PreviousOutTangent = PreviousOut;
+                break;
+            //Current.
+            case nameof(CurrentIn):
+                _viewModel.CurrentInTangent = CurrentIn;
+                break;
+            case nameof(Current):
+                _viewModel.CurrentPoint = Current;
+                break;
+            case nameof(CurrentOut):
+                _viewModel.CurrentOutTangent = CurrentOut;
+                break;
+            //Next.
+            case nameof(NextIn):
+                _viewModel.NextInTangent = NextIn;
+                break;
+            case nameof(Next):
+                _viewModel.NextPoint = NextIn;
+                break;
+            default:
+                return;
         }
+    }
 
-        if (e.PropertyName == nameof(viewModel.CurrentX))
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
         {
-            //These have to be in this order.
-            if (viewModel.CurrentX < viewModel.PreviousOutX)
-                viewModel.CurrentX = viewModel.PreviousOutX;
-
-            if (viewModel.CurrentInX > viewModel.CurrentX)
-                viewModel.CurrentInX = viewModel.CurrentX;
-
-            if (viewModel.CurrentX > viewModel.NextInX)
-                viewModel.CurrentX = viewModel.NextInX;
-
-            if (viewModel.CurrentOutX < viewModel.CurrentX)
-                viewModel.CurrentOutX = viewModel.CurrentX;
-        }
-
-        if (e.PropertyName == nameof(viewModel.CurrentOutX))
-        {
-            if (viewModel.CurrentOutX < viewModel.CurrentX)
-                viewModel.CurrentOutX = viewModel.CurrentX;
+            //Previous.
+            case nameof(BezierGraphViewModel.PreviousPoint):
+                Previous = _viewModel.PreviousPoint;
+                break;
+            case nameof(BezierGraphViewModel.PreviousOutTangent):
+                Previous = _viewModel.PreviousOutTangent;
+                break;
+            //Current.
+            case nameof(BezierGraphViewModel.CurrentInTangent):
+                CurrentIn = _viewModel.CurrentInTangent;
+                break;
+            case nameof(BezierGraphViewModel.CurrentPoint):
+                Current = _viewModel.CurrentPoint;
+                break;
+            case nameof(BezierGraphViewModel.CurrentOutTangent):
+                CurrentOut = _viewModel.CurrentOutTangent;
+                break;
+            //Next.
+            case nameof(BezierGraphViewModel.NextInTangent):
+                NextIn = _viewModel.NextInTangent;
+                break;
+            case nameof(BezierGraphViewModel.NextPoint):
+                Next = _viewModel.NextPoint;
+                break;
+            default:
+                return;
         }
     }
 
