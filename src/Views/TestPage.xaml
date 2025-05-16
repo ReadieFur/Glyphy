@@ -1,14 +1,45 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Glyphy.Views;assembly=Glyphy"
+             xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
              x:Class="Glyphy.Views.TestPage"
              Title="TestPage">
     <Grid Margin="20">
-        <Button x:Name="TestButton"
+        <bezier:BezierGraph IsVisible="False"
+                            x:Name="BezierGraphControl">
+            <bezier:BezierGraph.BindingContext>
+                <bezier:BezierGraphViewModel KeyframeDiameter="30"
+                                             TangentDiameter="20"/>
+            </bezier:BezierGraph.BindingContext>
+        </bezier:BezierGraph>
+
+        <Entry IsVisible="False"
+               MinimumWidthRequest="50"
+               Keyboard="Numeric"
+               HorizontalOptions="Start"
+               VerticalOptions="Start"
+               Text="{Binding Source={x:Reference BezierGraphControl}, Path=ViewModel.CurrentX, Mode=TwoWay}"/>
+
+        <Button IsVisible="False"
+                x:Name="TestButton"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Background="{AppThemeBinding Light={StaticResource Intermediary}, Dark={StaticResource IntermediaryDark}}"
                 Clicked="TestButton_Clicked"
                 Text="Button"/>
+
+        <AbsoluteLayout IsVisible="False"
+                        x:Name="DraggableContainer">
+            <Rectangle BackgroundColor="Orange"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Start"
+                       WidthRequest="30"
+                       HeightRequest="30">
+                <Rectangle.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
+                </Rectangle.GestureRecognizers>
+            </Rectangle>
+        </AbsoluteLayout>
     </Grid>
 </ContentPage>

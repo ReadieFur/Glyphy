@@ -16,9 +16,7 @@
             <HorizontalStackLayout.Resources>
                 <x:Double x:Key="IconSize">20</x:Double>
             </HorizontalStackLayout.Resources>
-            <HorizontalStackLayout.Spacing>
-                <x:Double>5</x:Double>
-            </HorizontalStackLayout.Spacing>
+            <HorizontalStackLayout.Spacing>5</HorizontalStackLayout.Spacing>
             <Button Grid.Column="2"
                     HorizontalOptions="End"
                     VerticalOptions="Center"
@@ -28,7 +26,8 @@
                     Text="&#xf060;"
                     Clicked="BackButton_Clicked"/>
             <Label Margin="0,0,0,2.5"
-                   Text="Notification Manager"
+                   FontFamily="dotmatrix"
+                   Text="Notifications"
                    VerticalOptions="Center"
                    FontSize="Title"/>
         </HorizontalStackLayout>
@@ -40,7 +39,10 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Text="Default" FontFamily="dotmatrix" FontSize="Title"/>
+                    <Label Grid.Row="0"
+                           Text="Default"
+                           FontFamily="dotmatrix"
+                           FontSize="Subtitle"/>
                     <Grid Grid.Row="1" Padding="0, 10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -58,11 +60,12 @@
                                 IsEnabled="{Binding Enabled}"/>
                     </Grid>
                 </Grid>
+
                 <VerticalStackLayout Spacing="10" IsEnabled="{Binding Enabled}">
                     <Label Grid.Row="0"
                            Text="Per-App"
                            FontFamily="dotmatrix"
-                           FontSize="Title"/>
+                           FontSize="Subtitle"/>
                     <!--TODO: Add a search bar-->
                     <VerticalStackLayout x:Name="Entries"
                                          Grid.Row="1"

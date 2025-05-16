@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:glyphs="clr-namespace:Glyphy.Controls.Glyphs;assembly=Glyphy"
-             xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
              x:Class="Glyphy.Views.MainPage">
     <NavigationPage.HasNavigationBar>False</NavigationPage.HasNavigationBar>
     <Grid>
@@ -30,7 +29,9 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <glyphs:PhoneOne x:Name="GlyphPreview"/>
+                    <Grid x:Name="GlyphPreviewContainer">
+                        <glyphs:PhoneOne/>
+                    </Grid>
                     <Grid Grid.Column="1" Padding="30,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -42,11 +43,6 @@
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <VerticalStackLayout Grid.Row="0">
-                                <Button HorizontalOptions="Start" VerticalOptions="End"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgroundDark}}"
-                                    CornerRadius="25" FontSize="Body"
-                                    Text="Debug Test"
-                                    Clicked="DebugTestButton_Clicked"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Grid>

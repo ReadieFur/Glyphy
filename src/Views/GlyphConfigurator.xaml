@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:glyphs="clr-namespace:Glyphy.Controls.Glyphs;assembly=Glyphy"
+             xmlns:bezier="clr-namespace:Glyphy.Controls.Bezier;assembly=Glyphy"
+             xmlns:vm="clr-namespace:Glyphy.Views"
+             x:Class="Glyphy.Views.GlyphConfigurator"
+             x:DataType="vm:GlyphConfiguratorViewModel">
+    <NavigationPage.HasNavigationBar>False</NavigationPage.HasNavigationBar>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <HorizontalStackLayout Grid.Row="0" Padding="30,0">
+            <HorizontalStackLayout.Resources>
+                <x:Double x:Key="IconSize">20</x:Double>
+            </HorizontalStackLayout.Resources>
+            <HorizontalStackLayout.Spacing>5</HorizontalStackLayout.Spacing>
+            <Button Grid.Column="2"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    BackgroundColor="Transparent"
+                    FontSize="Title"
+                    FontFamily="FASolid6"
+                    Text="&#xf060;"
+                    Clicked="BackButton_Clicked"/>
+            <Label Text="Editor"
+                   FontFamily="dotmatrix"
+                   FontSize="Title"
+                   VerticalOptions="Center"
+                   Margin="0,0,0,2.5"/>
+        </HorizontalStackLayout>
+        <ScrollView Grid.Row="1" x:Name="scrollview">
+            <VerticalStackLayout Padding="30,10,30,10" Spacing="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.ColumnSpacing>10</Grid.ColumnSpacing>
+                    <!-- The IsTextPredictionEnabled property should disable auto-correct and so the active word underline too but it doesn't seem to -->
+                    <Entry Grid.Column="0"
+                           HeightRequest="60"
+                           Placeholder="Name"
+                           Text="Untitled"
+                           FontFamily="dotmatrix"
+                           FontSize="Title"
+                           Keyboard="Text"
+                           IsTextPredictionEnabled="False"
+                           MaxLength="15"/>
+                    <Button Grid.Column="1"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            BackgroundColor="Transparent"
+                            FontSize="Title"
+                            FontFamily="FASolid6"
+                            Text="&#xf0c7;"
+                            Clicked="SaveButton_Clicked"/>
+                </Grid>
+
+                <Grid x:Name="GlyphPreviewContainer">
+                    <glyphs:PhoneOne MaximumHeightRequest="300" HorizontalOptions="Center"/>
+                </Grid>
+
+                <VerticalStackLayout>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.ColumnSpacing>10</Grid.ColumnSpacing>
+                        <Label Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Glyph"
+                               VerticalOptions="Center"/>
+                        <Picker x:Name="LEDPicker"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                HeightRequest="45"
+                                ItemsSource="{Binding GlyphOptions}"
+                                SelectedItem="{Binding SelectedGlyphOptionString, Mode=TwoWay}"/>
+
+                        <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="3">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.ColumnSpacing>10</Grid.ColumnSpacing>
+                                <Label Grid.Column="0"
+                                       Text="Frames"
+                                       VerticalOptions="Center"/>
+                                <HorizontalStackLayout Grid.Column="1">
+                                    <!-- Delete -->
+                                    <Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#xf1f8;"
+                                            IsEnabled="{Binding DeleteButtonEnabled}"
+                                            Clicked="DeleteFrameButton_Clicked"/>
+                                    <!-- Shift Left -->
+                                    <Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#xf053;"
+                                            IsEnabled="{Binding ShiftLeftButtonEnabled}"
+                                            Clicked="ShiftFrameLeftButton_Clicked"/>
+                                    <!-- Shift Right -->
+                                    <Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#xf054;"
+                                            IsEnabled="{Binding ShiftRightButtonEnabled}"
+                                            Clicked="ShiftFrameRightButton_Clicked"/>
+                                    <!-- Insert Left -->
+                                    <!--<Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#xf149;"
+                                            IsEnabled="{Binding InsertFrameLeftEnabled}"
+                                            Clicked="InsertFrameLeftButton_Clicked"/>-->
+                                    <!-- Insert Right -->
+                                    <Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#xf149;"
+                                            IsEnabled="{Binding InsertFrameRightEnabled}"
+                                            Clicked="InsertFrameRightButton_Clicked"/>
+                                    <!-- Add -->
+                                    <Button Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="Transparent"
+                                            FontSize="Subtitle"
+                                            FontFamily="FASolid6"
+                                            Text="&#x2b;"
+                                            Clicked="AddFrameButton_Clicked"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <!-- TODO: Add a way to copy properties between frames -->
+                            <ScrollView Orientation="Horizontal">
+                                <HorizontalStackLayout x:Name="FrameList">
+                                    <Button BackgroundColor="Transparent" Text="1"/>
+                                </HorizontalStackLayout>
+                            </ScrollView>
+                        </VerticalStackLayout>
+                        
+                        <Label Grid.Row="2"
+                               Grid.Column="0"
+                               Text="Interpolation"
+                               VerticalOptions="Center"/>
+                        <Picker x:Name="InterpolationPicker"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                HeightRequest="45"
+                                ItemsSource="{Binding InterpolationOptions}"
+                                SelectedItem="{Binding SelectedInterpolationOptionString, Mode=TwoWay}"/>
+
+                        <!-- TODO: Trigger this element to refresh it's layout once loaded so the elements get positioned correctly (they are slightly off at first) -->
+                        <!-- TODO: Disable the scrolling when this element is focused. -->
+                        <bezier:BezierGraph x:Name="BezierGraph"
+                                            Grid.Row="3"
+                                            Grid.ColumnSpan="3"
+                                            HeightRequest="150"
+                                            Margin="0,10,0,20"/>
+
+                        <!--It would be nice if the entry values would be exposed so I can data-bind them instead of the mess in the code-behind.-->
+                        <Label Grid.Row="4"
+                               Grid.Column="0"
+                               Text="Timestamp"
+                               VerticalOptions="Center"/>
+                        <Slider Grid.Row="4"
+                                Grid.Column="1"
+                                Minimum="0"
+                                Maximum="1000"
+                                Value="{Binding TimestampSlider}"/>
+                        <Entry Grid.Row="4"
+                               Grid.Column="2"
+                               MinimumWidthRequest="50"
+                               Keyboard="Numeric"
+                               Text="{Binding TimestampValue}"/>
+                        
+                        <Label Grid.Row="5"
+                               Grid.Column="0"
+                               Text="Brightness"
+                               VerticalOptions="Center"/>
+                        <Slider Grid.Row="5"
+                                Grid.Column="1"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="{Binding Brightness}"/>
+                        <Entry Grid.Row="5"
+                               Grid.Column="2"
+                               MinimumWidthRequest="50"
+                               Keyboard="Numeric"
+                               Text="{Binding Brightness}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

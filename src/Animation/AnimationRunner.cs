@@ -129,7 +129,7 @@ namespace Glyphy.Animation
         /// Moves the playhead to the given timestamp.
         /// </summary>
         /// <exception cref="NullReferenceException">No lastAnimation is loaded.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Timestamp is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">TimestampValue is invalid.</exception>
         public void SeekTo(long timestamp)
         {
             if (_animation is null)

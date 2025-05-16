@@ -15,9 +15,7 @@
             <HorizontalStackLayout.Resources>
                 <x:Double x:Key="IconSize">20</x:Double>
             </HorizontalStackLayout.Resources>
-            <HorizontalStackLayout.Spacing>
-                <x:Double>5</x:Double>
-            </HorizontalStackLayout.Spacing>
+            <HorizontalStackLayout.Spacing>5</HorizontalStackLayout.Spacing>
             <Button Grid.Column="2"
                     HorizontalOptions="End"
                     VerticalOptions="Center"

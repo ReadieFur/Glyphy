@@ -6,7 +6,7 @@ public partial class GlyphAPI : IGlyphAPI
 {
     bool IGlyphAPI.IsReady => true;
 
-    EPhoneType IGlyphAPI.PhoneType => EPhoneType.Unknown;
+    EPhoneType IGlyphAPI.PhoneType => EPhoneType.PhoneOne; //Simulate Phone (1) for desktop testing (because thats what I'm using).
 
     Task<bool> IGlyphAPI.WaitForReadyAsync(CancellationToken cancellationToken) => Task.FromResult(true);
 

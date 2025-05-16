@@ -20,6 +20,27 @@
             <Setter Property="InputTransparent" Value="True"/>
             <Setter Property="FontSize" Value="10"/>
         </Style>
+        <Style TargetType="Line">
+            <Style.Triggers>
+                <Trigger TargetType="Line" Property="IsEnabled" Value="False">
+                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Path">
+            <Style.Triggers>
+                <Trigger TargetType="Path" Property="IsEnabled" Value="False">
+                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Ellipse">
+            <Style.Triggers>
+                <Trigger TargetType="Ellipse" Property="IsEnabled" Value="False">
+                    <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </ContentView.Resources>
 
     <Grid Margin="20,0">
