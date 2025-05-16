@@ -113,52 +113,109 @@ public partial class BezierGraph : ContentView
         if (sender is not VisualElement element || element.BindingContext is not BezierGraphViewModel viewModel || element.Parent is not AbsoluteLayout container)
             return;
 
-        switch (e.StatusType)
+        //https://github.com/xamarin/Xamarin.Forms/issues/3469
+        //https://stackoverflow.com/questions/39458078/xamarin-pan-gesture-recognizer-not-giving-accurate-coordinates/54664267#54664267
+        if (DeviceInfo.Platform == DevicePlatform.Android)
         {
-            case GestureStatus.Started:
-                {
-                    //Get binding data on first run.
-                    if (!_draggableElements.ContainsKey(element))
-                        _draggableElements[element] = new RDraggableElementNormalized(
-                            startPosition: default,
-                            xProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.XProperty),
-                            yProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.YProperty)
-                        );
-
-                    _draggableElements[element] = _draggableElements[element] with
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
                     {
-                        startPosition = new(
-                            _draggableElements[element].xProp?.GetValue(viewModel) as double? ?? 0.0,
-                            _draggableElements[element].yProp?.GetValue(viewModel) as double? ?? 0.0
-                        )
-                    };
-                    return;
-                }
-            case GestureStatus.Running:
-                {
-                    if (!_draggableElements.TryGetValue(element, out RDraggableElementNormalized? info))
-                        return;
+                        //Get binding data on first run.
+                        if (!_draggableElements.ContainsKey(element))
+                            _draggableElements[element] = new RDraggableElementNormalized(
+                                startPosition: default,
+                                xProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.XProperty),
+                                yProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.YProperty)
+                            );
 
-                    if (info.xProp is PropertyInfo xProp)
-                    {
-                        double xNorm = e.TotalX / (container.Width / 2); //Calculate the total distance moved in normalized space.
-                        xNorm += info.startPosition.X; //Offset by the start coordinate.
-                        xProp.SetValue(viewModel, Math.Clamp(xNorm, -1, 1));
+                        /* On android we need to:
+                         * Set the start point as the center position of the container
+                         * And then offset this by the width of the element / 2
+                         * (idk in my head this made sense and works, how I don't know to be honest, I'm horrible at maths).
+                         */
+                        double xContainerCenter = container.X + (container.Width / 2);
+                        double xElementHalfWidth = element.Width / 2;
+                        double xStartPosition = xContainerCenter - xElementHalfWidth;
+
+                        double yContainerCenter = container.Y + (container.Height / 2);
+                        double yElementHalfWidth = container.Height / 2;
+                        double yStartPosition = yContainerCenter - yElementHalfWidth;
+
+                        _draggableElements[element] = _draggableElements[element] with
+                        {
+                            startPosition = new(
+                                xStartPosition,
+                                yStartPosition
+                            )
+                        };
                     }
-
-                    if (info.yProp is PropertyInfo yProp)
+                    break;
+                case GestureStatus.Running:
                     {
-                        double yNorm = -(e.TotalY / (container.Height / 2)); //Y is inverted because our coordinate space goes from bottom-to-top instead of the default top-to-bottom.
-                        yNorm += info.startPosition.Y;
-                        yProp.SetValue(viewModel, Math.Clamp(yNorm, -1, 1));
-                    }
+                        if (!_draggableElements.TryGetValue(element, out RDraggableElementNormalized? info))
+                            return;
 
-                    return;
-                }
-            case GestureStatus.Completed:
-            case GestureStatus.Canceled:
-            default:
-                return;
+                        if (info.xProp is PropertyInfo xProp)
+                        {
+                            double absoluteX = (e.TotalX + element.X) - info.startPosition.X;
+                            double normalizedX = absoluteX / (container.Width / 2);
+                            xProp.SetValue(ViewModel, Math.Clamp(normalizedX, -1, 1));
+                        }
+
+                        if (info.yProp is PropertyInfo yProp)
+                        {
+                            double absoluteY = -((e.TotalY + element.Y) - info.startPosition.Y);
+                            double normalizedY = absoluteY / (container.Height / 2);
+                            yProp.SetValue(ViewModel, Math.Clamp(normalizedY, -1, 1));
+                        }
+                    }
+                    break;
+                case GestureStatus.Completed:
+                    break;
+            }
+        }
+        else
+        {
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    {
+                        //Get binding data on first run.
+                        if (!_draggableElements.ContainsKey(element))
+                            _draggableElements[element] = new RDraggableElementNormalized(
+                                startPosition: default,
+                                xProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.XProperty),
+                                yProp: element.GetBindingPropertySource(AbsoluteLayoutNormalizer.YProperty)
+                            );
+
+                        _draggableElements[element] = _draggableElements[element] with
+                        {
+                            startPosition = new(
+                                _draggableElements[element].xProp?.GetValue(viewModel) as double? ?? 0.0,
+                                _draggableElements[element].yProp?.GetValue(viewModel) as double? ?? 0.0
+                            )
+                        };
+                    }
+                    break;
+                case GestureStatus.Running:
+                    {
+                        if (!_draggableElements.TryGetValue(element, out RDraggableElementNormalized? info))
+                            return;
+
+                        if (info.xProp is PropertyInfo xProp)
+                        {
+                            double xNorm = e.TotalX / (container.Width / 2); //Calculate the total distance moved in normalized space.
+                            xNorm += info.startPosition.X; //Offset by the start coordinate.
+                            xProp.SetValue(viewModel, Math.Clamp(xNorm, -1, 1));
+                        }
+
+                        if (info.yProp is PropertyInfo yProp)
+                        {
+                            double yNorm = -(e.TotalY / (container.Height / 2)); //Y is inverted because our coordinate space goes from bottom-to-top instead of the default top-to-bottom.
+                            yNorm += info.startPosition.Y;
+                            yProp.SetValue(viewModel, Math.Clamp(yNorm, -1, 1));
+                        }
                     }
                     break;
                 case GestureStatus.Completed:
