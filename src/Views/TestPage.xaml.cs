@@ -171,4 +171,42 @@ public partial class TestPage : ContentPage
             //AnimationRunner.Instance.PlayAnimation(lastAnimation, true);
         }
     }
+
+    private double startTX, startTY;
+    private void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
+    {
+        if (sender is not VisualElement element)
+            return;
+
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    break;
+                case GestureStatus.Running:
+                    element.TranslationX = e.TotalX + element.TranslationX;
+                    element.TranslationY = e.TotalY + element.TranslationY;
+                    break;
+                case GestureStatus.Completed:
+                    break;
+            }
+        }
+        else
+        {
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    startTX = element.TranslationX;
+                    startTY = element.TranslationY;
+                    break;
+                case GestureStatus.Running:
+                    element.TranslationX = startTX + element.X + e.TotalX;
+                    element.TranslationY = startTY + element.Y + e.TotalY;
+                    break;
+                case GestureStatus.Completed:
+                    break;
+            }
+        }
+    }
 }

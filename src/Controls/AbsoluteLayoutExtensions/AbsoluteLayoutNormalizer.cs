@@ -18,7 +18,6 @@ namespace Glyphy.Controls.AbsoluteLayoutExtensions
             if (bindable is not T element)
                 return;
 
-
             EventHandler updateHandler = (_, _) =>
             {
                 //if (element.Parent is not AbsoluteLayout container)

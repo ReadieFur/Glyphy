@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Glyphy.Controls.Bezier
 {
-    internal class BezierGraphViewModel : INotifyPropertyChanged
+    public class BezierGraphViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
