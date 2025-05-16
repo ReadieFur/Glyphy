@@ -37,6 +37,7 @@ namespace Glyphy.Controls.AbsoluteLayoutExtensions
             };
 
             element.Loaded += updateHandler;
+            element.SizeChanged += updateHandler;
 
             //First time this code is called the parent is often unset.
             if (element.Parent is null)

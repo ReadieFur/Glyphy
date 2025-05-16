@@ -134,13 +134,14 @@ public partial class BezierGraph : ContentView
                          * And then offset this by the width of the element / 2
                          * (idk in my head this made sense and works, how I don't know to be honest, I'm horrible at maths).
                          */
+                        //(element.X - (element.X - (container.X + (container.Width / 2))))
                         double xContainerCenter = container.X + (container.Width / 2);
                         double xElementHalfWidth = element.Width / 2;
                         double xStartPosition = xContainerCenter - xElementHalfWidth;
 
                         double yContainerCenter = container.Y + (container.Height / 2);
-                        double yElementHalfWidth = container.Height / 2;
-                        double yStartPosition = yContainerCenter - yElementHalfWidth;
+                        double yElementHeight = element.Height; //This one wants full height for some reason?
+                        double yStartPosition = yContainerCenter - yElementHeight;
 
                         _draggableElements[element] = _draggableElements[element] with
                         {
