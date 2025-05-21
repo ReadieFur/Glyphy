@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Glyphy.Views.TestPage2"
+             Title="TestPage2">
+    <VerticalStackLayout Margin="20">
+        <VerticalStackLayout.Spacing>5</VerticalStackLayout.Spacing>
+        <Label FontFamily="dotmatrix"
+               FontSize="Subtitle"
+               Text="Glyphy Debugging Menu" Padding="0,0,0,10"/>
+        <Label Text="Glyph"/>
+        <Picker x:Name="AnimationPicker" SelectedIndexChanged="AnimationPicker_SelectedIndexChanged"/>
+        <Label Text="Looping"/>
+        <Switch x:Name="LoopingSwitch"
+                HorizontalOptions="Start"/>
+        <Label Text="Enabled"/>
+        <Switch x:Name="EnabledSwitch"
+                Toggled="Enabled_Toggled"
+                HorizontalOptions="Start"/>
+    </VerticalStackLayout>
+</ContentPage>
