@@ -30,6 +30,11 @@ namespace Glyphy.Animation
             get => _frameRate;
             set => _frameRate = Math.Clamp(value, 5, 60);
         }
+        public double BrightnessMultiplier
+        {
+            get => _brightnessMultiplier;
+            set => _brightnessMultiplier = Math.Clamp(value, 0, 1);
+        }
         public Guid? LoadedAnimationId { get; private set; }
         public event Action<bool>? StateChanged; //True if started, False if stopped.
 
@@ -40,6 +45,7 @@ namespace Glyphy.Animation
         private readonly object _threadLock = new();
         private CancellationTokenSource? _stopAnimationCts = null;
         private int _frameRate = 60;
+        private double _brightnessMultiplier = 1;
         private SAnimation? _animation = null;
         private double _playheadTime = 0;
 
@@ -259,7 +265,7 @@ namespace Glyphy.Animation
                     brightness = nextKeyframe.Value.Brightness; //No previous keyframe, use next.
                 }
 
-                frameValues.Add(kvp.Key, brightness);
+                frameValues.Add(kvp.Key, brightness * _brightnessMultiplier);
             }
 
             GlyphAPI.Instance.DrawFrame(frameValues);

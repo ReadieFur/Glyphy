@@ -10,6 +10,11 @@
                Text="Glyphy Debugging Menu" Padding="0,0,0,10"/>
         <Label Text="Glyph"/>
         <Picker x:Name="AnimationPicker" SelectedIndexChanged="AnimationPicker_SelectedIndexChanged"/>
+        <Label Text="Brightness Multiplier"/>
+        <Slider Minimum="0"
+                Maximum="1"
+                Value="1"
+                ValueChanged="BrightnessMultiplierSlider_ValueChanged"/>
         <Label Text="Looping"/>
         <Switch x:Name="LoopingSwitch"
                 HorizontalOptions="Start"/>
