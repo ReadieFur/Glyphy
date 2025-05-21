@@ -11,23 +11,15 @@ namespace Glyphy.Views;
 public partial class GlyphConfigurator : ContentPage
 {
     private readonly GlyphConfiguratorViewModel _viewModel = new();
-    private SAnimation _animation;
+    private SAnimation _animation = new();
+    private bool _hasUnsavedChanges = false, _ignoreUnsavedChanges = false;
 
 	public GlyphConfigurator()
 	{
 		InitializeComponent();
         Setup();
-        _animation = new();
 
-        switch (_viewModel.SelectedInterpolationOption)
-        {
-            case EInterpolationType.Bezier:
-                BezierGraph.IsEnabled = true;
-                break;
-            default:
-                BezierGraph.IsEnabled = false;
-                break;
-        }
+        OnSelectedInteroplationOptionChanged();
     }
 
     public GlyphConfigurator(Guid animationId)
@@ -35,36 +27,41 @@ public partial class GlyphConfigurator : ContentPage
         InitializeComponent();
         Setup();
 
-        switch (_viewModel.SelectedInterpolationOption)
-        {
-            case EInterpolationType.Bezier:
-                BezierGraph.IsEnabled = true;
-                break;
-            default:
-                BezierGraph.IsEnabled = false;
-                break;
-        }
-
         IsEnabled = false;
 
         try
         {
-            StorageManager.Instance.LoadAnimation(animationId).ContinueWith(t =>
+            StorageManager.Instance.LoadAnimation(animationId).ContinueWith(async t =>
             {
+                if (t.IsFaulted)
+                {
+                    await Toast.Make(t.Exception?.Message ?? "Failed to load animation.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+                    await Dispatcher.DispatchAsync(async() => await Navigation.PopAsync());
+                }
+
                 _animation = t.Result;
 
                 if (_animation.Keyframes.Count > 0)
                 {
-                    //This will trigger the UI to load the rest of the elements for this keyframe, no need to do anything else here.
-                    _viewModel.SelectedGlyphOption = _animation.Keyframes.First().Key;
+                    SPhoneIndex index = _animation.Keyframes.Keys.OrderBy(phoneIndex => phoneIndex.Key).First();
+                    if (index != _viewModel.SelectedGlyphOption)
+                    {
+                        //This will trigger the UI to load the rest of the elements for this keyframe, no need to do anything else here.
+                        _viewModel.SelectedGlyphOption = index;
+                    }
+                    else
+                    {
+                        //Force update as the newly selected glyph option matches the old one.
+                        Dispatcher.Dispatch(OnSelectedGlyphChanged);
+                    }
                 }
 
-                IsEnabled = true;
+                Dispatcher.Dispatch(() => IsEnabled = true);
             }).ConfigureAwait(true);
         }
         catch (FileNotFoundException ex)
         {
-            Toast.Make(ex.Message, CommunityToolkit.Maui.Core.ToastDuration.Long);
+            Toast.Make(ex.Message, CommunityToolkit.Maui.Core.ToastDuration.Long).Show().Wait();
             Navigation.PopAsync().Wait();
         }
     }
@@ -110,27 +107,26 @@ public partial class GlyphConfigurator : ContentPage
 
     private async void BackButton_Clicked(object? sender, EventArgs e)
     {
+        if (_hasUnsavedChanges && !_ignoreUnsavedChanges)
+        {
+            await Toast.Make("You have unsaved changes!\nPress back again to discard changes.", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+            _ignoreUnsavedChanges = true;
+            return;
+        }
+
         await Navigation.PopAsync();
     }
 
     private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(GlyphConfiguratorViewModel.SelectedInterpolationOption))
-        {
-            switch (_viewModel.SelectedInterpolationOption)
-            {
-                case EInterpolationType.Bezier:
-                    BezierGraph.IsEnabled = true;
-                    break;
-                default:
-                    BezierGraph.IsEnabled = false;
-                    break;
-            }
-        }
+            OnSelectedInteroplationOptionChanged();
         else if (e.PropertyName == nameof(GlyphConfiguratorViewModel.Brightness))
             BezierGraph.ViewModel.CurrentY = MathHelpers.ConvertNumberRange(_viewModel.Brightness, 0, 100, -1, 1);
         else if (e.PropertyName == nameof(GlyphConfiguratorViewModel.TimestampValue))
             BezierGraph.ViewModel.CurrentX = MathHelpers.ConvertNumberRange(_viewModel.TimestampValue, _viewModel.PreviousTimestampValue, _viewModel.NextTimestampValue, -1, 1);
+        else if (e.PropertyName == nameof(GlyphConfiguratorViewModel.SelectedGlyphOption))
+            OnSelectedGlyphChanged();
     }
 
     private void BezierGraph_ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -141,8 +137,50 @@ public partial class GlyphConfigurator : ContentPage
             _viewModel.TimestampValue = BezierGraph.ViewModel.CurrentTimestamp;
     }
 
-    private void SaveButton_Clicked(object sender, EventArgs e)
+    private async void SaveButton_Clicked(object sender, EventArgs e)
     {
+        await StorageManager.Instance.SaveAnimation(_animation);
+        _ignoreUnsavedChanges = _hasUnsavedChanges = false;
+    }
+
+    private void OnSelectedInteroplationOptionChanged()
+    {
+        switch (_viewModel.SelectedInterpolationOption)
+        {
+            case EInterpolationType.Bezier:
+                BezierGraph.IsEnabled = true;
+                break;
+            default:
+                BezierGraph.IsEnabled = false;
+                break;
+        }
+    }
+
+    private void OnSelectedGlyphChanged()
+    {
+        FrameList.Clear();
+
+        int keyframeCount = _animation.Keyframes[_viewModel.SelectedGlyphOption].Count > 0
+            ? _animation.Keyframes[_viewModel.SelectedGlyphOption].Count
+            : 1;
+        for (int i = 0; i < keyframeCount; i++)
+        {
+            Button button = new();
+            button.Background = Color.FromRgba(0, 0, 0, 0);
+            button.Text = (i + 1).ToString();
+            button.Clicked += (_, _) => OnSelectedFrameChanged(i);
+            FrameList.Add(button);
+        }
+
+        OnSelectedFrameChanged(0); //TODO: Change this to selecte the closest frame to the previously selected one.
+    }
+
+    private void OnSelectedFrameChanged(int index)
+    {
+        SKeyframe keyframe = _animation.Keyframes[_viewModel.SelectedGlyphOption].ElementAtOrDefault(index);
+        _viewModel.TimestampValue = keyframe.Timestamp;
+        _viewModel.Brightness = MathHelpers.ConvertNumberRange(keyframe.Brightness, GlyphAPI.GLYPH_MIN_BRIGHTNESS, GlyphAPI.GLYPH_MAX_BRIGHTNESS, 0, 100);
+        _viewModel.SelectedInterpolationOption = keyframe.Interpolation;
     }
 
     private void DeleteFrameButton_Clicked(object sender, EventArgs e)
@@ -157,9 +195,9 @@ public partial class GlyphConfigurator : ContentPage
     {
     }
 
-    private void InsertFrameLeftButton_Clicked(object sender, EventArgs e)
+    /*private void InsertFrameLeftButton_Clicked(object sender, EventArgs e)
     {
-    }
+    }*/
 
     private void InsertFrameRightButton_Clicked(object sender, EventArgs e)
     {
