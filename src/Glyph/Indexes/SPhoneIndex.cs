@@ -1,4 +1,6 @@
-﻿namespace Glyphy.Glyph.Indexes
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Glyphy.Glyph.Indexes
 {
     public readonly struct SPhoneIndex
     {
@@ -20,6 +22,26 @@
             PhoneType = phoneType;
             Key = IndexMapper.GetMapping(phoneType).IdxToKey[idx]; //Should never fail in this context.
             Idx = idx;
+        }
+
+        public static bool operator ==(SPhoneIndex first, SPhoneIndex second)
+        {
+            return first.PhoneType == second.PhoneType
+                && first.Key == second.Key
+                && first.Idx == second.Idx;
+        }
+
+        public static bool operator !=(SPhoneIndex first, SPhoneIndex second)
+        {
+            return first.PhoneType != second.PhoneType
+                || first.Key != second.Key
+                || first.Idx != second.Idx;
+        }
+
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is SPhoneIndex second
+                && this == second;
         }
 
         public static implicit operator string(SPhoneIndex self) => self.Key;

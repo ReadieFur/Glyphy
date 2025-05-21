@@ -12,5 +12,8 @@ namespace Glyphy.Animation
         public AutoDictionaryInitializer<SPhoneIndex, List<SKeyframe>> Keyframes { get; set; } = new();
 
         public SAnimation() { }
+
+        //public static bool operator ==(SAnimation left, SAnimation right) => left.Id == right.Id;
+        //public static bool operator !=(SAnimation left, SAnimation right) => left.Id != right.Id;
     }
 }

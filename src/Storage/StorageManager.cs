@@ -50,7 +50,7 @@ namespace Glyphy.Storage
                 throw new FileNotFoundException();
             }
 
-            return JsonConvert.DeserializeObject<SAnimation>(await File.ReadAllTextAsync(path));
+            return JsonConvert.DeserializeObject<SAnimation>(await File.ReadAllTextAsync(path), _animationJsonConverter);
         }
 
         public void DeleteAnimation(Guid id)

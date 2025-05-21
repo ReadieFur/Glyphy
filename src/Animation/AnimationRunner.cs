@@ -89,6 +89,7 @@ namespace Glyphy.Animation
                 _animation = null;
                 _stopAnimationCts?.Cancel();
                 _playAnimationEvent.Reset();
+                GlyphAPI.Instance.DrawFrame(new Dictionary<SPhoneIndex, double>()); //Turn off all lights.
             }
         }
 

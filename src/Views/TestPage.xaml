@@ -21,7 +21,7 @@
                VerticalOptions="Start"
                Text="{Binding Source={x:Reference BezierGraphControl}, Path=ViewModel.CurrentX, Mode=TwoWay}"/>
 
-        <Button IsVisible="False"
+        <Button IsVisible="True"
                 x:Name="TestButton"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"

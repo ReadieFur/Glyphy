@@ -1,0 +1,352 @@
+{
+  "id": "8be015c8-8df4-47e2-be17-99be464dc9da",
+  "name": "Fade",
+  "device": "PhoneOne",
+  "keyframes": {
+    "E1": [
+      {
+        "timestamp": 0,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 900,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1800,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_1": [
+      {
+        "timestamp": 75,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 975,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1875,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_2": [
+      {
+        "timestamp": 150,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1050,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1950,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_3": [
+      {
+        "timestamp": 225,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1125,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2025,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_4": [
+      {
+        "timestamp": 300,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1200,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2100,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_5": [
+      {
+        "timestamp": 375,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1275,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2175,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_6": [
+      {
+        "timestamp": 450,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1350,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2250,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_7": [
+      {
+        "timestamp": 525,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1425,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2325,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "D1_8": [
+      {
+        "timestamp": 600,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1500,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2400,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "C2": [
+      {
+        "timestamp": 675,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1575,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2475,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "C1": [
+      {
+        "timestamp": 750,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1650,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2550,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "C4": [
+      {
+        "timestamp": 825,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1725,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2625,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "C3": [
+      {
+        "timestamp": 900,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1800,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2700,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "A1": [
+      {
+        "timestamp": 975,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1875,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2775,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ],
+    "B1": [
+      {
+        "timestamp": 1050,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 1950,
+        "brightness": 1.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      },
+      {
+        "timestamp": 2850,
+        "brightness": 0.0,
+        "interpolation_type": "Smooth",
+        "in_tangent": null,
+        "out_tangent": null
+      }
+    ]
+  }
+}

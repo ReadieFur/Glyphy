@@ -4,10 +4,10 @@
     {
         A1 = 0,
         B1 = 1,
-        C1 = 2,
-        C2 = 3,
-        C3 = 4,
-        C4 = 5,
+        C1 = 2, //Bottom left.
+        C2 = 3, //Bottom right.
+        C3 = 4, //Top right.
+        C4 = 5, //Top left.
         D1_1 = 7,
         D1_2 = 8,
         D1_3 = 9,

@@ -4,6 +4,7 @@ using Glyphy.Glyph.Indexes;
 using Glyphy.Misc;
 using Glyphy.Storage;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using Timer = System.Timers.Timer;
 
 namespace Glyphy.Views;
@@ -14,7 +15,12 @@ public partial class TestPage : ContentPage
     private readonly double _increment = MathHelpers.ConvertNumberRange(1000 / _FRAME_RATE, 0, 1000, 0, 1);
     private Timer _loopTask = new();
     private double _i = 0;
-    private SAnimation animation = new() { PhoneType = EPhoneType.PhoneOne };
+    private SAnimation _animation = new()
+    {
+        Id = Guid.Parse("8be015c8-8df4-47e2-be17-99be464dc9da"),
+        Name = "Fade",
+        PhoneType = EPhoneType.PhoneOne
+    };
 
     public TestPage()
 	{
@@ -77,8 +83,6 @@ public partial class TestPage : ContentPage
         {
             _loopTask.Stop();
             _i = 0;
-
-            GlyphAPI.Instance.DrawFrame(new Dictionary<SPhoneIndex, double>()); //Turn off all lights.
 
             TestButton.Text = "Enable (Not Running)";
 
@@ -146,7 +150,7 @@ public partial class TestPage : ContentPage
 
         foreach (SPhoneIndex led in leds)
         {
-            animation.Keyframes[led].AddRange(frameBuffer);
+            _animation.Keyframes[led].AddRange(frameBuffer);
 
             //Offset the led times a little (making copies of the data).
             List<SKeyframe> newFrameBuffer = new();
@@ -155,7 +159,14 @@ public partial class TestPage : ContentPage
             frameBuffer = newFrameBuffer;
         }
 
-        AnimationRunner.Instance.LoadAnimation(animation);
+        AnimationRunner.Instance.LoadAnimation(_animation);
+
+        //string animationJson = JsonConvert.SerializeObject(_animation, Formatting.Indented, new AnimationJsonConverter());
+        //StorageManager.Instance.SaveAnimation(_animation).ContinueWith(t =>
+        //{
+        //    if (!t.IsCompletedSuccessfully)
+        //        Debugger.Break();
+        //});
     }
 
     private void TestAnimation()
